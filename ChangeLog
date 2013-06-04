@@ -1,7 +1,16 @@
+Version 2.8
+===========
+
+One more issue fixed with the cpqHeEventLogCondition. Thanks to Seth Rice for
+his support while debugging.
+
+
 Version 2.7
 ===========
 
-Bugfix introduced by the cpqHeResilientMemCondition check is now fixed.
+Minor bug introduced by the cpqHeResilientMemCondition check should now be ok.
+This comes together with some small cleanup around that part.
+
 Thanks to Peter Tauber for pointing it out and verifying.
 
 
