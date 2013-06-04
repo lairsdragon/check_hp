@@ -1,5 +1,15 @@
+REQUIREMENTS
+============
+
 Please update the 'lib' path at the top of check_hp_agents to fit your distribution.
 check_hp_agents needs to locate the utils.pm library that comes with nagios-plugins.
+
+You will need the Net::SNMP package as well. In most distributions this is available
+as a package named "libsnmp-perl" - so make sure to install it if you stumble accross
+an error starting with "Can't locate Net/SNMP.pm in @INC [...]".
+
+OUTPUT
+======
 
 Please do not misread the "-d" parameter, which stands for "DEBUG" and is not
 intended for production use! check_hp_agents will output information about about
