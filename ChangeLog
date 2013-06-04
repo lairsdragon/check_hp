@@ -1,3 +1,12 @@
+Version 2.10
+============
+Some changes include:
+
+- definitions now moved into a hash of hashes instead of different arrays
+- some cleanup to the '--help' parameter (now hinted at when none is given)
+- added an '--exclude' parameter for different checks as requested by 'Mastrboy'
+
+
 Version 2.9
 ===========
 Thanks again to Jean Prat for:

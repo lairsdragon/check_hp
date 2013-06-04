@@ -18,15 +18,27 @@ parameter stands for "DEBUG" and is not intended for production use inside
 Nagios! check_hp will give you information about which object failed if there
 is any.
 
+
+USAGE
+=====
+
+Make sure you have all REQUIREMENTS in place (see below), then simply run
+"./check_hp --help" for more details.
+
+
 REQUIREMENTS
 ============
 
 Please update the 'lib' path at the top of check_hp to fit your distribution.
 check_hp needs to locate the utils.pm library that comes with nagios-plugins.
 
-You will need the Net::SNMP package as well. In most distributions this is available
-as a package named "libsnmp-perl" - so make sure to install it if you stumble accross
-an error starting with "Can't locate Net/SNMP.pm in @INC [...]".
+You will need the Net::SNMP package as well. In most distributions this is
+available as a package named "libsnmp-perl" - so make sure to install it if you
+stumble accross an error starting with "Can't locate Net/SNMP.pm in @INC [...]".
+
+You do not need anything else from this package other than "check_hp" script
+itself. The MIBs folder is purely for your information.
+
 
 OUTPUT
 ======
@@ -39,6 +51,6 @@ Compaq/HP Agent Check: cpqDaCntlrCondition (0:degraded) cpqDaLogDrvStatus (0.1:
 recovering) cpqDaLogDrvCondition (0.1:degraded) cpqDaPhyDrvStatus (0.0:failed)
 cpqDaPhyDrvCondition (0.0:failed)
 
-==
 
-$Id: README 10 2009-05-24 11:04:47Z gunny $
+==
+$Id: README 42 2013-01-10 12:01:51Z gunny $

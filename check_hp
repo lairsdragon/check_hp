@@ -22,7 +22,7 @@
 #
 # Report bugs to:  guenther.mair@hoslo.ch
 #
-# $Id: check_hp 34 2012-06-01 18:04:32Z gunny $
+# $Id: check_hp 45 2013-01-11 10:59:59Z gunny $
 #
 
 use POSIX;
@@ -34,27 +34,40 @@ use Net::SNMP;
 use Getopt::Long;
 &Getopt::Long::config('bundling');
 
-my $PROGNAME = "check_hp";
-my $REVISION = '$Rev: 34 $';
+## function prototypes
+
 sub print_help ();
 sub usage ();
 sub process_arguments ();
+sub in_array ($@);
 
-my $DEBUG = 0;
+## module-specific variables
+
+my $PROGNAME = "check_hp";
+my $REVISION = '$Rev: 45 $';
+my $debug;
+my $exclude = '';
+my @all_exclude;
+my $countComponents = 0;
+my $state = 'OK';
+my $answer = "";
+
+## variables for argument handling
+
+my $opt_h;
+my $opt_V;
+my $status;
+
+## snmp specific variables
 
 my $timeout;
 my $hostname;
 my $session;
 my $error;
 my $response;
-my $opt_h;
-my $opt_V;
 my $key;
 my $lastc;
 my $name;
-my $status;
-my $state = 'OK';
-my $answer = "";
 my $community = "public";
 my $snmp_version = 1;
 my $maxmsgsize = 1472; # Net::SNMP default is 1472
@@ -62,10 +75,8 @@ my ($seclevel, $authproto, $secname, $authpass, $privpass, $auth, $priv);
 my $context = "";
 my $port = 161;
 my @snmpoids;
-my $debug;
-my $countComponents = 0;
 
-# Compaq/HP system states
+## Compaq/HP system states
 
 my %cpqGenericStates = (
   '1','other',
@@ -145,106 +156,122 @@ my %cpqNicIfPhysAdapterStates = (
   '3', 'generalFailure',
   '4', 'linkFailure');
 
-# Compaq/HP system OIDs (ascending numeric order)
+## Compaq/HP system OIDs (ascending numeric order), names and state-types
 
-my $cpqSeCpuStatus = '1.3.6.1.4.1.232.1.2.2.1.1.6';
-my $cpqDaCntlrCondition = '1.3.6.1.4.1.232.3.2.2.1.1.6';
-my $cpqDaLogDrvStatus = '1.3.6.1.4.1.232.3.2.3.1.1.4';
-my $cpqDaLogDrvCondition = '1.3.6.1.4.1.232.3.2.3.1.1.11';
-my $cpqDaPhyDrvStatus = '1.3.6.1.4.1.232.3.2.5.1.1.6';
-my $cpqDaPhyDrvCondition = '1.3.6.1.4.1.232.3.2.5.1.1.37';
-my $cpqDaPhyDrvSmartStatus = '1.3.6.1.4.1.232.3.2.5.1.1.57';
-my $cpqDaTapeDrvStatus = '1.3.6.1.4.1.232.3.2.9.1.1.8';
-my $cpqHeEventLogCondition = '1.3.6.1.4.1.232.6.2.11.2.0';
-my $cpqHeThermalSystemFanStatus = '1.3.6.1.4.1.232.6.2.6.4';
-my $cpqHeThermalCpuFanStatus = '1.3.6.1.4.1.232.6.2.6.5';
-my $cpqHeFltTolFanCondition = '1.3.6.1.4.1.232.6.2.6.7.1.9';
-my $cpqHeTemperatureCondition = '1.3.6.1.4.1.232.6.2.6.8.1.6';
-my $cpqHeFltTolPwrSupplyCondition = '1.3.6.1.4.1.232.6.2.9.1';
-my $cpqHeFltTolPowerSupplyCondition = '1.3.6.1.4.1.232.6.2.9.3.1.4';
-my $cpqRackCommonEnclosureFanCondition = '1.3.6.1.4.1.232.22.2.3.1.3.1.11';
-my $cpqRackPowerSupplyCondition = '1.3.6.1.4.1.232.22.2.5.1.1.1.17';
-my $cpqHeResilientMemCondition = '1.3.6.1.4.1.232.6.2.14.4';
-my $cpqNicIfLogMapStatus = '1.3.6.1.4.1.232.18.2.2.1.1.11';
-my $cpqFcaHostCntlrStatus = '1.3.6.1.4.1.232.16.2.7.1.1.4';
-my $cpqNicIfPhysAdapterStatus = '1.3.6.1.4.1.232.18.2.3.1.1.14';
+my %cpqComponents = (
+   cpqSeCpuStatus => {
+     OID  => '1.3.6.1.4.1.232.1.2.2.1.1.6',
+     name => 'CPU status',
+     type => 'cpqSeCpuStates',
+   },
+   cpqDaCntlrCondition => {
+     OID  => '1.3.6.1.4.1.232.3.2.2.1.1.6',
+     name => 'controller status',
+     type => 'cpqGenericStates',
+   },
+   cpqDaLogDrvStatus => {
+     OID  => '1.3.6.1.4.1.232.3.2.3.1.1.4',
+     name => 'logical drive status',
+     type => 'cpqDaLogDrvStates',
+   },
+   cpqDaLogDrvCondition => {
+     OID  => '1.3.6.1.4.1.232.3.2.3.1.1.11',
+     name => 'logical drive and associated physical state',
+     type => 'cpqGenericStates',
+   },
+   cpqDaPhyDrvStatus => {
+     OID  => '1.3.6.1.4.1.232.3.2.5.1.1.6',
+     name => 'physical drive status',
+     type => 'cpqDaPhyDrvStates',
+   },
+   cpqDaPhyDrvCondition => {
+     OID  => '1.3.6.1.4.1.232.3.2.5.1.1.37',
+     name => 'physical drive condition',
+     type => 'cpqGenericStates',
+   },
+   cpqDaPhyDrvSmartStatus => {
+     OID  => '1.3.6.1.4.1.232.3.2.5.1.1.57',
+     name => 'physical drive S.M.A.R.T status',
+     type => 'cpqDaPhyDrvSmartStates',
+   },
+   cpqDaTapeDrvStatus => {
+     OID  => '1.3.6.1.4.1.232.3.2.9.1.1.8',
+     name => 'tape drive status',
+     type => 'cpqDaTapeDrvStates',
+   },
+   cpqHeEventLogCondition => {
+     OID  => '1.3.6.1.4.1.232.6.2.11.2.0',
+     name => 'overall IML entries',
+     type => 'cpqGenericStates',
+   },
+   cpqHeThermalSystemFanStatus => {
+     OID  => '1.3.6.1.4.1.232.6.2.6.4',
+     name => 'status of the processor fan(s)',
+     type => 'cpqGenericStates',
+   },
+   cpqHeThermalCpuFanStatus => {
+     OID  => '1.3.6.1.4.1.232.6.2.6.5',
+     name => 'status of the fan(s)',
+     type => 'cpqGenericStates',
+   },
+   cpqHeFltTolFanCondition => {
+     OID  => '1.3.6.1.4.1.232.6.2.6.7.1.9',
+     name => 'condition of the fan',
+     type => 'cpqGenericStates',
+   },
+   cpqHeTemperatureCondition => {
+     OID  => '1.3.6.1.4.1.232.6.2.6.8.1.6',
+     name => 'temperature sensor condition',
+     type => 'cpqGenericStates',
+   },
+   cpqHeFltTolPwrSupplyCondition => {
+     OID  => '1.3.6.1.4.1.232.6.2.9.1',
+     name => 'overall condition of power supply subsystem',
+     type => 'cpqGenericStates',
+   },
+   cpqHeFltTolPowerSupplyCondition => {
+     OID  => '1.3.6.1.4.1.232.6.2.9.3.1.4',
+     name => 'condition of the power supply',
+     type => 'cpqGenericStates',
+   },
+   cpqRackCommonEnclosureFanCondition => {
+     OID  => '1.3.6.1.4.1.232.22.2.3.1.3.1.11',
+     name => 'condition of the rack fan',
+     type => 'cpqGenericStates',
+   },
+   cpqRackPowerSupplyCondition => {
+     OID  => '1.3.6.1.4.1.232.22.2.5.1.1.1.17',
+     name => 'condition of the power supply',
+     type => 'cpqGenericStates',
+   },
+   cpqHeResilientMemCondition => {
+     OID  => '1.3.6.1.4.1.232.6.2.14.4',
+     name => 'condition of the memory protection subsystem',
+     type => 'cpqHeResilientMemStates',
+   },
+   cpqNicIfLogMapStatus => {
+     OID  => '1.3.6.1.4.1.232.18.2.2.1.1.11',
+     name => 'status of the NIC logical group',
+     type => 'cpqNicIfLogMapStates',
+   },
+   cpqFcaHostCntlrStatus => {
+     OID  => '1.3.6.1.4.1.232.16.2.7.1.1.4',
+     name => 'fibre channel host controller status',
+     type => 'cpqFcaHostStates',
+   },
+   cpqNicIfPhysAdapterStatus => {
+     OID  => '1.3.6.1.4.1.232.18.2.3.1.1.14',
+     name => 'physical adapter status',
+     type => 'cpqNicIfPhysAdapterStates',
+   });
 
-my @cpqComponents = (
-  $cpqSeCpuStatus,
-  $cpqDaCntlrCondition,
-  $cpqDaLogDrvStatus,
-  $cpqDaLogDrvCondition,
-  $cpqDaPhyDrvStatus,
-  $cpqDaPhyDrvCondition,
-  $cpqDaPhyDrvSmartStatus,
-  $cpqDaTapeDrvStatus,
-  $cpqHeEventLogCondition,
-  $cpqHeThermalSystemFanStatus,
-  $cpqHeThermalCpuFanStatus,
-  $cpqHeFltTolFanCondition,
-  $cpqHeTemperatureCondition,
-  $cpqHeFltTolPwrSupplyCondition,
-  $cpqHeFltTolPowerSupplyCondition,
-  $cpqRackCommonEnclosureFanCondition,
-  $cpqRackPowerSupplyCondition,
-  $cpqHeResilientMemCondition,
-  $cpqNicIfLogMapStatus,
-  $cpqFcaHostCntlrStatus,
-  $cpqNicIfPhysAdapterStatus);
 
-my @cpqComponentName = (
-  'CPU status',
-  'controller status',
-  'logical drive status',
-  'logical drive and associated physical state',
-  'physical drive status',
-  'physical drive condition',
-  'physical drive S.M.A.R.T status',
-  'tape drive status',
-  'overall IML entries',
-  'status of the processor fan(s)',
-  'status of the fan(s)',
-  'condition of the fan',
-  'temperature sensor condition',
-  'overall condition of power supply subsystem',
-  'condition of the power supply',
-  'condition of the rack fan',
-  'condition of the power supply',
-  'condition of the memory protection subsystem',
-  'status of the NIC logical group',
-  'fibre channel host controller status',
-  'physical adapter status');
-
-my @cpqComponentStateType = (
-  'cpqSeCpuStates',
-  'cpqGenericStates',
-  'cpqDaLogDrvStates',
-  'cpqGenericStates',
-  'cpqDaPhyDrvStates',
-  'cpqGenericStates',
-  'cpqDaPhyDrvSmartStates',
-  'cpqDaTapeDrvStates',
-  'cpqGenericStates',
-  'cpqGenericStates',
-  'cpqGenericStates',
-  'cpqGenericStates',
-  'cpqGenericStates',
-  'cpqGenericStates',
-  'cpqGenericStates',
-  'cpqGenericStates',
-  'cpqGenericStates',
-  'cpqHeResilientMemStates',
-  'cpqNicIfLogMapStates',
-  'cpqFcaHostStates',
-  'cpqNicIfPhysAdapterStates');
-
-
-## Validate Arguments
+## validate arguments
 
 process_arguments();
 
 
-## Just in case of problems, let's not hang Nagios
+## just in case of problems, let's avoid blocking the calling process for too long
 
 $SIG{'ALRM'} = sub {
   print ("ERROR: No snmp response from $hostname (alarm)\n");
@@ -254,16 +281,21 @@ $SIG{'ALRM'} = sub {
 alarm($timeout);
 
 
-## Main function
+## main function
 
 print "Compaq/HP Agent Check:";
-for (my $i = 0; $i < @cpqComponents; $i++ ) {
-  fetch_status($cpqComponents[$i], $cpqComponentName[$i], $cpqComponentStateType[$i]);
+for my $component (keys %cpqComponents) {
+  if (in_array($component, @all_exclude)) {
+    print " excluding '".$component."' from check\n" if (defined $debug);
+    next;
+  }
+
+  fetch_status($cpqComponents{$component}{OID}, $cpqComponents{$component}{name}, $cpqComponents{$component}{type});
 }
 if ($countComponents == 0) {
   $state = "UNKNOWN";
   print " no cpq/hp component found\n";
-} elsif (!defined $debug && $state eq 'OK') {
+} elsif ( ! defined $debug && $state eq 'OK') {
   print " overall system state OK\n";
 } else {
   print "\n";
@@ -271,24 +303,24 @@ if ($countComponents == 0) {
 exit $ERRORS{$state};
 
 
-### subroutines
+## subroutines
 
 sub fetch_status {
   my $value;
 
   if ($_[1] eq "cpqHeEventLogCondition") {
-    if (!defined ($response = $session->get_request($_[0]))) {
-      print  " " . $_[1] . " - " . $_[0] . " (OID-tree not found, ignoring)\n" if (defined $debug);
+    if ( ! defined ($response = $session->get_request($_[0]))) {
+      print  " " . $_[1] . " - " . $_[0] . " (OID not found, ignoring)\n" if (defined $debug);
       # tree not found, ignore!
       return -1;
     }
-  } elsif (!defined ($response = $session->get_table($_[0]))) {
+  } elsif ( ! defined ($response = $session->get_table($_[0]))) {
     print  " " . $_[1] . " - " . $_[0] . " (OID-tree not found, ignoring)\n" if (defined $debug);
     # tree not found, ignore!
     return -1;
   }
 
-  while ( ($key, $value) = each %{$response} ) {
+  while (($key, $value) = each %{$response}) {
     if ($value > 2) {
       # 1 = other/unknow  => assume OK
       # 2 = ok            => OK
@@ -317,32 +349,42 @@ sub fetch_status {
   }
 }
 
+sub in_array($@) {
+   my $needle = shift(@_);
+   my %items = map {$_ => 1} @_;
+   return (exists($items{$needle})) ? 1 : 0;
+}
+
 sub usage() {
   printf "\nMissing arguments!\n";
   printf "\n";
-  printf "usage: \n";
-  printf "check_hp -H <HOSTNAME> [-C <community>] [-d]\n";
-  printf "Copyright (C) 2008 Guenther Mair\n";
+  printf "Usage: \n";
+  printf "check_hp -H <HOSTNAME> [-C <community>] [-d] [-x excludecomponent1,excludecomponent2,...]\n";
+  printf "Copyright (C) 2008-2013 Guenther Mair\n";
+  printf "\nUse 'check_hp --help' for details.\n";
   printf "\n\n";
   exit $ERRORS{"UNKNOWN"};
 }
 
 sub print_help() {
-  printf "check_hp plugin for Nagios\n";
-  printf "\nUsage:\n";
-  printf "   -H (--hostname)   Hostname to query - (required)\n";
+  printf "check_hp plugin for Nagios/Icinga\n";
+  printf "\nModule specific parameters:\n";
+  printf "   -d (--debug)      debug / verbose mode (print checked details)\n";
+  printf "   -x (--exclude)    exclude components from check (separate by commas)\n";
+  printf "\nCurrently the module supports the following components:\n " . join(",\n ", keys %cpqComponents) . "\n";
+  printf "\nSNMP parameters:\n";
+  printf "   -H (--hostname)   Hostname to query (required)\n";
   printf "   -C (--community)  SNMP read community (defaults to public,\n";
   printf "                     used with SNMP v1 and v2c\n";
   printf "   -v (--snmp_version)  1 for SNMP v1 (default)\n";
   printf "                        2 for SNMP v2c\n";
   printf "                        SNMP v2c will use get_bulk for less overhead\n";
-  printf "   -d (--debug)      debug / verbose mode (print checked details)\n";
   printf "   -L (--seclevel)   choice of \"noAuthNoPriv\", \"authNoPriv\", or \"authPriv\"\n";
   printf "   -U (--secname)    username for SNMPv3 context\n";
   printf "   -A (--authpass)   authentication password (cleartext ascii or localized key\n";
   printf "                     in hex with 0x prefix generated by using \"snmpkey\" utility\n";
   printf "                     auth password and authEngineID\n";
-  printf "   -a (--authproto)  Authentication protocol ( MD5 or SHA1)\n";
+  printf "   -a (--authproto)  Authentication protocol (MD5 or SHA1)\n";
   printf "   -X (--privpass)   privacy password (cleartext ascii or localized key\n";
   printf "                     in hex with 0x prefix generated by using \"snmpkey\" utility\n";
   printf "                     privacy password and authEngineID\n";
@@ -351,26 +393,29 @@ sub print_help() {
   printf "   -t (--timeout)    seconds before the plugin times out (default=$TIMEOUT)\n";
   printf "   -V (--version)    Plugin version\n";
   printf "   -h (--help)       usage help \n\n";
-  print_revision($PROGNAME, '$Revision: 34 $');
+  print_revision($PROGNAME, '$Revision: 45 $');
 }
 
 sub process_arguments() {
   $status = GetOptions(
-    "V"   => \$opt_V, "version"    => \$opt_V,
-    "h"   => \$opt_h, "help"       => \$opt_h,
-    "d"   => \$debug, "debug"      => \$debug,
-    "v=i" => \$snmp_version, "snmp_version=i"  => \$snmp_version,
-    "C=s" => \$community, "community=s" => \$community,
-    "L=s" => \$seclevel, "seclevel=s" => \$seclevel,
-    "a=s" => \$authproto, "authproto=s" => \$authproto,
-    "U=s" => \$secname,   "secname=s"   => \$secname,
-    "A=s" => \$authpass,  "authpass=s"  => \$authpass,
-    "X=s" => \$privpass,  "privpass=s"  => \$privpass,
-    "p=i" => \$port,  "port=i" =>\$port,
-    "H=s" => \$hostname, "hostname=s" => \$hostname,
-    "M=i" => \$maxmsgsize, "maxmsgsize=i" => \$maxmsgsize,
-    "t=i" => \$timeout,    "timeout=i" => \$timeout,
+    "V"   => \$opt_V,        "version"        => \$opt_V,
+    "h"   => \$opt_h,        "help"           => \$opt_h,
+    "d"   => \$debug,        "debug"          => \$debug,
+    "x=s" => \$exclude,      "exclude=s"      => \$exclude,
+    "v=i" => \$snmp_version, "snmp_version=i" => \$snmp_version,
+    "C=s" => \$community,    "community=s"    => \$community,
+    "L=s" => \$seclevel,     "seclevel=s"     => \$seclevel,
+    "a=s" => \$authproto,    "authproto=s"    => \$authproto,
+    "U=s" => \$secname,      "secname=s"      => \$secname,
+    "A=s" => \$authpass,     "authpass=s"     => \$authpass,
+    "X=s" => \$privpass,     "privpass=s"     => \$privpass,
+    "p=i" => \$port,         "port=i"         => \$port,
+    "H=s" => \$hostname,     "hostname=s"     => \$hostname,
+    "M=i" => \$maxmsgsize,   "maxmsgsize=i"   => \$maxmsgsize,
+    "t=i" => \$timeout,      "timeout=i"      => \$timeout,
   );
+
+  @all_exclude = split(/,/, $exclude);
 
   if ($status == 0) {
     print_help();
@@ -378,7 +423,7 @@ sub process_arguments() {
   }
 
   if ($opt_V) {
-    print_revision($PROGNAME,'$Revision: 34 $');
+    print_revision($PROGNAME,'$Revision: 45 $');
     exit $ERRORS{'OK'};
   }
 
@@ -412,7 +457,7 @@ sub process_arguments() {
           exit $ERRORS{"UNKNOWN"};
         }
 
-        if (!defined $authpass) {
+        if ( ! defined $authpass) {
           usage();
           exit $ERRORS{"UNKNOWN"};
         } else {
@@ -426,7 +471,7 @@ sub process_arguments() {
 
       # Privacy (DES encryption) wanted
       if ($seclevel eq 'authPriv') {
-        if (!defined $privpass) {
+        if ( ! defined $privpass) {
           usage();
           exit $ERRORS{"UNKNOWN"};
         } else {
@@ -453,7 +498,7 @@ sub process_arguments() {
       -maxmsgsize => $maxmsgsize
     );
 
-    if (!defined($session)) {
+    if ( ! defined($session)) {
       $state='UNKNOWN';
       $answer=$error;
       print ("$state: $answer");
@@ -490,7 +535,7 @@ sub process_arguments() {
       );
     }
 
-    if (!defined($session)) {
+    if ( ! defined($session)) {
       $state='UNKNOWN';
       $answer=$error;
       print ("$state: $answer");
