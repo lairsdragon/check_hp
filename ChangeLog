@@ -1,0 +1,48 @@
+Version 2.4
+===========
+
+The plugin has now been put under version control and a proper ChangeLog is
+included.
+
+Version 2.3
+===========
+
+The README now includes documentation about all requirements:
+
+ - path to nagios-plugins “utils.pm”
+ - the distribution’s “libsnmp-perl” package if you are missing Net/SNMP.pm
+
+Version 2.2
+===========
+
+A minor update:
+
+ - one typo fixed, which would have prevented the output of the actual state of
+   physical drives (the error itself would have been reported)
+ - the README now includes a hint about the debug option “-d”, which is not
+   intended to be used in production
+
+Version 2.1
+===========
+
+This is mainly the same as version 2 (see below), except it now handles a
+counter for every hardware component checked. If zero values are returned by
+the snmp agent, the plugin exits with a WARNING state.
+
+Version 2.0
+===========
+
+First release of this all-perl, mib-translation-table-free, all-in-one
+version.
+
+Check CPUs, fans, array controllers, logical / physical drives, temperature
+and power supplies on your Proliant servers or blade systems through SNMP.
+
+The plugin uses Compaq/HPs Insight Manager SNMP Agents installed on either
+Windows or Linux machines to check CPUs, fans, array controllers, logical /
+physical drives, temperature and power supplies on your Proliant servers or
+blade systems.
+
+Compaq MIBs are included in the attached archive. The new version 2 is a
+complete rewrite in Perl and only uses the OID-Trees, so you don’t need to add
+the Compaq MIBs to your local configuration.
