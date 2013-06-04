@@ -1,3 +1,14 @@
+Version 2.11
+============
+Some more testing done by Martin Boer together with some nice feedback on how
+to shorten down and beautify the code:
+
+- replaced a lot of silly 'elsif' statements with a single (but safe) 'eval'
+- introduced a '-w' parameter to set some failures to WARNING states instead
+  of CRITICAL since "you don't consider a bad disk in a RAID configuration
+  necessarily something you want to find out in the middle of the night"
+
+
 Version 2.10
 ============
 Some changes include:

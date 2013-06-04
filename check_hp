@@ -22,7 +22,7 @@
 #
 # Report bugs to:  guenther.mair@hoslo.ch
 #
-# $Id: check_hp 45 2013-01-11 10:59:59Z gunny $
+# $Id: check_hp 48 2013-03-16 15:32:51Z gunny $
 #
 
 use POSIX;
@@ -44,13 +44,16 @@ sub in_array ($@);
 ## module-specific variables
 
 my $PROGNAME = "check_hp";
-my $REVISION = '$Rev: 45 $';
+my $REVISION = '$Rev: 48 $';
 my $debug;
 my $exclude = '';
+my $warnings = '';
 my @all_exclude;
+my @all_warnings;
 my $countComponents = 0;
 my $state = 'OK';
 my $answer = "";
+my $tmp = "";
 
 ## variables for argument handling
 
@@ -305,6 +308,11 @@ exit $ERRORS{$state};
 
 ## subroutines
 
+#
+# $_[0] component OID
+# $_[1] component name
+# $_[2] component type
+#
 sub fetch_status {
   my $value;
 
@@ -324,24 +332,21 @@ sub fetch_status {
     if ($value > 2) {
       # 1 = other/unknow  => assume OK
       # 2 = ok            => OK
-      # 3 = failure/worse => CRITICAL
-      $state = 'CRITICAL';
+      # 3 = failure/worse => CRITICAL/WARNING
+      if (in_array($key, @all_warnings) && $state ne 'CRITICAL') {
+        $state = 'WARNING';
+      } else {
+        $state = 'CRITICAL';
+      }
     }
     if (defined $debug || $value > 2) {
       print " " . $_[1] . " (";
       if (defined $key && (length($key) > (length($_[0])+2))) {
         print substr($key, length($_[0])+1) . ":";
       }
-      if ($_[2] eq 'cpqGenericStates') { print $cpqGenericStates{$value} }
-      elsif ($_[2] eq 'cpqHeResilientMemStates') { print $cpqHeResilientMemStates{$value} }
-      elsif ($_[2] eq 'cpqDaLogDrvStates') { print $cpqDaLogDrvStates{$value} }
-      elsif ($_[2] eq 'cpqDaPhyDrvStates') { print $cpqDaPhyDrvStates{$value} }
-      elsif ($_[2] eq 'cpqDaPhyDrvSmartStates') { print $cpqDaPhyDrvSmartStates{$value} }
-      elsif ($_[2] eq 'cpqDaTapeDrvStates') { print $cpqDaTapeDrvStates{$value} }
-      elsif ($_[2] eq 'cpqSeCpuStates') { print $cpqSeCpuStates{$value} }
-      elsif ($_[2] eq 'cpqNicIfLogMapStates') { print $cpqNicIfLogMapStates{$value} }
-      elsif ($_[2] eq 'cpqFcaHostStates') { print $cpqFcaHostStates{$value} }
-      elsif ($_[2] eq 'cpqNicIfPhysAdapterStates') { print $cpqNicIfPhysAdapterStates{$value} };
+      # eval to something like '$cpqGenericStates{$value}'
+      $tmp = eval("\$" . $_[2] . "{" . $value . "}");
+      print $tmp."\n" if ($tmp ne "");
       print ")";
     }
     $countComponents++;
@@ -371,6 +376,7 @@ sub print_help() {
   printf "\nModule specific parameters:\n";
   printf "   -d (--debug)      debug / verbose mode (print checked details)\n";
   printf "   -x (--exclude)    exclude components from check (separate by commas)\n";
+  printf "   -w (--warnings)   use warnings instead of criticals for these components (separate by commas)\n";
   printf "\nCurrently the module supports the following components:\n " . join(",\n ", keys %cpqComponents) . "\n";
   printf "\nSNMP parameters:\n";
   printf "   -H (--hostname)   Hostname to query (required)\n";
@@ -393,7 +399,7 @@ sub print_help() {
   printf "   -t (--timeout)    seconds before the plugin times out (default=$TIMEOUT)\n";
   printf "   -V (--version)    Plugin version\n";
   printf "   -h (--help)       usage help \n\n";
-  print_revision($PROGNAME, '$Revision: 45 $');
+  print_revision($PROGNAME, '$Revision: 48 $');
 }
 
 sub process_arguments() {
@@ -402,6 +408,7 @@ sub process_arguments() {
     "h"   => \$opt_h,        "help"           => \$opt_h,
     "d"   => \$debug,        "debug"          => \$debug,
     "x=s" => \$exclude,      "exclude=s"      => \$exclude,
+    "w=s" => \$warnings,     "warnings=s"     => \$warnings,
     "v=i" => \$snmp_version, "snmp_version=i" => \$snmp_version,
     "C=s" => \$community,    "community=s"    => \$community,
     "L=s" => \$seclevel,     "seclevel=s"     => \$seclevel,
@@ -416,6 +423,7 @@ sub process_arguments() {
   );
 
   @all_exclude = split(/,/, $exclude);
+  @all_warnings = split(/,/, $warnings);
 
   if ($status == 0) {
     print_help();
@@ -423,7 +431,7 @@ sub process_arguments() {
   }
 
   if ($opt_V) {
-    print_revision($PROGNAME,'$Revision: 45 $');
+    print_revision($PROGNAME,'$Revision: 48 $');
     exit $ERRORS{'OK'};
   }
 
