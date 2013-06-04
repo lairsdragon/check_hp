@@ -1,0 +1,2 @@
+Please update the 'lib' path at the top of check_hp_agents to fit your distribution.
+check_hp_agents needs to locate the utils.pm library that comes with nagios-plugins.
