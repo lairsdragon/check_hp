@@ -1,14 +1,31 @@
+Version 2.6
+===========
+
+Thanks and credits to Milan Karalic for cpqHeResilientMemCondition!
+
+Major thanks to Jean Prat for the "few" things that follow here:
+
+ - debug printout for inexistent OID-trees
+ - support for cpqDaTapeDrvStatus (tape drives)
+ - support for cpqHeEventLogCondition (event log)
+ - support for cpqFcaHostCntlrStatus (fibre channel components)
+
+Code indentation cleanup for the parts taken from check_ifoperstatus.
+
+
 Version 2.5
 ===========
 
 Minor fix for a bug I introduced when putting this under version control.
 Now it should all work nicely again.
 
+
 Version 2.4
 ===========
 
 The plugin has now been put under version control and a proper ChangeLog is
 included.
+
 
 Version 2.3
 ===========
@@ -17,6 +34,7 @@ The README now includes documentation about all requirements:
 
  - path to nagios-plugins “utils.pm”
  - the distribution’s “libsnmp-perl” package if you are missing Net/SNMP.pm
+
 
 Version 2.2
 ===========
@@ -28,12 +46,14 @@ A minor update:
  - the README now includes a hint about the debug option “-d”, which is not
    intended to be used in production
 
+
 Version 2.1
 ===========
 
 This is mainly the same as version 2 (see below), except it now handles a
 counter for every hardware component checked. If zero values are returned by
 the snmp agent, the plugin exits with a WARNING state.
+
 
 Version 2.0
 ===========
