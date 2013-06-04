@@ -27,7 +27,8 @@
 
 use POSIX;
 use strict;
-use lib "/usr/local/nagios/libexec";
+# use lib "/usr/local/nagios/libexec";
+use lib "/usr/lib/nagios/plugins";
 use utils qw($TIMEOUT %ERRORS &print_revision &support);
 
 use Net::SNMP;
@@ -48,8 +49,10 @@ my $REVISION = '$Rev: 54 $';
 my $debug;
 my $exclude = '';
 my $warnings = '';
+my $required = '';
 my @all_exclude;
 my @all_warnings;
+my @all_required;
 my $countComponents = 0;
 my $state = 'OK';
 my $answer = "";
@@ -289,12 +292,20 @@ alarm($timeout);
 print "Compaq/HP Agent Check:";
 print "\n" if (defined $debug);
 for my $component (keys %cpqComponents) {
+  my $rv; 
   if (in_array($component, @all_exclude)) {
     print " excluding '".$component."' from check\n" if (defined $debug);
     next;
   }
 
-  fetch_status($cpqComponents{$component}{OID}, $cpqComponents{$component}{name}, $cpqComponents{$component}{type}, $component);
+  $rv = fetch_status($cpqComponents{$component}{OID}, $cpqComponents{$component}{name}, $cpqComponents{$component}{type}, $component);
+  if ((in_array($component, @all_required)) && ($rv < 0))  {
+    print " " . $cpqComponents{$component}{name} . " (NOT FOUND)";
+    print " required '".$component."' not found\n" if (defined $debug);
+    if ($state ne 'CRITICAL') {
+      $state = 'CRITICAL';
+    }
+  }
 }
 if ($countComponents == 0) {
   $state = "UNKNOWN";
@@ -359,6 +370,7 @@ sub fetch_status {
     $countComponents++;
     print "\n" if (defined $debug);
   }
+  return 0;
 }
 
 sub in_array($@) {
@@ -385,6 +397,7 @@ sub print_help() {
   printf "   -x (--exclude)    exclude components from check (separate by commas)\n";
   printf "   -w (--warnings)   use warnings instead of criticals for these components (separate by commas)\n";
   printf "                     specific values to be selected may be specified as in '-w cpqNicIfLogMapStatus=6'\n";
+  printf "   -r (--required)   report critical if these components not found (separate by commas)\n";
   printf "\nCurrently the module supports the following components:\n " . join(",\n ", keys %cpqComponents) . "\n";
   printf "\nSNMP parameters:\n";
   printf "   -H (--hostname)   Hostname to query (required)\n";
@@ -417,6 +430,7 @@ sub process_arguments() {
     "d"   => \$debug,        "debug"          => \$debug,
     "x=s" => \$exclude,      "exclude=s"      => \$exclude,
     "w=s" => \$warnings,     "warnings=s"     => \$warnings,
+    "r=s" => \$required,     "required=s"     => \$required,
     "v=i" => \$snmp_version, "snmp_version=i" => \$snmp_version,
     "C=s" => \$community,    "community=s"    => \$community,
     "L=s" => \$seclevel,     "seclevel=s"     => \$seclevel,
@@ -432,6 +446,7 @@ sub process_arguments() {
 
   @all_exclude = split(/,/, $exclude);
   @all_warnings = split(/,/, $warnings);
+  @all_required = split(/,/, $required);
 
   if ($status == 0) {
     print_help();
