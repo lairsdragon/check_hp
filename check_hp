@@ -22,7 +22,7 @@
 #
 # Report bugs to:  guenther.mair@hoslo.ch
 #
-# $Id: check_hp 32 2012-05-03 20:02:06Z gunny $
+# $Id: check_hp 34 2012-06-01 18:04:32Z gunny $
 #
 
 use POSIX;
@@ -35,7 +35,7 @@ use Getopt::Long;
 &Getopt::Long::config('bundling');
 
 my $PROGNAME = "check_hp";
-my $REVISION = '$Rev: 32 $';
+my $REVISION = '$Rev: 34 $';
 sub print_help ();
 sub usage ();
 sub process_arguments ();
@@ -130,6 +130,21 @@ my %cpqFcaHostStates = (
   '6', 'loopFailed',
   '7', 'notConnected');
 
+my %cpqNicIfLogMapStates = (
+  '1', 'unknown',
+  '2', 'ok',
+  '3', 'primaryFailed',
+  '4', 'standbyFailed',
+  '5', 'groupFailed',
+  '6', 'redundancyReduced',
+  '7', 'redundancyLost');
+
+my %cpqNicIfPhysAdapterStates = (
+  '1', 'unknown',
+  '2', 'ok',
+  '3', 'generalFailure',
+  '4', 'linkFailure');
+
 # Compaq/HP system OIDs (ascending numeric order)
 
 my $cpqSeCpuStatus = '1.3.6.1.4.1.232.1.2.2.1.1.6';
@@ -150,7 +165,9 @@ my $cpqHeFltTolPowerSupplyCondition = '1.3.6.1.4.1.232.6.2.9.3.1.4';
 my $cpqRackCommonEnclosureFanCondition = '1.3.6.1.4.1.232.22.2.3.1.3.1.11';
 my $cpqRackPowerSupplyCondition = '1.3.6.1.4.1.232.22.2.5.1.1.1.17';
 my $cpqHeResilientMemCondition = '1.3.6.1.4.1.232.6.2.14.4';
+my $cpqNicIfLogMapStatus = '1.3.6.1.4.1.232.18.2.2.1.1.11';
 my $cpqFcaHostCntlrStatus = '1.3.6.1.4.1.232.16.2.7.1.1.4';
+my $cpqNicIfPhysAdapterStatus = '1.3.6.1.4.1.232.18.2.3.1.1.14';
 
 my @cpqComponents = (
   $cpqSeCpuStatus,
@@ -171,28 +188,32 @@ my @cpqComponents = (
   $cpqRackCommonEnclosureFanCondition,
   $cpqRackPowerSupplyCondition,
   $cpqHeResilientMemCondition,
-  $cpqFcaHostCntlrStatus);
+  $cpqNicIfLogMapStatus,
+  $cpqFcaHostCntlrStatus,
+  $cpqNicIfPhysAdapterStatus);
 
 my @cpqComponentName = (
-  'cpqSeCpuStatus',
-  'cpqDaCntlrCondition',
-  'cpqDaLogDrvStatus',
-  'cpqDaLogDrvCondition',
-  'cpqDaPhyDrvStatus',
-  'cpqDaPhyDrvCondition',
-  'cpqDaPhyDrvSmartStatus',
-  'cpqDaTapeDrvStatus',
-  'cpqHeEventLogCondition',
-  'cpqHeThermalCpuFanStatus',
-  'cpqHeThermalSystemFanStatus',
-  'cpqHeFltTolFanCondition',
-  'cpqHeTemperatureCondition',
-  'cpqHeFltTolPwrSupplyCondition',
-  'cpqHeFltTolPowerSupplyCondition',
-  'cpqRackCommonEnclosureFanCondition',
-  'cpqRackPowerSupplyCondition',
-  'cpqHeResilientMemCondition',
-  'cpqFcaHostCntlrStatus');
+  'CPU status',
+  'controller status',
+  'logical drive status',
+  'logical drive and associated physical state',
+  'physical drive status',
+  'physical drive condition',
+  'physical drive S.M.A.R.T status',
+  'tape drive status',
+  'overall IML entries',
+  'status of the processor fan(s)',
+  'status of the fan(s)',
+  'condition of the fan',
+  'temperature sensor condition',
+  'overall condition of power supply subsystem',
+  'condition of the power supply',
+  'condition of the rack fan',
+  'condition of the power supply',
+  'condition of the memory protection subsystem',
+  'status of the NIC logical group',
+  'fibre channel host controller status',
+  'physical adapter status');
 
 my @cpqComponentStateType = (
   'cpqSeCpuStates',
@@ -213,7 +234,9 @@ my @cpqComponentStateType = (
   'cpqGenericStates',
   'cpqGenericStates',
   'cpqHeResilientMemStates',
-  'cpqFcaHostStates');
+  'cpqNicIfLogMapStates',
+  'cpqFcaHostStates',
+  'cpqNicIfPhysAdapterStates');
 
 
 ## Validate Arguments
@@ -255,12 +278,12 @@ sub fetch_status {
 
   if ($_[1] eq "cpqHeEventLogCondition") {
     if (!defined ($response = $session->get_request($_[0]))) {
-      print  " " . $_[1] . " - " . $_[0] . " (OID-tree not found, ignoring)" if (defined $debug);
+      print  " " . $_[1] . " - " . $_[0] . " (OID-tree not found, ignoring)\n" if (defined $debug);
       # tree not found, ignore!
       return -1;
     }
   } elsif (!defined ($response = $session->get_table($_[0]))) {
-    print  " " . $_[1] . " - " . $_[0] . " (OID-tree not found, ignoring)" if (defined $debug);
+    print  " " . $_[1] . " - " . $_[0] . " (OID-tree not found, ignoring)\n" if (defined $debug);
     # tree not found, ignore!
     return -1;
   }
@@ -284,10 +307,13 @@ sub fetch_status {
       elsif ($_[2] eq 'cpqDaPhyDrvSmartStates') { print $cpqDaPhyDrvSmartStates{$value} }
       elsif ($_[2] eq 'cpqDaTapeDrvStates') { print $cpqDaTapeDrvStates{$value} }
       elsif ($_[2] eq 'cpqSeCpuStates') { print $cpqSeCpuStates{$value} }
-      elsif ($_[2] eq 'cpqFcaHostStates') { print $cpqFcaHostStates{$value} };
+      elsif ($_[2] eq 'cpqNicIfLogMapStates') { print $cpqNicIfLogMapStates{$value} }
+      elsif ($_[2] eq 'cpqFcaHostStates') { print $cpqFcaHostStates{$value} }
+      elsif ($_[2] eq 'cpqNicIfPhysAdapterStates') { print $cpqNicIfPhysAdapterStates{$value} };
       print ")";
     }
     $countComponents++;
+    print "\n" if (defined $debug);
   }
 }
 
@@ -325,7 +351,7 @@ sub print_help() {
   printf "   -t (--timeout)    seconds before the plugin times out (default=$TIMEOUT)\n";
   printf "   -V (--version)    Plugin version\n";
   printf "   -h (--help)       usage help \n\n";
-  print_revision($PROGNAME, '$Revision: 32 $');
+  print_revision($PROGNAME, '$Revision: 34 $');
 }
 
 sub process_arguments() {
@@ -352,7 +378,7 @@ sub process_arguments() {
   }
 
   if ($opt_V) {
-    print_revision($PROGNAME,'$Revision: 32 $');
+    print_revision($PROGNAME,'$Revision: 34 $');
     exit $ERRORS{'OK'};
   }
 
