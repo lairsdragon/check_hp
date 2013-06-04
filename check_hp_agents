@@ -33,7 +33,7 @@ use Getopt::Long;
 &Getopt::Long::config('bundling');
 
 my $PROGNAME = "check_hp_agents";
-my $PROGREVISION = "2";
+my $PROGREVISION = "2b";
 sub print_help ();
 sub usage ();
 sub process_arguments ();
@@ -61,7 +61,7 @@ my $context = "";
 my $port = 161;
 my @snmpoids;
 my $debug;
-
+my $countComponents = 0;
 
 # Compaq/HP system states
 
@@ -196,7 +196,10 @@ print "Compaq/HP Agent Check:";
 for (my $i = 0; $i < @cpqComponents; $i++ ) {
 	fetch_status($cpqComponents[$i], $cpqComponentName[$i], $cpqComponentStateType[$i]);
 }
-if (!defined $debug && $state eq 'OK') {
+if ($countComponents == 0) {
+	$state = "UNKNOWN";
+	print " no cpq/hp component found\n";
+} elsif (!defined $debug && $state eq 'OK') {
 	print " overall system state OK\n";
 } else {
 	print "\n";
@@ -229,6 +232,7 @@ sub fetch_status {
 			elsif ($_[2] eq 'cpqSeCpuStates') { print $cpqSeCpuStates{$value} };
 			print ")";
 		}
+		$countComponents++;
 	}
 }
 
