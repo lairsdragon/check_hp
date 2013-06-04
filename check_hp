@@ -1,6 +1,6 @@
 #! /usr/bin/perl -w
 #
-# check_hp_agents - nagios plugin 
+# check_hp - nagios plugin 
 #
 # Copyright (C) 2008 Guenther Mair,
 # Derived from check_ifoperstatus by Christoph Kron.
@@ -22,6 +22,8 @@
 #
 # Report bugs to:  guenther.mair@hoslo.ch
 #
+# $Id: check_hp 8 2009-05-24 10:55:30Z gunny $
+#
 
 use POSIX;
 use strict;
@@ -32,8 +34,8 @@ use Net::SNMP;
 use Getopt::Long;
 &Getopt::Long::config('bundling');
 
-my $PROGNAME = "check_hp_agents";
-my $PROGREVISION = "2c";
+my $PROGNAME = "check_hp";
+my $REVISION = "$Rev: 8 $";
 sub print_help ();
 sub usage ();
 sub process_arguments ();
@@ -45,8 +47,8 @@ my $hostname;
 my $session;
 my $error;
 my $response;
-my $opt_h ;
-my $opt_V ;
+my $opt_h;
+my $opt_V;
 my $key;
 my $lastc;
 my $name;
@@ -240,15 +242,14 @@ sub usage() {
   printf "\nMissing arguments!\n";
   printf "\n";
   printf "usage: \n";
-  printf "check_hp_agents -H <HOSTNAME> [-C <community>] [-d]\n";
+  printf "check_hp -H <HOSTNAME> [-C <community>] [-d]\n";
   printf "Copyright (C) 2008 Guenther Mair\n";
   printf "\n\n";
   exit $ERRORS{"UNKNOWN"};
 }
 
 sub print_help() {
-	printf "check_hp_agents plugin for Nagios monitors operational\n";
-  	printf "status of hardware components on the target host\n";
+	printf "check_hp plugin for Nagios\n";
 	printf "\nUsage:\n";
 	printf "   -H (--hostname)   Hostname to query - (required)\n";
 	printf "   -C (--community)  SNMP read community (defaults to public,\n";
@@ -271,7 +272,7 @@ sub print_help() {
 	printf "   -t (--timeout)    seconds before the plugin times out (default=$TIMEOUT)\n";
 	printf "   -V (--version)    Plugin version\n";
 	printf "   -h (--help)       usage help \n\n";
-	print_revision($PROGNAME, '$Revision: '.$PROGREVISION.' $');
+	print_revision($PROGNAME, '$Revision: 8 $');
 	
 }
 
@@ -299,7 +300,7 @@ sub process_arguments() {
 	}
   
 	if ($opt_V) {
-		print_revision($PROGNAME,'$Revision: '.$PROGREVISION.' $');
+		print_revision($PROGNAME,'$Revision: 8 $');
 		exit $ERRORS{'OK'};
 	}
 

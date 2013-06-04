@@ -1,8 +1,28 @@
+WHAT DOES IT DO
+===============
+
+Check CPUs, fans, array controllers, logical / physical drives, temperature and
+power supplies on your Proliant servers or blade systems through SNMP.
+
+The plugin uses Compaq/HPs Insight Manager SNMP Agents installed on either
+Windows or Linux machines to check CPUs, fans, array controllers, logical /
+physical drives, temperature and power supplies on your Proliant servers or
+blade systems. 
+
+Compaq MIBs are included in the attached archive. The new version 2 is a
+complete rewrite in Perl and only uses the OID-Trees, so you don't need to add
+the Compaq MIBs to your local configuration. 
+
+Please do not misread the "-d" parameter as i guess jleonard78 did. The "-d"
+parameter stands for "DEBUG" and is not intended for production use inside
+Nagios! check_hp will give you information about which object failed if there
+is any.
+
 REQUIREMENTS
 ============
 
-Please update the 'lib' path at the top of check_hp_agents to fit your distribution.
-check_hp_agents needs to locate the utils.pm library that comes with nagios-plugins.
+Please update the 'lib' path at the top of check_hp to fit your distribution.
+check_hp needs to locate the utils.pm library that comes with nagios-plugins.
 
 You will need the Net::SNMP package as well. In most distributions this is available
 as a package named "libsnmp-perl" - so make sure to install it if you stumble accross
@@ -12,9 +32,13 @@ OUTPUT
 ======
 
 Please do not misread the "-d" parameter, which stands for "DEBUG" and is not
-intended for production use! check_hp_agents will output information about about
-which object failed if there is any:
+intended for production use! check_hp will output information about which
+object failed if there is any:
 
 Compaq/HP Agent Check: cpqDaCntlrCondition (0:degraded) cpqDaLogDrvStatus (0.1:
 recovering) cpqDaLogDrvCondition (0.1:degraded) cpqDaPhyDrvStatus (0.0:failed)
 cpqDaPhyDrvCondition (0.0:failed)
+
+==
+
+$Id: README 10 2009-05-24 11:04:47Z gunny $
