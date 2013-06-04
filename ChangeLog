@@ -1,3 +1,10 @@
+Version 2.7
+===========
+
+Bugfix introduced by the cpqHeResilientMemCondition check is now fixed.
+Thanks to Peter Tauber for pointing it out and verifying.
+
+
 Version 2.6
 ===========
 

@@ -22,7 +22,7 @@
 #
 # Report bugs to:  guenther.mair@hoslo.ch
 #
-# $Id: check_hp 24 2012-02-22 13:18:00Z gunny $
+# $Id: check_hp 29 2012-04-04 16:19:44Z gunny $
 #
 
 use POSIX;
@@ -35,7 +35,7 @@ use Getopt::Long;
 &Getopt::Long::config('bundling');
 
 my $PROGNAME = "check_hp";
-my $REVISION = '$Rev: 24 $';
+my $REVISION = '$Rev: 29 $';
 sub print_help ();
 sub usage ();
 sub process_arguments ();
@@ -253,7 +253,7 @@ exit $ERRORS{$state};
 sub fetch_status {
   my $value;
 
-  if ($_['1'] eq "cpqHeEventLogCondition") {
+  if ($_[1] eq "cpqHeEventLogCondition") {
     if (!defined ($response = $session->get_request($_[0]))) {
       print  " " . $_[1] . " - " . $_[0] . " (OID-tree not found, ignoring)" if (defined $debug);
       # tree not found, ignore!
@@ -273,7 +273,8 @@ sub fetch_status {
       $state = 'CRITICAL';
     }
     if (defined $debug || $value > 2) {
-      print " " . $_[1] . " (" . substr($key, length($_[0])+1) . ":";
+      print " " . $_[1] . " (";
+      print substr($key, length($_[0])+1) . ":" if defined $key;
       if ($_[2] eq 'cpqGenericStates') { print $cpqGenericStates{$value} }
       elsif ($_[2] eq 'cpqHeResilientMemStates') { print $cpqHeResilientMemStates{$value} }
       elsif ($_[2] eq 'cpqDaLogDrvStates') { print $cpqDaLogDrvStates{$value} }
@@ -322,7 +323,7 @@ sub print_help() {
   printf "   -t (--timeout)    seconds before the plugin times out (default=$TIMEOUT)\n";
   printf "   -V (--version)    Plugin version\n";
   printf "   -h (--help)       usage help \n\n";
-  print_revision($PROGNAME, '$Revision: 24 $');
+  print_revision($PROGNAME, '$Revision: 29 $');
 }
 
 sub process_arguments() {
@@ -349,7 +350,7 @@ sub process_arguments() {
   }
 
   if ($opt_V) {
-    print_revision($PROGNAME,'$Revision: 24 $');
+    print_revision($PROGNAME,'$Revision: 29 $');
     exit $ERRORS{'OK'};
   }
 
