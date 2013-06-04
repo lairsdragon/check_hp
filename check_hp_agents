@@ -33,7 +33,7 @@ use Getopt::Long;
 &Getopt::Long::config('bundling');
 
 my $PROGNAME = "check_hp_agents";
-my $PROGREVISION = "2b";
+my $PROGREVISION = "2c";
 sub print_help ();
 sub usage ();
 sub process_arguments ();
@@ -164,7 +164,7 @@ my @cpqComponentStateType = (
 	'cpqGenericStates',
 	'cpqDaPhyDrvStates',
 	'cpqGenericStates',
-	'cpqDaPhyDrvSmartSates',
+	'cpqDaPhyDrvSmartStates',
 	'cpqGenericStates',
 	'cpqGenericStates',
 	'cpqGenericStates',
@@ -247,8 +247,8 @@ sub usage() {
 }
 
 sub print_help() {
-	printf "check_hp_agents plugin for Nagios monitors operational \n";
-  	printf "status of a particular network interface on the target host\n";
+	printf "check_hp_agents plugin for Nagios monitors operational\n";
+  	printf "status of hardware components on the target host\n";
 	printf "\nUsage:\n";
 	printf "   -H (--hostname)   Hostname to query - (required)\n";
 	printf "   -C (--community)  SNMP read community (defaults to public,\n";
