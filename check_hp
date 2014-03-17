@@ -22,7 +22,7 @@
 #
 # Report bugs to:  guenther.mair@hoslo.ch
 #
-# $Id: check_hp 48 2013-03-16 15:32:51Z gunny $
+# $Id: check_hp 50 2013-08-26 07:37:02Z gunny $
 #
 
 use POSIX;
@@ -44,7 +44,7 @@ sub in_array ($@);
 ## module-specific variables
 
 my $PROGNAME = "check_hp";
-my $REVISION = '$Rev: 48 $';
+my $REVISION = '$Rev: 50 $';
 my $debug;
 my $exclude = '';
 my $warnings = '';
@@ -287,13 +287,14 @@ alarm($timeout);
 ## main function
 
 print "Compaq/HP Agent Check:";
+print "\n" if (defined $debug);
 for my $component (keys %cpqComponents) {
   if (in_array($component, @all_exclude)) {
     print " excluding '".$component."' from check\n" if (defined $debug);
     next;
   }
 
-  fetch_status($cpqComponents{$component}{OID}, $cpqComponents{$component}{name}, $cpqComponents{$component}{type});
+  fetch_status($cpqComponents{$component}{OID}, $cpqComponents{$component}{name}, $cpqComponents{$component}{type}, $component);
 }
 if ($countComponents == 0) {
   $state = "UNKNOWN";
@@ -318,28 +319,32 @@ sub fetch_status {
 
   if ($_[1] eq "cpqHeEventLogCondition") {
     if ( ! defined ($response = $session->get_request($_[0]))) {
-      print  " " . $_[1] . " - " . $_[0] . " (OID not found, ignoring)\n" if (defined $debug);
+      printf(" %-35s %s - %s (OID not found, ignoring)\n", $_[3], $_[1], $_[0]) if (defined $debug);
       # tree not found, ignore!
       return -1;
     }
   } elsif ( ! defined ($response = $session->get_table($_[0]))) {
-    print  " " . $_[1] . " - " . $_[0] . " (OID-tree not found, ignoring)\n" if (defined $debug);
+    printf(" %-35s %s - %s (OID-tree not found, ignoring)\n", $_[3], $_[1], $_[0]) if (defined $debug);
     # tree not found, ignore!
     return -1;
   }
 
   while (($key, $value) = each %{$response}) {
+    my $component_unit = $_[3] . '.' . substr($key, length($_[0])+1);
     if ($value > 2) {
       # 1 = other/unknow  => assume OK
       # 2 = ok            => OK
       # 3 = failure/worse => CRITICAL/WARNING
-      if (in_array($key, @all_warnings) && $state ne 'CRITICAL') {
+      if (in_array($component_unit, @all_exclude)) {
+        next;
+      } elsif (in_array($key, @all_warnings) && $state ne 'CRITICAL') {
         $state = 'WARNING';
       } else {
         $state = 'CRITICAL';
       }
     }
     if (defined $debug || $value > 2) {
+      printf(" %-35s ",  $component_unit) if (defined $debug);
       print " " . $_[1] . " (";
       if (defined $key && (length($key) > (length($_[0])+2))) {
         print substr($key, length($_[0])+1) . ":";
@@ -399,7 +404,7 @@ sub print_help() {
   printf "   -t (--timeout)    seconds before the plugin times out (default=$TIMEOUT)\n";
   printf "   -V (--version)    Plugin version\n";
   printf "   -h (--help)       usage help \n\n";
-  print_revision($PROGNAME, '$Revision: 48 $');
+  print_revision($PROGNAME, '$Revision: 50 $');
 }
 
 sub process_arguments() {
@@ -431,7 +436,7 @@ sub process_arguments() {
   }
 
   if ($opt_V) {
-    print_revision($PROGNAME,'$Revision: 48 $');
+    print_revision($PROGNAME,'$Revision: 50 $');
     exit $ERRORS{'OK'};
   }
 

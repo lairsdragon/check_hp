@@ -36,6 +36,13 @@ You will need the Net::SNMP package as well. In most distributions this is
 available as a package named "libsnmp-perl" - so make sure to install it if you
 stumble accross an error starting with "Can't locate Net/SNMP.pm in @INC [...]".
 
+Please pay attention to include at least one parameter in the nagios/icinga
+configuration or you may stumble over an "**ePN" error complaining about using
+an uninitialized value $opt. This could be due to a know issue, for more details
+see:
+
+  http://tracker.nagios.org/view.php?id=88
+
 You do not need anything else from this package other than "check_hp" script
 itself. The MIBs folder is purely for your information.
 
@@ -53,4 +60,4 @@ cpqDaPhyDrvCondition (0.0:failed)
 
 
 ==
-$Id: README 42 2013-01-10 12:01:51Z gunny $
+$Id: README 50 2013-08-26 07:37:02Z gunny $

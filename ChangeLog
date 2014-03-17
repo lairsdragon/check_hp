@@ -1,3 +1,11 @@
+Version 2.12
+============
+Got a few nice inputs from George Hansper, who thought it better to indicate
+more details about single component units in order to have the possibility to
+exclude some specific device (maybe not a best practice to be followed, but
+nevertheless a valid requirement in some specific and possibly temporary cases).
+
+
 Version 2.11
 ============
 Some more testing done by Martin Boer together with some nice feedback on how
