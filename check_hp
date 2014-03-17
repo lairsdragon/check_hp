@@ -2,7 +2,7 @@
 #
 # check_hp - nagios plugin
 #
-# Copyright (C) 2008 Guenther Mair,
+# Copyright (C) 2008-2013 Guenther Mair,
 # Derived from check_ifoperstatus by Christoph Kron.
 #
 # This program is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@
 #
 # Report bugs to:  guenther.mair@hoslo.ch
 #
-# $Id: check_hp 50 2013-08-26 07:37:02Z gunny $
+# $Id: check_hp 54 2013-10-04 16:57:59Z gunny $
 #
 
 use POSIX;
@@ -44,7 +44,7 @@ sub in_array ($@);
 ## module-specific variables
 
 my $PROGNAME = "check_hp";
-my $REVISION = '$Rev: 50 $';
+my $REVISION = '$Rev: 54 $';
 my $debug;
 my $exclude = '';
 my $warnings = '';
@@ -331,28 +331,30 @@ sub fetch_status {
 
   while (($key, $value) = each %{$response}) {
     my $component_unit = $_[3] . '.' . substr($key, length($_[0])+1);
+    my $component_value = $_[3] . '=' . $value;
     if ($value > 2) {
       # 1 = other/unknow  => assume OK
       # 2 = ok            => OK
       # 3 = failure/worse => CRITICAL/WARNING
       if (in_array($component_unit, @all_exclude)) {
         next;
-      } elsif (in_array($key, @all_warnings) && $state ne 'CRITICAL') {
+      } elsif ((in_array($key, @all_warnings) || in_array($component_value, @all_warnings)) && $state ne 'CRITICAL') {
+        printf("critical state reduced to warning because of setting %s\n", $component_value) if (in_array($component_value, @all_warnings) && defined $debug);
         $state = 'WARNING';
       } else {
         $state = 'CRITICAL';
       }
     }
     if (defined $debug || $value > 2) {
-      printf(" %-35s ",  $component_unit) if (defined $debug);
+      printf(" %-35s = %s ",  $component_unit, $value) if (defined $debug);
       print " " . $_[1] . " (";
       if (defined $key && (length($key) > (length($_[0])+2))) {
         print substr($key, length($_[0])+1) . ":";
       }
       # eval to something like '$cpqGenericStates{$value}'
       $tmp = eval("\$" . $_[2] . "{" . $value . "}");
-      print $tmp."\n" if ($tmp ne "");
-      print ")";
+      print $tmp if ($tmp ne "");
+      print ")\n";
     }
     $countComponents++;
     print "\n" if (defined $debug);
@@ -382,6 +384,7 @@ sub print_help() {
   printf "   -d (--debug)      debug / verbose mode (print checked details)\n";
   printf "   -x (--exclude)    exclude components from check (separate by commas)\n";
   printf "   -w (--warnings)   use warnings instead of criticals for these components (separate by commas)\n";
+  printf "                     specific values to be selected may be specified as in '-w cpqNicIfLogMapStatus=6'\n";
   printf "\nCurrently the module supports the following components:\n " . join(",\n ", keys %cpqComponents) . "\n";
   printf "\nSNMP parameters:\n";
   printf "   -H (--hostname)   Hostname to query (required)\n";
@@ -404,7 +407,7 @@ sub print_help() {
   printf "   -t (--timeout)    seconds before the plugin times out (default=$TIMEOUT)\n";
   printf "   -V (--version)    Plugin version\n";
   printf "   -h (--help)       usage help \n\n";
-  print_revision($PROGNAME, '$Revision: 50 $');
+  print_revision($PROGNAME, '$Revision: 54 $');
 }
 
 sub process_arguments() {
@@ -436,7 +439,7 @@ sub process_arguments() {
   }
 
   if ($opt_V) {
-    print_revision($PROGNAME,'$Revision: 50 $');
+    print_revision($PROGNAME,'$Revision: 54 $');
     exit $ERRORS{'OK'};
   }
 

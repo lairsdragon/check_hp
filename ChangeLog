@@ -1,3 +1,15 @@
+Version 2.13
+============
+Many thanks to Rod Payne, Buffalo NY, for the current addition. He suggested it
+would be helpful to specify particular values that should be treated as
+warnings. Specifically this could mean that instead of treating all NIC logical
+group problems as warnings, he would want to make “redundancyReduced” a warning
+and leave “redundancyLost” as critical. He extended the code to allow the
+warning exception to be more specific using the following syntax:
+
+  -w cpqNicIfLogMapStatus=6
+
+
 Version 2.12
 ============
 Got a few nice inputs from George Hansper, who thought it better to indicate
