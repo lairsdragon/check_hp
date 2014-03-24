@@ -1,3 +1,12 @@
+Version 2.14
+============
+Thanks this time to an improvement by Steffen Weinreich who added a parameter
+that allow "requiring" the presence of some subsystems (they not being there
+during the check being the issue at hand). Use it by specifying the following:
+
+  -r subsystem1,subsystem2,...
+
+
 Version 2.13
 ============
 Many thanks to Rod Payne, Buffalo NY, for the current addition. He suggested it

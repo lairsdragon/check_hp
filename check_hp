@@ -22,13 +22,18 @@
 #
 # Report bugs to:  guenther.mair@hoslo.ch
 #
-# $Id: check_hp 54 2013-10-04 16:57:59Z gunny $
+# $Id: check_hp 56 2014-03-21 15:52:32Z gunny $
 #
 
 use POSIX;
 use strict;
-# use lib "/usr/local/nagios/libexec";
-use lib "/usr/lib/nagios/plugins";
+my @lib_folders = qw(/usr/lib/nagios/plugins/ /usr/local/nagios/libexec);
+foreach (@lib_folders) {
+  if (-d $_)  {
+    use lib $_;
+    last;
+  }
+}
 use utils qw($TIMEOUT %ERRORS &print_revision &support);
 
 use Net::SNMP;
@@ -45,7 +50,7 @@ sub in_array ($@);
 ## module-specific variables
 
 my $PROGNAME = "check_hp";
-my $REVISION = '$Rev: 54 $';
+my $REVISION = '$Rev: 56 $';
 my $debug;
 my $exclude = '';
 my $warnings = '';
@@ -57,6 +62,7 @@ my $countComponents = 0;
 my $state = 'OK';
 my $answer = "";
 my $tmp = "";
+my $result;
 
 ## variables for argument handling
 
@@ -292,19 +298,16 @@ alarm($timeout);
 print "Compaq/HP Agent Check:";
 print "\n" if (defined $debug);
 for my $component (keys %cpqComponents) {
-  my $rv; 
   if (in_array($component, @all_exclude)) {
     print " excluding '".$component."' from check\n" if (defined $debug);
     next;
   }
 
-  $rv = fetch_status($cpqComponents{$component}{OID}, $cpqComponents{$component}{name}, $cpqComponents{$component}{type}, $component);
-  if ((in_array($component, @all_required)) && ($rv < 0))  {
+  $result = fetch_status($cpqComponents{$component}{OID}, $cpqComponents{$component}{name}, $cpqComponents{$component}{type}, $component);
+  if ((in_array($component, @all_required)) && ($result < 0))  {
     print " " . $cpqComponents{$component}{name} . " (NOT FOUND)";
     print " required '".$component."' not found\n" if (defined $debug);
-    if ($state ne 'CRITICAL') {
-      $state = 'CRITICAL';
-    }
+    $state = 'CRITICAL';
   }
 }
 if ($countComponents == 0) {
@@ -397,7 +400,7 @@ sub print_help() {
   printf "   -x (--exclude)    exclude components from check (separate by commas)\n";
   printf "   -w (--warnings)   use warnings instead of criticals for these components (separate by commas)\n";
   printf "                     specific values to be selected may be specified as in '-w cpqNicIfLogMapStatus=6'\n";
-  printf "   -r (--required)   report critical if these components not found (separate by commas)\n";
+  printf "   -r (--required)   report critical if any of these components is not found (separate by commas)\n";
   printf "\nCurrently the module supports the following components:\n " . join(",\n ", keys %cpqComponents) . "\n";
   printf "\nSNMP parameters:\n";
   printf "   -H (--hostname)   Hostname to query (required)\n";
@@ -420,7 +423,7 @@ sub print_help() {
   printf "   -t (--timeout)    seconds before the plugin times out (default=$TIMEOUT)\n";
   printf "   -V (--version)    Plugin version\n";
   printf "   -h (--help)       usage help \n\n";
-  print_revision($PROGNAME, '$Revision: 54 $');
+  print_revision($PROGNAME, '$Revision: 56 $');
 }
 
 sub process_arguments() {
@@ -454,7 +457,7 @@ sub process_arguments() {
   }
 
   if ($opt_V) {
-    print_revision($PROGNAME,'$Revision: 54 $');
+    print_revision($PROGNAME,'$Revision: 56 $');
     exit $ERRORS{'OK'};
   }
 
