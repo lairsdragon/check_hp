@@ -1,3 +1,8 @@
+Version 2.15
+============
+Fixes broken version 2.14 (change introducing automatic lib-folder discovery).
+
+
 Version 2.14
 ============
 Thanks this time to an improvement by Steffen Weinreich who added a parameter
