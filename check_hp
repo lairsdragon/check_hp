@@ -22,18 +22,25 @@
 #
 # Report bugs to:  guenther.mair@hoslo.ch
 #
-# $Id: check_hp 58 2014-03-25 15:27:23Z gunny $
+# $Id: check_hp 60 2014-05-10 08:00:41Z gunny $
 #
+
+my $nagioslibexec;
+
+BEGIN {
+  my @lib_folders = qw(/usr/local/nagios/libexec /usr/lib/nagios/plugins/);
+  foreach my $lib (@lib_folders) {
+    if (-d $lib)  {
+      $nagioslibexec = $lib;
+      last;
+    }
+  }
+}
 
 use POSIX;
 use strict;
-my @lib_folders = qw(/usr/lib/nagios/plugins/ /usr/local/nagios/libexec);
-foreach (@lib_folders) {
-  if (-d $_)  {
-    eval("use lib '$_';");
-    last;
-  }
-}
+
+use lib $nagioslibexec;
 use utils qw($TIMEOUT %ERRORS &print_revision &support);
 
 use Net::SNMP;
@@ -50,7 +57,7 @@ sub in_array ($@);
 ## module-specific variables
 
 my $PROGNAME = "check_hp";
-my $REVISION = '$Rev: 58 $';
+my $REVISION = '$Rev: 60 $';
 my $debug;
 my $exclude = '';
 my $warnings = '';
@@ -423,7 +430,7 @@ sub print_help() {
   printf "   -t (--timeout)    seconds before the plugin times out (default=$TIMEOUT)\n";
   printf "   -V (--version)    Plugin version\n";
   printf "   -h (--help)       usage help \n\n";
-  print_revision($PROGNAME, '$Revision: 58 $');
+  print_revision($PROGNAME, '$Revision: 60 $');
 }
 
 sub process_arguments() {
@@ -457,7 +464,7 @@ sub process_arguments() {
   }
 
   if ($opt_V) {
-    print_revision($PROGNAME,'$Revision: 58 $');
+    print_revision($PROGNAME,'$Revision: 60 $');
     exit $ERRORS{'OK'};
   }
 

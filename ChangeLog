@@ -1,3 +1,8 @@
+Version 2.16
+============
+REALLY fixes broken versions 2.14 + 2.15 (automatic lib-folder discovery).
+
+
 Version 2.15
 ============
 Fixes broken version 2.14 (change introducing automatic lib-folder discovery).
