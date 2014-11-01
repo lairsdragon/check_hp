@@ -2,7 +2,7 @@
 #
 # check_hp - nagios plugin
 #
-# Copyright (C) 2008-2013 Guenther Mair,
+# Copyright (C) 2008-2014 Guenther Mair,
 # Derived from check_ifoperstatus by Christoph Kron.
 #
 # This program is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@
 #
 # Report bugs to:  guenther.mair@hoslo.ch
 #
-# $Id: check_hp 60 2014-05-10 08:00:41Z gunny $
+# $Id: check_hp 62 2014-08-02 16:05:01Z gunny $
 #
 
 my $nagioslibexec;
@@ -57,7 +57,7 @@ sub in_array ($@);
 ## module-specific variables
 
 my $PROGNAME = "check_hp";
-my $REVISION = '$Rev: 60 $';
+my $REVISION = '$Rev: 62 $';
 my $debug;
 my $exclude = '';
 my $warnings = '';
@@ -186,6 +186,11 @@ my %cpqComponents = (
    cpqDaCntlrCondition => {
      OID  => '1.3.6.1.4.1.232.3.2.2.1.1.6',
      name => 'controller status',
+     type => 'cpqGenericStates',
+   },
+   cpqDaAccelCondition => {
+     OID  => '1.3.6.1.4.1.232.3.2.2.2.1.9',
+     name => 'array accelerator status',
      type => 'cpqGenericStates',
    },
    cpqDaLogDrvStatus => {
@@ -430,7 +435,7 @@ sub print_help() {
   printf "   -t (--timeout)    seconds before the plugin times out (default=$TIMEOUT)\n";
   printf "   -V (--version)    Plugin version\n";
   printf "   -h (--help)       usage help \n\n";
-  print_revision($PROGNAME, '$Revision: 60 $');
+  print_revision($PROGNAME, '$Revision: 62 $');
 }
 
 sub process_arguments() {
@@ -464,7 +469,7 @@ sub process_arguments() {
   }
 
   if ($opt_V) {
-    print_revision($PROGNAME,'$Revision: 60 $');
+    print_revision($PROGNAME,'$Revision: 62 $');
     exit $ERRORS{'OK'};
   }
 

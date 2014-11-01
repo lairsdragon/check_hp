@@ -1,3 +1,9 @@
+Version 2.17
+============
+Added check for a Drive Array's accelerator condition as suggested by Robert
+Brooks. Thanks!
+
+
 Version 2.16
 ============
 REALLY fixes broken versions 2.14 + 2.15 (automatic lib-folder discovery).
