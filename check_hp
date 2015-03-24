@@ -22,7 +22,7 @@
 #
 # Report bugs to:  guenther.mair@hoslo.ch
 #
-# $Id: check_hp 65 2015-01-28 06:57:20Z gunny $
+# $Id: check_hp 70 2015-02-06 17:37:00Z gunny $
 #
 
 my $nagioslibexec;
@@ -57,7 +57,7 @@ sub in_array ($@);
 ## module-specific variables
 
 my $PROGNAME = "check_hp";
-my $REVISION = '$Rev: 65 $';
+my $REVISION = '$Rev: 70 $';
 my $debug;
 my $exclude = '';
 my $warnings = '';
@@ -85,8 +85,6 @@ my $session;
 my $error;
 my $response;
 my $key;
-my $lastc;
-my $name;
 my $community = "public";
 my $snmp_version = 1;
 my $maxmsgsize = 1472; # Net::SNMP default is 1472
@@ -95,6 +93,17 @@ my $context = "";
 my $port = 161;
 my @snmpoids;
 
+
+## Compaq/HP system information
+
+my $cpqSystemInfo = '1.3.6.1.4.1.232.2.2';
+
+my $cpqSiProductName = '1.3.6.1.4.1.232.2.2.4.2.0';
+my $cpqSiFormFactor = '1.3.6.1.4.1.232.2.2.2.2.0';
+my $cpqSiSysSerialNum = '1.3.6.1.4.1.232.2.2.2.1.0';
+my $cpqSiAssetTag = '1.3.6.1.4.1.232.2.2.2.3.0';
+
+
 ## Compaq/HP system states
 
 my %cpqGenericStates = (
@@ -102,6 +111,15 @@ my %cpqGenericStates = (
   '2', 'ok',
   '3', 'degraded',
   '4', 'failed');
+
+my %cpqFormFactors = (
+  '1', 'unknown',
+  '2', 'portable',
+  '3', 'laptop',
+  '4', 'desktop',
+  '5', 'tower',
+  '6', 'mini-tower',
+  '7', 'rack-mount');
 
 my %cpqDaLogDrvStates = (
   '1', 'other',
@@ -335,9 +353,17 @@ alarm($timeout);
 
 
 ## main function
-
 print "Compaq/HP Agent Check:";
 print "\n" if (defined $debug);
+
+## fetch and print system information
+if (in_array('cpqSystemInfo', @all_exclude)) {
+  print " excluding 'cpqSystemInfo' from being displayed\n" if (defined $debug);
+} else {
+  print_system_information();
+}
+
+## verify information
 for my $component (keys %cpqComponents) {
   if (in_array($component, @all_exclude)) {
     print " excluding '".$component."' from check\n" if (defined $debug);
@@ -351,6 +377,8 @@ for my $component (keys %cpqComponents) {
     $state = 'CRITICAL';
   }
 }
+
+## print status information
 if ($countComponents == 0) {
   $state = "UNKNOWN";
   print " no cpq/hp component found\n";
@@ -359,10 +387,46 @@ if ($countComponents == 0) {
 } else {
   print "\n";
 }
+
+## terminate with exit code
 exit $ERRORS{$state};
 
 
 ## subroutines
+
+sub print_system_information {
+  my $key;
+  my $value;
+
+  my $si = ""; # system information (response string)
+  my $pn = ""; # cpqSiProductName
+  my $ff =  0; # cpqSiFormFactor
+  my $sn = ""; # cpqSiSysSerialNum
+  my $at = ""; # cpqSiAssetTag
+
+  if ( ! defined ($response = $session->get_table($cpqSystemInfo))) {
+    printf(" cpqSystemInfo - %s (OID-tree not found, ignoring)\n", $_[0]) if (defined $debug);
+  } else {
+    while (($key, $value) = each %{$response}) {
+      printf(" key '%s' = value '%s'\n", $key, $value) if (defined $debug);
+      if    ($key =~ /^${cpqSiProductName}/)  { $pn = rtrim($value); }
+      elsif ($key =~ /^${cpqSiFormFactor}/)   { $ff = int $value;    }
+      elsif ($key =~ /^${cpqSiSysSerialNum}/) { $sn = rtrim($value); }
+      elsif ($key =~ /^${cpqSiAssetTag}/)     { $at = rtrim($value); }
+    }
+
+    $si = ' ' . (($pn eq "") ? 'unknown model' : $pn);
+    if ($ff > 0)   { $si .= ' (' . $cpqFormFactors{$ff} . ')'; }
+    if ($sn ne "") { $si .= ' S/N ' . $sn; }
+    if ($at ne "") { $si .= ' AssetTag ' . $at; }
+    print $si;
+    print "\n" if (defined $debug);
+  }
+}
+
+sub ltrim { my $s = shift; $s =~ s/^\s+//;       return $s };
+sub rtrim { my $s = shift; $s =~ s/\s+$//;       return $s };
+sub  trim { my $s = shift; $s =~ s/^\s+|\s+$//g; return $s };
 
 #
 # $_[0] component OID
@@ -424,47 +488,46 @@ sub in_array($@) {
 }
 
 sub usage() {
-  printf "\nMissing arguments!\n";
-  printf "\n";
-  printf "Usage: \n";
-  printf "check_hp -H <HOSTNAME> [-C <community>] [-d] [-x excludecomponent1,excludecomponent2,...]\n";
-  printf "Copyright (C) 2008-2013 Guenther Mair\n";
-  printf "\nUse 'check_hp --help' for details.\n";
-  printf "\n\n";
+  printf("\nMissing arguments!\n\n");
+  printf("Usage:\n\n");
+  printf("%s -H <HOSTNAME> [-C <community>] [-d] [-x excludecomponent1,excludecomponent2,...]\n", $PROGNAME);
+  printf("Copyright (C) 2008-2015 Guenther Mair\n\n");
+  printf("See '%s --help' for details.\n", $PROGNAME);
+  printf("\n\n");
   exit $ERRORS{"UNKNOWN"};
 }
 
 sub print_help() {
-  printf "check_hp plugin for Nagios/Icinga\n";
-  printf "\nModule specific parameters:\n";
-  printf "   -d (--debug)      debug / verbose mode (print checked details)\n";
-  printf "   -x (--exclude)    exclude components from check (separate by commas)\n";
-  printf "   -w (--warnings)   use warnings instead of criticals for these components (separate by commas)\n";
-  printf "                     specific values to be selected may be specified as in '-w cpqNicIfLogMapStatus=6'\n";
-  printf "   -r (--required)   report critical if any of these components is not found (separate by commas)\n";
-  printf "\nCurrently the module supports the following components:\n " . join(",\n ", keys %cpqComponents) . "\n";
-  printf "\nSNMP parameters:\n";
-  printf "   -H (--hostname)   Hostname to query (required)\n";
-  printf "   -C (--community)  SNMP read community (defaults to public,\n";
-  printf "                     used with SNMP v1 and v2c\n";
-  printf "   -v (--snmp_version)  1 for SNMP v1 (default)\n";
-  printf "                        2 for SNMP v2c\n";
-  printf "                        SNMP v2c will use get_bulk for less overhead\n";
-  printf "   -L (--seclevel)   choice of \"noAuthNoPriv\", \"authNoPriv\", or \"authPriv\"\n";
-  printf "   -U (--secname)    username for SNMPv3 context\n";
-  printf "   -A (--authpass)   authentication password (cleartext ascii or localized key\n";
-  printf "                     in hex with 0x prefix generated by using \"snmpkey\" utility\n";
-  printf "                     auth password and authEngineID\n";
-  printf "   -a (--authproto)  Authentication protocol (MD5 or SHA1)\n";
-  printf "   -X (--privpass)   privacy password (cleartext ascii or localized key\n";
-  printf "                     in hex with 0x prefix generated by using \"snmpkey\" utility\n";
-  printf "                     privacy password and authEngineID\n";
-  printf "   -p (--port)       SNMP port (default 161)\n";
-  printf "   -M (--maxmsgsize) Max message size - usefull only for v1 or v2c\n";
-  printf "   -t (--timeout)    seconds before the plugin times out (default=$TIMEOUT)\n";
-  printf "   -V (--version)    Plugin version\n";
-  printf "   -h (--help)       usage help \n\n";
-  print_revision($PROGNAME, '$Revision: 65 $');
+  printf("%s plugin for Nagios\n", $PROGNAME);
+  printf("\nModule specific parameters:\n");
+  printf("   -d (--debug)      debug / verbose mode (print checked details)\n");
+  printf("   -x (--exclude)    exclude components from check (separate by commas, may also contain the special value 'cpqSystemInfo')\n");
+  printf("   -w (--warnings)   use warnings instead of criticals for these components (separate by commas)\n");
+  printf("                     specific values to be selected may be specified as in '-w cpqNicIfLogMapStatus=6'\n");
+  printf("   -r (--required)   report critical if any of these components is not found (separate by commas)\n");
+  printf("\nCurrently the module supports the following components:\n" . join(",\n ", keys %cpqComponents) . "\n");
+  printf("\nSNMP parameters:\n");
+  printf("   -H (--hostname)   hostname to query (required)\n");
+  printf("   -C (--community)  SNMP read community (defaults to public,\n");
+  printf("                     used with SNMP v1 and v2c\n");
+  printf("   -v (--snmp_version)  1 for SNMP v1 (default)\n");
+  printf("                        2 for SNMP v2c\n");
+  printf("                        SNMP v2c will use get_bulk for less overhead\n");
+  printf("   -L (--seclevel)   choice of \"noAuthNoPriv\", \"authNoPriv\", or \"authPriv\"\n");
+  printf("   -U (--secname)    username for SNMPv3 context\n");
+  printf("   -A (--authpass)   authentication password (cleartext ascii or localized key\n");
+  printf("                     in hex with 0x prefix generated by using \"snmpkey\" utility\n");
+  printf("                     auth password and authEngineID\n");
+  printf("   -a (--authproto)  authentication protocol (MD5 or SHA1)\n");
+  printf("   -X (--privpass)   privacy password (cleartext ascii or localized key\n");
+  printf("                     in hex with 0x prefix generated by using \"snmpkey\" utility\n");
+  printf("                     privacy password and authEngineID\n");
+  printf("   -p (--port)       SNMP port (default 161)\n");
+  printf("   -M (--maxmsgsize) max message size - usefull only for v1 or v2c\n");
+  printf("   -t (--timeout)    seconds before the plugin times out (default=%s)\n", $TIMEOUT);
+  printf("   -V (--version)    plugin version\n");
+  printf("   -h (--help)       show this usage screen\n\n");
+  print_revision($PROGNAME, '$Revision: 70 $');
 }
 
 sub process_arguments() {
@@ -498,7 +561,7 @@ sub process_arguments() {
   }
 
   if ($opt_V) {
-    print_revision($PROGNAME,'$Revision: 65 $');
+    print_revision($PROGNAME,'$Revision: 70 $');
     exit $ERRORS{'OK'};
   }
 
@@ -507,7 +570,7 @@ sub process_arguments() {
     exit $ERRORS{'OK'};
   }
 
-  if (!utils::is_hostname($hostname)) {
+  if ( ! utils::is_hostname($hostname)) {
     usage();
     exit $ERRORS{"UNKNOWN"};
   }
@@ -517,17 +580,17 @@ sub process_arguments() {
   if ($snmp_version =~ /3/) {
     # Must define a security level even though default is noAuthNoPriv
     # v3 requires a security username
-    if (defined $seclevel  && defined $secname) {
+    if (defined $seclevel && defined $secname) {
 
       # Must define a security level even though defualt is noAuthNoPriv
-      unless ( grep /^$seclevel$/, qw(noAuthNoPriv authNoPriv authPriv) ) {
+      unless (grep /^$seclevel$/, qw(noAuthNoPriv authNoPriv authPriv)) {
         usage();
         exit $ERRORS{"UNKNOWN"};
       }
 
       # Authentication wanted
-      if ( $seclevel eq 'authNoPriv' || $seclevel eq 'authPriv' ) {
-        unless ( $authproto eq 'MD5' || $authproto eq 'SHA1' ) {
+      if ($seclevel eq 'authNoPriv' || $seclevel eq 'authPriv') {
+        unless ($authproto eq 'MD5' || $authproto eq 'SHA1') {
           usage();
           exit $ERRORS{"UNKNOWN"};
         }
@@ -536,11 +599,7 @@ sub process_arguments() {
           usage();
           exit $ERRORS{"UNKNOWN"};
         } else {
-          if ($authpass =~ /^0x/) {
-            $auth = "-authkey => $authpass" ;
-          } else {
-            $auth = "-authpassword => $authpass";
-          }
+          $auth = ($authpass =~ /^0x/) ? "-authkey => $authpass" : "-authpassword => $authpass";
         }
       }
 
@@ -550,11 +609,7 @@ sub process_arguments() {
           usage();
           exit $ERRORS{"UNKNOWN"};
         } else {
-          if ($privpass =~ /^0x/) {
-            $priv = "-privkey => $privpass";
-          } else {
-            $priv = "-privpassword => $privpass";
-          }
+          $priv = ($privpass =~ /^0x/) ? "-privkey => $privpass" : "-privpassword => $privpass";
         }
       }
     } else {
@@ -574,14 +629,12 @@ sub process_arguments() {
     );
 
     if ( ! defined($session)) {
-      $state='UNKNOWN';
-      $answer=$error;
-      print ("$state: $answer");
+      $state = 'UNKNOWN';
+      $answer = $error;
+      printf("%s: %s\n", $state, $answer);
       exit $ERRORS{$state};
     }
-
   } elsif ($snmp_version =~ /3/) {
-
     if ($seclevel eq 'noAuthNoPriv') {
       ($session, $error) = Net::SNMP->session(
         -hostname => $hostname,
@@ -611,16 +664,15 @@ sub process_arguments() {
     }
 
     if ( ! defined($session)) {
-      $state='UNKNOWN';
-      $answer=$error;
-      print ("$state: $answer");
+      $state = 'UNKNOWN';
+      $answer = $error;
+      printf("%s: %s\n", $state, $answer);
       exit $ERRORS{$state};
     }
 
   } else {
-    $state='UNKNOWN';
-    print ("$state: No support for SNMP v$snmp_version yet\n");
+    $state = 'UNKNOWN';
+    printf("%s: No support for SNMP v%s yet\n", $state, $snmp_version);
     exit $ERRORS{$state};
   }
 }
-## End validation

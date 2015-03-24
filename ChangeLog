@@ -1,3 +1,17 @@
+Version 2.19
+============
+The plugin now displays some product information like model, serial number,
+form factor and asset tag (if given). Thanks to Billy Szkoda for asking for
+this feature!
+
+Some minor code cleanup done in between.
+
+Please note: this information is now retrieved by default on every query. If
+you don't need or don't like the idea, or you'd rather have higher performance
+on a big network, just skip this using '-x cpqSystemInfo' and you'll get the
+behaviour as it was before.
+
+
 Version 2.18
 ============
 Updated state information for newer generations of HP equipment. Thanks to
