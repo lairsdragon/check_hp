@@ -2,7 +2,7 @@
 #
 # check_hp - nagios plugin
 #
-# Copyright (C) 2008-2014 Guenther Mair,
+# Copyright (C) 2008-2015 Guenther Mair,
 # Derived from check_ifoperstatus by Christoph Kron.
 #
 # This program is free software; you can redistribute it and/or
@@ -22,13 +22,13 @@
 #
 # Report bugs to:  guenther.mair@hoslo.ch
 #
-# $Id: check_hp 62 2014-08-02 16:05:01Z gunny $
+# $Id: check_hp 65 2015-01-28 06:57:20Z gunny $
 #
 
 my $nagioslibexec;
 
 BEGIN {
-  my @lib_folders = qw(/usr/local/nagios/libexec /usr/lib/nagios/plugins/);
+  my @lib_folders = qw(/usr/local/nagios/libexec/ /usr/lib/nagios/plugins/ /usr/lib64/nagios/plugins/);
   foreach my $lib (@lib_folders) {
     if (-d $lib)  {
       $nagioslibexec = $lib;
@@ -57,7 +57,7 @@ sub in_array ($@);
 ## module-specific variables
 
 my $PROGNAME = "check_hp";
-my $REVISION = '$Rev: 62 $';
+my $REVISION = '$Rev: 65 $';
 my $debug;
 my $exclude = '';
 my $warnings = '';
@@ -98,37 +98,54 @@ my @snmpoids;
 ## Compaq/HP system states
 
 my %cpqGenericStates = (
-  '1','other',
-  '2','ok',
-  '3','degraded',
-  '4','failed');
+  '1', 'other',
+  '2', 'ok',
+  '3', 'degraded',
+  '4', 'failed');
 
 my %cpqDaLogDrvStates = (
-  '1','other',
-  '2','ok',
-  '3','failed',
-  '4','unconfigured',
-  '5','recovering',
-  '6','readyForRebuild',
-  '7','rebuilding',
-  '8','wrongDrive',
-  '9','badConnect',
-  '10','overheating',
-  '11','shutdown',
-  '12','expanding',
-  '13','notAvailable',
-  '14','queuedForExpansion');
+  '1', 'other',
+  '2', 'ok',
+  '3', 'failed',
+  '4', 'unconfigured',
+  '5', 'recovering',
+  '6', 'readyForRebuild',
+  '7', 'rebuilding',
+  '8', 'wrongDrive',
+  '9', 'badConnect',
+  '10', 'overheating',
+  '11', 'shutdown',
+  '12', 'expanding',
+  '13', 'notAvailable',
+  '14', 'queuedForExpansion',
+  '15', 'multipathAccessDegraded',
+  '16', 'erasing',
+  '17', 'predictiveSpareRebuildReady',
+  '18', 'rapidParityInitInProgress',
+  '19', 'rapidParityInitPending',
+  '20', 'noAccessEncryptedNoCntlrKey',
+  '21', 'unencryptedToEncryptedInProgress',
+  '22', 'newLogDrvKeyRekeyInProgress',
+  '23', 'noAccessEncryptedCntlrEncryptnNotEnbld',
+  '24', 'unencryptedToEncryptedNotStarted',
+  '25', 'newLogDrvKeyRekeyRequestReceived');
 
 my %cpqDaPhyDrvStates = (
-  '1','other',
-  '2','ok',
-  '3','failed',
-  '4','predictiveFailure');
+  '1', 'other',
+  '2', 'ok',
+  '3', 'failed',
+  '4', 'predictiveFailure',
+  '5', 'erasing',
+  '6', 'eraseDone',
+  '7', 'eraseQueued',
+  '8', 'ssdWearOut',
+  '9', 'notAuthenticated');
 
 my %cpqDaPhyDrvSmartStates = (
-  '1','other',
-  '2','ok',
-  '3','replaceDrive');
+  '1', 'other',
+  '2', 'ok',
+  '3', 'replaceDrive',
+  '4', 'replaceDriveSSDWearOut');
 
 my %cpqDaTapeDrvStates = (
   '1', 'unknown',
@@ -140,18 +157,30 @@ my %cpqDaTapeDrvStates = (
   '7', 'missingWasOffline');
 
 my %cpqSeCpuStates = (
-  '1','unknown',
-  '2','ok',
-  '3','degraded',
-  '4','failed',
-  '5','disabled');
+  '1', 'unknown',
+  '2', 'ok',
+  '3', 'degraded',
+  '4', 'failed',
+  '5', 'disabled');
 
 my %cpqHeResilientMemStates = (
   '1', 'other',
-  '2', 'ok',
-  '3', 'degraded');
+  '2', 'notProtected',
+  '3', 'protected',
+  '4', 'degraded',
+  '5', 'dimmEcc',
+  '6', 'mirrorNoFaults',
+  '7', 'mirrorWithFaults',
+  '8', 'hotSpareNoFaults',
+  '9', 'hotSpareWithFaults',
+  '10', 'xorNoFaults',
+  '11', 'xorWithFaults',
+  '12', 'advancedEcc',
+  '13', 'advancedEccWithFaults',
+  '14', 'lockStep',
+  '15', 'lockStepWithFaults');
 
-my %cpqFcaHostStates = (
+my %cpqFcaHostCntlrStatus = (
   '1', 'unknown',
   '2', 'ok',
   '3', 'failed',
@@ -281,7 +310,7 @@ my %cpqComponents = (
    cpqFcaHostCntlrStatus => {
      OID  => '1.3.6.1.4.1.232.16.2.7.1.1.4',
      name => 'fibre channel host controller status',
-     type => 'cpqFcaHostStates',
+     type => 'cpqFcaHostCntlrStates',
    },
    cpqNicIfPhysAdapterStatus => {
      OID  => '1.3.6.1.4.1.232.18.2.3.1.1.14',
@@ -435,7 +464,7 @@ sub print_help() {
   printf "   -t (--timeout)    seconds before the plugin times out (default=$TIMEOUT)\n";
   printf "   -V (--version)    Plugin version\n";
   printf "   -h (--help)       usage help \n\n";
-  print_revision($PROGNAME, '$Revision: 62 $');
+  print_revision($PROGNAME, '$Revision: 65 $');
 }
 
 sub process_arguments() {
@@ -469,7 +498,7 @@ sub process_arguments() {
   }
 
   if ($opt_V) {
-    print_revision($PROGNAME,'$Revision: 62 $');
+    print_revision($PROGNAME,'$Revision: 65 $');
     exit $ERRORS{'OK'};
   }
 

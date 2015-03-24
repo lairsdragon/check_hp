@@ -1,23 +1,36 @@
 -- ****************************************************************************
+-- :CPQ,DEV:
 --
---         Compaq Remote Insight/Integrated Lights-Out Information
+-- * REMOTE INSIGHT/INTEGRATED LIGHTS-OUT RELATED INFORMATION SNMP MIB
+-- * DEFINITIONS
+--
+-- * $Date: 2014/09/10 10:46:00Z $
+-- * $Revision: 1.45 $
+--
+-- Hewlett-Packard Company
+-- Confidential - Need To Know
+-- ****************************************************************************
+-- :CPQ,ENDDEV:
+--
+--            Remote Insight/Integrated Lights-Out Information
 --         Management Information Base for SNMP Network Management
 --
 --
---      Copyright 2002 Compaq Information Technologies Group, L.P.
+--      Copyright 1996,2013 Hewlett-Packard Development Company, L.P.
 --
---      Compaq and the Compaq logo are trademarks of Compaq Information
---      Technologies Group, L.P. in the U.S. and/or other countries.  All
---      other product names mentioned herein may be trademarks of their
---      respective companies.
+--      Hewlett-Packard Company shall not be liable for technical or
+--      editorial errors or omissions contained herein. The information in
+--      this document is provided "as is" without warranty of any kind and
+--      is subject to change without notice. The warranties for HP products
+--      are set forth in the express limited warranty statements
+--      accompanying such products. Nothing herein should be construed as
+--      constituting an additional warranty.
 --
---      Compaq shall not be liable for technical or editorial errors or
---      omissions contained herein. The information in this document is
---      provided "as is" without warranty of any kind and is subject to
---      change without notice.  The warranties for Compaq products are set
---      forth in the express limited warranty statements accompanying such
---      products. Nothing herein should be construed as constituting an
---      additional warranty.
+--      Confidential computer software. Valid license from HP required for
+--      possession, use or copying. Consistent with FAR 12.211 and 12.212,
+--      Commercial Computer Software, Computer Software Documentation, and
+--      Technical Data for Commercial Items are licensed to the U.S.
+--      Government under vendor's standard commercial license.
 --
 --      Refer to the READMIB.RDM file for more information about the
 --      organization of the information in the Compaq Enterprise.
@@ -39,9 +52,14 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         TRAP-TYPE               FROM RFC-1215
         sysName                 FROM RFC1213-MIB
         compaq                  FROM CPQHOST-MIB
-        cpqHoTrapFlags          FROM CPQHOST-MIB;
+        cpqHoGUIDCanonical      FROM CPQHOST-MIB
+        cpqHoTrapFlags          FROM CPQHOST-MIB
+        cpqSiAssetTag           FROM CPQSINFO-MIB
+        cpqSiProductName        FROM CPQSINFO-MIB
+        cpqSiSysProductId       FROM CPQSINFO-MIB
+        cpqSiSysSerialNum       FROM CPQSINFO-MIB;
 
---    compaq              OBJECT IDENTIFIER ::= { enterprises 232 }
+--  compaq              OBJECT IDENTIFIER ::= { enterprises 232 }
     cpqSm2              OBJECT IDENTIFIER ::= { compaq 9 }
     cpqSm2MibRev        OBJECT IDENTIFIER ::= { cpqSm2 1 }
     cpqSm2Component     OBJECT IDENTIFIER ::= { cpqSm2 2 }
@@ -52,11 +70,13 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
     cpqSm2EventLog      OBJECT IDENTIFIER ::= { cpqSm2Component 3 }
     cpqSm2AsyncComm     OBJECT IDENTIFIER ::= { cpqSm2Component 4 }
     cpqSm2Nic           OBJECT IDENTIFIER ::= { cpqSm2Component 5 }
+    cpqSm2Ers           OBJECT IDENTIFIER ::= { cpqSm2Component 6 }
 
     cpqSm2OsCommon      OBJECT IDENTIFIER ::= { cpqSm2Interface 4 }
+    cpqSm2NicIpv6       OBJECT IDENTIFIER ::= { cpqSm2Nic 3 }
 
--- Object ideitifiers returned for the sysObjectId from the firmware agent.
--- This loosly matches the cpqSm2CntlrModel enumeration construct.
+-- Object identifiers returned for the sysObjectId from the firmware agent.
+-- This loosely matches the cpqSm2CntlrModel enumeration construct.
 
     cpqSm2Products         OBJECT IDENTIFIER ::= { cpqSm2 4 }
  -- .1.3.6.1.4.1.232.9.4.2
@@ -69,7 +89,14 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
    cpqSm2ProdiLo           OBJECT IDENTIFIER ::= { cpqSm2Products 5 }
  -- .1.3.6.1.4.1.232.9.4.6
    cpqSm2ProdRILOEII       OBJECT IDENTIFIER ::= { cpqSm2Products 6 }
-
+ -- .1.3.6.1.4.1.232.9.4.7
+   cpqSm2ProdRILO2         OBJECT IDENTIFIER ::= { cpqSm2Products 7 }
+ -- .1.3.6.1.4.1.232.9.4.8
+   cpqSm2ProdRLO100        OBJECT IDENTIFIER ::= { cpqSm2Products 8 }
+ -- .1.3.6.1.4.1.232.9.4.9
+   cpqSm2ProdRILO3         OBJECT IDENTIFIER ::= { cpqSm2Products 9 }
+ -- .1.3.6.1.4.1.232.9.4.10
+   cpqSm2ProdRILO4         OBJECT IDENTIFIER ::= { cpqSm2Products 10 }
 
 -- ****************************************************************************
 --   Remote Insight/Integrated Lights-Out Information MIB Revision
@@ -83,8 +110,71 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 --      supporting the Remote Insight/Integrated Lights-Out MIB.
 --
 --      An Insight Agent conforming to this document will return a
---      cpqSm2MibRevMajor of one (1) and a cpqSm2MibRevMinor of six (6).
+--      cpqSm2MibRevMajor of one (1) and a cpqSm2MibRevMinor of Eighteen (18).
 --
+-- :CPQ,DEV:
+--      MIB Rev of 1.0 is for first release
+--      MIB Rev of 1.1 is for 3.30 release time frame - items added
+--          - cpqSm2ServerIpAddress
+--      MIB Rev of 1.2 is for the 4.10 release timeframe.  This adds
+--              support for the Remote Insight /PCI board (Orwell)
+--      MIB Rev of 1.3 is for release 4.23.
+--          - deprecates cpqSm2OsCommonModuleTable.
+--      MIB Rev of 1.4 is for release 4.60.
+--          - Adds support for Thunderchild
+--      MIB Rev of 1.5 is for release 5.30.
+--          - Adds new security override traps and the log full trap.
+--      MIB Rev of 1.6 is for release 5.40.
+--          - Deprecated cpqSm2CntlrLastDataUpdate
+--          - Added new enumerations for cpqSm2CntlrExternalPowerCableStatus
+--            and cpqSm2CntlrVirtualPowerCableStatus
+--          - Added cpqSm2CntlrHardwareVer
+--          - Added cpqSm2CntlriLOSecurityOverrideSwitchState
+--          - Updated cpqSm2CntlrSelfTestErrors
+--          - Added cpqSm2CntlrAction
+--      MIB Rev of 1.6B is for release 7.10B.
+--          - Add trap number to trap #TYPE fields.
+--      MIB Rev of 1.7 is for release 7.40
+--          - Modified #severity for:
+--            cpqSm2LogsFull
+--      MIB Rev of 1.8 is for release 7.50
+--          - Added ENUM pciIntegratedLightsOutRemoteInsight2(7) to cpqSm2CntlrModel
+--      MIB Rev of 1.9 is for PSP release 8.11
+--          - Added ENUM pciLightsOut100series(8) to cpqSm2CntlrModel
+--      MIB Rev of 1.10 is for PSP release 8.20
+--          - Added cpqSm2CntlrLicenseActive and cpqSm2CntlrLicenseKey
+--      MIB Rev of 1.11 is for PSP release 8.25
+--          - Modified cpqSm2CntlrLicenseActive definition, replace  iloselect with 
+--            iloAdvancedBlade as iloselect is no longer used.
+--      MIB Rev of 1.12 is for PSP release 8.40
+--          - Added ENUM pciIntegratedLightsOutRemoteInsight3(9) to cpqSm2CntlrModel
+--      MIB Rev of 1.13 is for PSP release 9.00
+--          - Added ENUM pciIntegratedLightsOutRemoteInsight4(10) to cpqSm2CntlrModel
+--      MIB Rev of 1.14 is for PSP release 9.10
+--          - Added ENUM cpqSm2CntlrServerPowerState
+--          - Added traps 9017, 9018, and 9019
+--          - Added new #LIFECYCLE flag to several traps.
+--      MIB Rev of 1.15 is for SPP release 9.40
+--          - Added cpqSm2Ers Group under cpqSm2Component
+--          - Added cpqSm2ErsTransactionType
+--          - Added cpqSm2ErsConnectionModel
+--          - Added cpqSm2ErsFailureCode
+--          - Added cpqSm2ErsRemoteHost
+--          - Added trap 9020
+--      MIB Rev of 1.16 is for SPP release 9.40 pass 4
+--          - Modified traps 9011, 9012, and 9013 in regard to HWSTATUS_CATEGORY
+--          - and LIFECYCLE
+--      MIB Rev of 1.17 is for SPP release 9.40 pass 5
+--          - Modified traps 9001 in regard to hardware category 
+--      MIB Rev of 1.18 is for SPP release 9.40 pass 5   
+--          - ilo changes to rev 1.15  changes
+--      MIB Rev of 1.43 is for 9.50 release time frame 
+--          - Updated #TYPE value with trap number on cpqSm2ServerPowerOnFailure and cpqSm2IrsCommFailure
+--      MIB Rev of 1.44 is for 10.0 release time frame 
+--          - Added #ACTION string for trap cpqSm2SelfTestError(9005)
+--      MIB Rev of 1.45 is for 10.0 release time frame 
+--          - Corrected the cpqSm2MibRevMinor OID
+-- :CPQ,ENDDEV:
 -- ****************************************************************************
 
     cpqSm2MibRevMajor OBJECT-TYPE
@@ -129,6 +219,22 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
          This represents the overall condition of the
          Remote Insight/ Integrated Lights-Out."
 
+-- :CPQ,DEV:
+-- OK:          cpqSm2CntlrInterfaceStatus is ok      AND
+--              cpqSm2CntlrBatteryStatus is batteryOk AND
+--              cpqSm2CntlrSelfTestErrors&cpqSm2CntlrSelfTestErrorMask is 0 AND
+--              cpqSm2NicCondition is ok AND
+--
+-- Degraded:    cpqSm2CntlrInterfaceStatus is ok          AND
+--              cpqSm2CntlrBatteryStatus is batteryDisconnected OR
+--              cpqSm2CntlrBatteryStatus is batteryFailed OR
+--              cpqSm2CntlrSelfTestErrors&cpqSm2CntlrSelfTestErrorMask is not 0 OR
+--              cpqSm2NicCondition is degraded OR
+--              cpqSm2CntlrExternalPowerCableStatus is disconnected
+--
+-- Failed:      cpqSm2CntlrInterfaceStatus is notResponding OR
+--              cpqSm2NicCondition is failed
+-- :CPQ,ENDDEV:
         ::= { cpqSm2MibRev 3 }
 
 
@@ -168,6 +274,12 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             always fail.  An agent may choose to fail any request to change
             the poll frequency to a value that would severely impact system
             performance."
+-- :CPQ,DEV:
+--      OS agents:
+--         Set to agent poll interval or 0 for on demand.
+--      Remote Insight/ Integrated Lights-Out f/w agent:
+--         Probably 0 for on demand?
+-- :CPQ,ENDDEV:
         ::= { cpqSm2OsCommon 1 }
 
 
@@ -297,6 +409,11 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             "Remote Insight/ Integrated Lights-Out ROM Date.
 
             The firmware date format is mm/dd/yyyy format."
+-- :CPQ,DEV:
+--      OS agents:
+--         This value is obtained from the Firmware's Get RIB Status Response
+--         command (0x8002).
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 1 }
 
     cpqSm2CntlrRomRevision OBJECT-TYPE
@@ -308,6 +425,13 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             The revision of the firmware on the
             Remote Insight/ Integrated Lights-Out."
+-- :CPQ,DEV:
+--      OS agents:
+--         This value is obtained from the Firmware's Get RIB Status Response
+--         command (0x8002).
+--      The format for this value is xx.yy where xx is the major revision
+--      and yy is the minor revision.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 2 }
 
     cpqSm2CntlrVideoStatus OBJECT-TYPE
@@ -332,6 +456,13 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             disabled(3)
               The Remote Insight/ Integrated Lights-Out video is disabled."
+-- :CPQ,DEV:
+--      Orwell and prior agents:
+--         This value is obtained from the Firmware's Get RIB Status Response
+--         command (0x8002). RIB status word, bit 3==1 is enabled, 0 is disabled.
+--      Thunderchild agents:
+--         Return other(1)
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 3 }
 
     cpqSm2CntlrBatteryEnabled OBJECT-TYPE
@@ -360,6 +491,13 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             noBattery(4)
               This Remote Insight model does not use a battery."
+-- :CPQ,DEV:
+--      Orwell and prior agents:
+--         This value is obtained from the Firmware's Get RIB Status Response
+--         command (0x8002). RIB status word, bit 0==1 is enabled, 0 is disabled.
+--      Thunderchild agents:
+--         Return a value of noBattery(4)
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 4 }
 
     cpqSm2CntlrBatteryStatus OBJECT-TYPE
@@ -388,6 +526,16 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             batteryDisconnected(4)
               The Remote Insight battery is disconnected."
+-- :CPQ,DEV:
+--      Orwell and prior agents:
+--         This value is obtained from the Firmware's Get RIB Status Response
+--         command (0x8002).
+--         If battery status word, bit 14 == 1, value is battery disconnected
+--         else if battery status word, bit 15 == 1, value is battery failed
+--         else value is battery ok.
+--      Thunderchild agents:
+--         Return a value of other(1)
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 5 }
 
     cpqSm2CntlrBatteryPercentCharged OBJECT-TYPE
@@ -399,6 +547,14 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             The Remote Insight battery recharge level."
 
+-- :CPQ,DEV:
+--      Orwell and prior agents:
+--         This value is obtained from the Firmware's Get RIB Status Response
+--         command (0x8002). This is bits 0-7 of the battery status word.
+--      Thunderchild agents:
+--         Return a value of 0.
+
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 6 }
 
     cpqSm2CntlrAlertStatus OBJECT-TYPE
@@ -423,6 +579,11 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             disabled(3)
               Remote Insight/ Integrated Lights-Out alerting is disabled."
+-- :CPQ,DEV:
+--      OS agents:
+--         This value is obtained from the Firmware's Get RIB Status Response
+--         command (0x8002). RIB status word, bit 1==1 is enabled, 0 is disabled.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 7 }
 
     cpqSm2CntlrPendingAlerts OBJECT-TYPE
@@ -454,6 +615,19 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             clearPendingAlerts(4)
               This value is set to clear any Remote Insight/ Integrated Lights-Out
               alerts that have not been sent."
+-- :CPQ,DEV:
+--      The purpose of this variable is two fold.  1) Determine if there
+--      are pending alerts.  2) Allow the user to clear pending alerts.
+--      When the value of this item is alertsPending, alerts are cleared by
+--      setting it to clearPendingAlerts.  No other sets are allowed.
+--
+--      OS agents:
+--         Pending alert status is obtained from the Firmware's Get RIB Status
+--         Response command (0x8002).  RIB status word, bit 2 == 0 is no alerts
+--         pending, 1 is alerts pending.  To clear alerts, issue the Set
+--         RIB Status command (0x0003) with the RIB status word, bit 2
+--         set to a value of 1.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 8 }
 
     cpqSm2CntlrSelfTestErrors OBJECT-TYPE
@@ -489,6 +663,11 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
                     significant.
 
             A value of 0 means no errors have occurred."
+-- :CPQ,DEV:
+--      OS agents:
+--         This value is obtained from the Firmware's Get RIB Status Response
+--         command (0x8002).
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 9 }
 
     cpqSm2CntlrAgentLocation OBJECT-TYPE
@@ -520,6 +699,16 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             enclosureFirmwareAgent(4)
               The Remote Insight/ Integrated Lights-Out MIB information is provided
               by a rack enclosure firmware agent."
+-- :CPQ,DEV:
+--      OS agents:
+--         Return hostOsAgent.
+--      EISA Remote Insight Firmware Agent:
+--         Return firmwareAgent
+--      PCI Remote Insight/ Integrated Lights-Out Firmware Agent:
+--         Return remoteInsightPciFirmwareAgent
+--      An Enclosure Firmware Agent:
+--         Return rackEnclosureManager
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 10 }
 
     cpqSm2CntlrLastDataUpdate OBJECT-TYPE
@@ -545,6 +734,11 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             the date and time.  The hour, minute, and second field will be set
             to zero (0) if they are not relevant.  The year field is set
             with the most significant octet first."
+-- :CPQ,DEV:
+--      OS agents:
+--         This value is obtained from the Firmware's Get RIB Status Response
+--         command (0x8002).
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 11}
 
     cpqSm2CntlrDataStatus OBJECT-TYPE
@@ -574,6 +768,16 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             offlineData(4)
               A backup copy of data is available from the
               Remote Insight/ Integrated Lights-Out firmware agent."
+-- :CPQ,DEV:
+--      OS agents:
+--         Return onlineData (3).
+--      Remote Insight/ Integrated Lights-Out f/w agent:
+--         If snmp passthrough is enabled and functioning return onlineData.
+--         else if backup data available
+--            return offlineData
+--         else
+--            return noData.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 12 }
 
     cpqSm2CntlrColdReboot OBJECT-TYPE
@@ -597,6 +801,19 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             doColdReboot(3)
               This value is set to cause a cold reboot of the system."
+-- :CPQ,DEV:
+--      OS agents:
+--         Return notAvailable(1).  Reboot is available via the System
+--         Information MIB variable cpqSiReboot.  All sets to this
+--         variable return error.
+--      Remote Insight/ Integrated Lights-Out f/w agent:
+--         If the current user has RIB reboot rights, value is available(2).
+--         Else the value is notAvailable(1).
+--
+--         When a doColdReboot(3) set is received, it should be checked
+--         against the current users reboot rights.  If reboot is available,
+--         do a RIB cold boot.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 13 }
 
     cpqSm2CntlrBadLoginAttemptsThresh OBJECT-TYPE
@@ -609,6 +826,17 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             This is the threshold for consecutive unsuccessful login attempts.
             When this threshold is exceeded, a trap is sent."
 
+-- :CPQ,DEV:
+--      A value of -1 is defined as not available.
+--      OS agents for Flint:
+--         All the values in this table are obtained from the response to
+--         the Firmware's Get Communication Configuration command (0x0006).
+--      OS agents for Orwell:
+--         All the values in this table are obtained from the response to
+--         the Firmware's Get PCMCIA Modem or Serial Card Configuration
+--         command (0x0037).
+
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 14 }
 
     cpqSm2CntlrBoardSerialNumber OBJECT-TYPE
@@ -619,6 +847,11 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             "Remote Insight/ Integrated Lights-Out Serial Number.
 
             The Serial Number of this Remote Insight/ Integrated Lights-Out."
+-- :CPQ,DEV:
+--      OS agents:
+--         This value is obtained from the Firmware's Get RIB Status Response
+--         command (0x8002).
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 15 }
 
     cpqSm2CntlrRemoteSessionStatus OBJECT-TYPE
@@ -643,6 +876,11 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             inactive(3)
               There is no active Remote Insight/ Integrated Lights-Out session."
+-- :CPQ,DEV:
+--      OS agents:
+--         This value is obtained from the Firmware's Get RIB Status Response
+--         command (0x8002). RIB status word, bit 4==1 is active, 0 is inactive.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 16 }
 
     cpqSm2CntlrInterfaceStatus OBJECT-TYPE
@@ -669,6 +907,17 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             notResponding(3)
               The Remote Insight/ Integrated Lights-Out firmware is not
               responding to commands."
+-- :CPQ,DEV:
+--      OS agents:
+--         This value is ok if requests are being processed by the RIB
+--         firmware.  If the firmware is not responding, first try an
+--         interface reset.  If that does not work try a
+--         Remote Insight/ Integrated Lights-Out reset.
+--         If the firmware still does not respond, set this variable to
+--         notResponding and give up.
+--      Remote Insight/ Integrated Lights-Out f/w agent:
+--         Return other.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 17 }
 
     cpqSm2CntlrSystemId OBJECT-TYPE
@@ -680,6 +929,11 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             A number used to identify this system in
             Remote Insight/ Integrated Lights-Out pager alerts."
+-- :CPQ,DEV:
+--      OS agents:
+--         This value is obtained from the Firmware's Get Server Information
+--         command (0x0004).
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 18 }
 
     cpqSm2CntlrKeyboardCableStatus OBJECT-TYPE
@@ -704,6 +958,15 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             disconnected(3)
               The keyboard cable is not connected to the Remote Insight."
+-- :CPQ,DEV:
+--      OS agents:
+--         This value is obtained from the Firmware's Get RIB Status Response
+--         command (0x8002).
+--         If status word, bit 5 == 1, value is connected
+--         else value is disconnected.
+--         IF Aspen Or Gromit
+--            Not Applicable
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 19 }
 
     cpqSm2ServerIpAddress OBJECT-TYPE
@@ -716,6 +979,14 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             used to communicate remotely to the host server via the
             Remote Insight/ Integrated Lights-Out."
 
+-- :CPQ,DEV:
+--      OS agents:
+--         Return 0.0.0.0 by default.
+--      Remote Insight/ Integrated Lights-Out f/w agent:
+--         If communication to the server is possible, return the servers IP
+--         address
+--         Else return 255.255.255.255 for not available.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 20 }
 
     cpqSm2CntlrModel OBJECT-TYPE
@@ -725,7 +996,11 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
                 pciRemoteInsightBoard(3),
                 pciLightsOutRemoteInsightBoard(4),
                 pciIntegratedLightsOutRemoteInsight(5),
-                pciLightsOutRemoteInsightBoardII(6)
+                pciLightsOutRemoteInsightBoardII(6),
+                pciIntegratedLightsOutRemoteInsight2(7),
+                pciLightsOut100series(8),
+                pciIntegratedLightsOutRemoteInsight3(9),
+                pciIntegratedLightsOutRemoteInsight4(10)
                 }
         ACCESS  read-only
         STATUS  mandatory
@@ -751,8 +1026,51 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
               This is Integrated Remote Insight Lights-Out Edition.
 
             pciLightsOutRemoteInsightBoardII(6)
-              This is the Remote Insight Lights-Out Edition version II."
+              This is the Remote Insight Lights-Out Edition version II.
 
+            pciIntegratedLightsOutRemoteInsight2(7)
+              This is the Integrated Lights-Out 2 Edition.
+                            
+            pciLightsOut100series(8)  
+              This is the Lights-Out 100 Edition for 100 Series of ProLiant servers.
+              
+            pciIntegratedLightsOutRemoteInsight3(9)
+              This is the Integrated Lights-Out 3 Edition.
+
+            pciIntegratedLightsOutRemoteInsight4(10)
+              This is the Integrated Lights-Out 4 Edition."
+
+-- :CPQ,DEV:
+--      Orwell and prior agents:
+--         This MIB variable was added in the PCI Remote Insight
+--         timeframe. Agents which shipped with the EISA Remote Insight
+--         will not support this variable.  This value is obtained from
+--         the Firmware's Get RIB Status Response command (0x8002).  If the
+--         'RIB class' byte has a 2 then this is a pciRemoteInsightBoard(3).
+--         Otherwise, it should be set to eisaRemoteInsightBoard(2).  The
+--         older EISA Remote Insight Firmware will return a value other
+--         than 2 is a newer agent interrogates this on the older Remote Insight.
+--      Thunderchild agents:
+--         For backward compatibility reasons (since Thunderchild needed to
+--         run on servers with older RIB agents), a new byte ( RIB subclass
+--         from the Firmware's Get RIB Status Response (0x8002) ) will
+--         need to be used to determine if the Remote Insight is a Thunderchild.
+--         The logic to do this is:
+--           IF 'RIB subclass' == 1
+--              This is a pciLightsOutRemoteInsightBoard(3)
+--           ELSE
+--              Use the 'Orwell and prior agents' mechanism to determine model.
+--           ENDIF
+--
+--     Gromit, Aspen Changes and Backward Compatibility
+--         The class and sub class IDs for -
+--         ORWELL          1 and 0
+--         THUNDERCHILD    1 and 1
+--         ASPEN is        2 and 0
+--         GROMIT          3 and 0
+--         Derive the logic based on the above values for various
+--         Remote Insight/ Integrated Lights-Out models.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 21 }
 
     cpqSm2CntlrSelfTestErrorMask OBJECT-TYPE
@@ -769,6 +1087,15 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             This variable is necessary since the different versions of the
             Remote Insight/ Integrated Lights-Out hardware have different
             subsets of tests that are performed."
+-- :CPQ,DEV:
+--      Orwell and beyond Method:
+--         This value is obtained from the Firmware's Get RIB Status Response
+--         command (0x8002).  The agent will return the dword that is defined
+--         for the field 'RIB Diagnostic Error Mask'.
+--      Flint Method:
+--         The agents will return a value of 0x000001FF since this is defines
+--         the subset of tests that were available in Flint.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 22 }
 
     cpqSm2CntlrMouseCableStatus OBJECT-TYPE
@@ -793,6 +1120,19 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             disconnected(3)
               The mouse cable is not connected to the Remote Insight."
+-- :CPQ,DEV:
+--      OS agents:
+--         IF the Remote Insight is a Thunderchild
+--            This value is obtained from the Firmware's Get RIB Status Response
+--            command (0x8002).
+--            If status word, bit 7 == 1, value is connected
+--            else value is disconnected.
+--         IF Aspen Or Gromit
+--            Not Applicable
+--         ELSE
+--            This capability didn't exist until Thunderchild.
+--            Return a value of other(1).
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 23 }
 
     cpqSm2CntlrVirtualPowerCableStatus OBJECT-TYPE
@@ -821,6 +1161,21 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             notApplicable(4)
               Not Applicable."
+-- :CPQ,DEV:
+--         IF the Remote Insight is a Thunderchild
+--            This value is obtained from the Firmware's Get RIB Status Response
+--            command (0x8002).
+--            If status word, bit 3 == 1, value is connected
+--            else value is disconnected.
+--         IF Aspen
+--            Status Response Packet (0x8002)
+--            Cable Status Word Bit 3 == 1, implies connected
+--         IF Gromit
+--            Not Applicable
+--         ELSE
+--            This capability didn't exist until Thunderchild.
+--            Return a value of other(1).
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 24 }
 
     cpqSm2CntlrExternalPowerCableStatus OBJECT-TYPE
@@ -859,6 +1214,30 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             notApplicable(6)
               Not Applicable."
+-- :CPQ,DEV:
+--         IF the Remote Insight is a Thunderchild
+--            This value is obtained from the Firmware's Get RIB Status Response
+--            command (0x8002).
+--            If the RIB Battery Status Word, bit 14 == 0, value is connected
+--            else value is disconnected.
+--         IF Aspen and Later
+--            Uses Cable Status Word
+--              Internal Power, when Bit 5 OR Bit 4 are enabled
+--              External Power, when Bit 2 is enabled
+--         IF Gromit
+--              Not Applicable
+--         ELSE
+--            This capability didn't exist until Thunderchild.
+--            Return a value of other(1).
+--
+--         Note: Both External and Internal power termed as Auxiliary Power.
+--         External Power: Connected to the board from outside the box, to the
+--         back of the controller)
+--         Internal Power: Not same as the slot power; Connected via a 30-pin cable
+--         or a 16-pin cable; This cannot be accessed from outside the box. There
+--         are two slots on the controller that can take 30-pin and 16-pin cables
+--
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 25 }
 
     cpqSm2CntlrHostGUID OBJECT-TYPE
@@ -872,6 +1251,13 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
              the Remote Insight/ Integrated Lights-Out controller to the server
              containing the controller.  This variable is identical to the variable
              'cpqHoGUID' which is returned from the CPQHOST.MIB."
+-- :CPQ,DEV:
+--      OS agents:
+--         This variable was put in at the request of the CIM XE developers.
+--         They need this to correlate which RIB lives in which server so
+--         they can provide a better user interface.  The OS agents need
+--         to perform a GET of 'cpqHoGUID' and return it from this variable.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 26 }
 
     cpqSm2CntlriLOSecurityOverrideSwitchState OBJECT-TYPE
@@ -898,6 +1284,11 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             notSet(3)
               The iLO Security Override Switch is not set, which implies normal
               secure operation."
+-- :CPQ,DEV:
+--         If Gromit, This value is obtained from the Firmware's Get Security
+--         Jumper State Response, command (0x806B).
+--         Not supported on RILOE (Orwell, Thunderchild etc.) and Aspen
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 27 }
 
     cpqSm2CntlrHardwareVer OBJECT-TYPE
@@ -906,6 +1297,9 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         STATUS  mandatory
         DESCRIPTION
             "Hardware Version of Remote Insight/ Integrated Lights-Out."
+-- :CPQ,DEV:
+--         Obtained from Get Status Response packet 0x8002
+-- :CPQ,ENDDEV:
         ::= { cpqSm2Cntlr 28}
 
     cpqSm2CntlrAction OBJECT-TYPE
@@ -948,8 +1342,93 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
                      Bit 5-30:   RESERVED
                      Bit 31:     Execute Set
             "
+-- :CPQ,DEV:
+--   NOTE: Make sure to OR all the value before writing to this MIB Variable.
+--         Otherwise, the write operation will change/clear all other values.
+
+--        ResetSupportBits            = 0x00000001
+--        ActionResetBits             = 0x80000001
+
+--        iLOAlertEnableBits          = 0x00000002
+--        ActioniLOAlertEnableBits    = 0x80000002
+
+--        iLOAlertDisableBits         = 0x00000004
+--        ActioniLOAlertDisableBits   = 0x80000004
+
+--        HostAlertEnableBits         = 0x00000008
+--        ActionHostAlertEnableBits   = 0x80000008
+
+--        HostAlertDisableBits        = 0x00000010
+--        ActionHostAlertDisableBits  = 0x80000010
+
+-- :CPQ,ENDDEV:
 
         ::= { cpqSm2Cntlr 29}
+
+    cpqSm2CntlrLicenseActive OBJECT-TYPE
+        SYNTAX  INTEGER {
+                none(1),
+                iloAdvanced(2),
+                iloLight(3),
+                iloAdvancedBlade(4),
+                iloStandard(5),
+                iloEssentials(6),
+                iloScaleOut(7)
+                }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote Insight License State.
+
+            The following values are defined:
+
+            none(1)
+              The Insight Agent is unable to determine the active license
+              or no license is installed.
+
+            iloAdvanced(2)
+              iLO Advanced license is installed.
+
+            iloLight(3)
+              iLO Light license is installed.
+
+            iloAdvancedBlade(4)
+             iLO Advanced for Bladesystem license is installed.
+
+            iloStandard(5)
+             iLO Standard for HP BladeSystem license is installed.
+
+            iloEssentials(6)
+              iLO Essentials license is installed.
+
+            iloScaleOut(7)
+              iLO Scale Out license is installed."
+
+        ::= { cpqSm2Cntlr 30}
+
+    cpqSm2CntlrLicenseKey OBJECT-TYPE
+         SYNTAX  DisplayString (SIZE (32))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "iLO Active ASCII License key string. On implicitly licensed 
+             systems like blades, a license will be indicated as installed, 
+             although the key value may be blank"
+
+        ::= { cpqSm2Cntlr 31}
+
+    cpqSm2CntlrServerPowerState OBJECT-TYPE
+        SYNTAX  INTEGER {
+     		unknown(1),
+                poweredOff(2),
+                poweredOn(3),
+                insufficientPowerOrPowerOnDenied(4)
+                             }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION        
+            "The current power state for the server.  The power cap reach state indicates there was an attempt to power on, but the server could not reserve enough power. " 
+        ::= { cpqSm2Cntlr 32}
 
 
 -- ****************************************************************************
@@ -964,7 +1443,7 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 --      The cpqSm2EventLog group contains ...
 --
 --      Implementation of the cpqSm2EventLog group is mandatory for all agents
---      that support the Compaq Remote Insight/ Integrated Lights-Out MIB.
+--      that support the Remote Insight/Integrated Lights-Out MIB.
 --
 -- ****************************************************************************
 
@@ -977,6 +1456,13 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             event log.  Setting the number of entries to 0 clears the Remote
             Insight/ Integrated Lights-Out event log. Setting the number of
             entries to something other than 0 will always fail."
+-- :CPQ,DEV:
+--      OS agents:
+--         This value is obtained from the Firmware's Get Flint/Orwell Event
+--         Log command (0x000f).
+--         To clear the log, issue the Firmware's Set RIB Status
+--         command (0x0003) with RIB status word bit 9 set to 1.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2EventLog 1 }
 
 -- ****************************************************************************
@@ -1078,7 +1564,7 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 --      the Remote Insight asynchronous communication ports.
 --
 --      Implementation of the cpqSm2AsyncComm group is mandatory for all agents
---      that support the Compaq Remote Insight MIB.
+--      that support the Remote Insight/Integrated Lights-Out MIB.
 --
 -- ****************************************************************************
 
@@ -1134,6 +1620,15 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         cpqSm2CommPcmciaModel         DisplayString
         }
 
+-- :CPQ,DEV:
+--      OS agents for Flint:
+--         All the values in this table are obtained from the response to
+--         the Firmware's Get Communication Configuration command (0x0006).
+--      OS agents for Orwell:
+--         All the values in this table are obtained from the response to
+--         the Firmware's Get PCMCIA Modem or Serial Card Configuration
+--         command (0x0037).
+-- :CPQ,ENDDEV:
 
     cpqSm2CommPort OBJECT-TYPE
         SYNTAX  INTEGER {
@@ -1152,6 +1647,21 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             auxiliary(2)
               This is the Remote Insight auxiliary port."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      In Orwell, you cannot have a serial (aka auxiliary) port and a
+--      modem.  This is because these are options via adding a PCMCIA
+--      card.  Therefore, if the PCMCIA card installed on Orwell is a
+--      serial card, a value of auxiliary(2) should be returned.  If
+--      the PCMCIA card is a modem, a value of internal(1) should be
+--      returned.
+--    Flint Method:
+--      Both comm port instances should be present in the table even when
+--      no devices are attached.  This variable is the index (row) in the
+--      table and by definition row 1 will contain all the information
+--      about the on-board (internal) Flint modem and row 2 will contain
+--      all the information about the auxiliary device.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 1 }
 
     cpqSm2CommType OBJECT-TYPE
@@ -1188,6 +1698,21 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
               An XON/XOFF 3-wire interface is configured on this port.  This
               type of connection is only supported on the Remote Insight
               auxiliary port."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This is derived via 'Get PCMCIA Modem or Serial Card Configuration'
+--      response message in the 'Serial Port Device' field.  Derive these
+--      values as follows:
+--         0 == none, 1 == modem, 2 == nulModem, 4 == modem
+--    Flint Method:
+--      This is derived via a couple of fields in FLINT response message.
+--      if cpqSm2CommPort == internal
+--          Use Flint Internal Modem Present word to derive values.
+--          0 == none, 1 == modem
+--      else
+--          Use the Auxiliary Port Device Word to derive values
+--          0 == none, 1 == modem, 2 == nulModem, 3 == xonXoff
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 2 }
 
     cpqSm2CommBaudRate OBJECT-TYPE
@@ -1197,6 +1722,18 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "The baud rate to be used over this communication medium by the
             Remote Insight."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This is derived via 'Get PCMCIA Modem or Serial Card Configuration'
+--      response message in the 'Async parameters' word. Return bits 4-15
+--      of this word * 300.
+--    Flint Method:
+--      This is the FLINT bits 4-15 of the appropriate async parm word * 300.
+--      if cpqSm2CommPort == internal
+--          use the Internal Modem Async Parameters word
+--      else
+--          use the Auxiliary Modem Async Parameters word
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 3 }
 
     cpqSm2CommParity OBJECT-TYPE
@@ -1224,6 +1761,19 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             even(4)
               This port is set for even parity."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This is derived via 'Get PCMCIA Modem or Serial Card Configuration'
+--      response message in the 'Async parameters' word. Interpret bits 2-3 of
+--      this word where 0 == none, 1 == odd,  and 2 == even.
+--    Flint Method:
+--      This is the FLINT bits 2-3 of the appropriate async parm word.
+--      0 == none, 1 == odd,  and 2 == even.
+--      if cpqSm2CommPort == internal
+--          use the Internal Modem Async Parameters word
+--      else
+--          use the Auxiliary Modem Async Parameters word
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 4 }
 
     cpqSm2CommDataBits OBJECT-TYPE
@@ -1247,6 +1797,19 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             eight(3)
               This port is set for eight data bits."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This is derived via 'Get PCMCIA Modem or Serial Card Configuration'
+--      response message in the 'Async parameters' word. Interpret bit 1 of
+--      this word where 0 == 8 data bits, 1 == 7 data bits.
+--    Flint Method:
+--      This is the FLINT bit 1 of the appropriate async parm word.
+--      0 == 8 data bits, 1 == 7 data bits.
+--      if cpqSm2CommPort == internal
+--          use the Internal Modem Async Parameters word
+--      else
+--          use the Auxiliary Modem Async Parameters word
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 5 }
 
     cpqSm2CommStopBits OBJECT-TYPE
@@ -1270,6 +1833,19 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             twoBits(3)
               This port is set for two stop bits."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This is derived via 'Get PCMCIA Modem or Serial Card Configuration'
+--      response message in the 'Async parameters' word. Interpret bit 0 of
+--      this word where 0 == 1 stop bit, 1 == 2 stop bits.
+--    Flint Method:
+--      This is the FLINT bit 0 of the appropriate async parm word.
+--      0 == 1 stop bit, 1 == 2 stop bits.
+--      if cpqSm2CommPort == internal
+--          use the Internal Modem Async Parameters word
+--      else
+--          use the Auxiliary Modem Async Parameters word
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 6 }
 
     cpqSm2CommModemReset OBJECT-TYPE
@@ -1278,6 +1854,17 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         STATUS  mandatory
         DESCRIPTION
             "The string that is sent to reset the modem."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This is derived via 'Get PCMCIA Modem or Serial Card Configuration'
+--      response message in the 'Modem Reset String' field.
+--    Flint Method:
+--      This is the appropriate reset string from Flint response msg.
+--      if cpqSm2CommPort == internal
+--          use the Internal Modem Reset String
+--      else
+--          use the Auxiliary Modem Reset String
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 7 }
 
     cpqSm2CommModemInit OBJECT-TYPE
@@ -1286,6 +1873,18 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         STATUS  mandatory
         DESCRIPTION
             "The string that is sent to initialize the modem."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This is derived via 'Get PCMCIA Modem or Serial Card Configuration'
+--      response message in the 'Modem Initialization String' field.
+--    Flint Method:
+--      This is the appropriate initialization string from the Flint
+--      response msg.
+--      if cpqSm2CommPort == internal
+--          use the Internal Modem Initialization String
+--      else
+--          use the Auxiliary Modem Initialization String
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 8 }
 
     cpqSm2CommModemDialPrefix OBJECT-TYPE
@@ -1294,6 +1893,17 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         STATUS  mandatory
         DESCRIPTION
             "The string that is prepended to phone numbers before dialing."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This is derived via 'Get PCMCIA Modem or Serial Card Configuration'
+--      response message in the 'Modem Dial Prefix String' field.
+--    Flint Method:
+--      This is the appropriate dial prefix string from the Flint response msg.
+--      if cpqSm2CommPort == internal
+--          use the Internal Modem Dial Prefix String
+--      else
+--          use the Auxiliary Modem Dial Prefix String
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 9 }
 
     cpqSm2CommPortInit OBJECT-TYPE
@@ -1303,6 +1913,17 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "The string that is sent to the auxiliary port before the modem
             is reset."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This is derived via 'Get PCMCIA Modem or Serial Card Configuration'
+--      response message in the 'Port Initialization String' field.
+--    Flint Method:
+--      This is port init string from the Flint response msg.
+--      if cpqSm2CommPort == internal
+--          set to NULL string
+--      else
+--          use the Auxiliary Modem Dial Prefix String
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 10 }
 
     cpqSm2CommDialin OBJECT-TYPE
@@ -1326,6 +1947,20 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             disabled(3)
               Dialing in to this modem is disabled."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      Since you can have either a modem card or a serial card (not both)
+--      on Orwell, this item is unnecessary and not supported in the FW.
+--      The agents should return a value of enabled(2).
+--    Flint Method:
+--      This value is obtained from the dial-in configuration word.
+--      if bit 0 == 0 and cpqSm2CommPort == internal(1)
+--         enabled
+--      else if bit 0 == 1 and cpqSm2CommPort == auxiliary(2)
+--         enabled
+--      else
+--         disabled.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 11 }
 
     cpqSm2CommDialbackRequired OBJECT-TYPE
@@ -1350,6 +1985,15 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             notRequired(3)
               Dialback is not required.  It is optional on a per user basis."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This is derived via 'Get PCMCIA Modem or Serial Card Configuration'
+--      response message in the 'Dial-in Configuration' word. Interpret Bit 1
+--      of this word where 0 == notRequired, 1 == required.
+--    Flint Method:
+--      This value is obtained from the dial-in configuration word. Bit 1 == 1
+--      is required, 0 is not required.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 12 }
 
     cpqSm2CommNonPppConnections OBJECT-TYPE
@@ -1375,6 +2019,18 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             disabled(3)
               Non-PPP connections are not allowed on this port.  Only PPP
               sessions are accepted."
+-- :CPQ,DEV:
+--      Orwell Method:
+--         This is not applicable and a value of other(1) should be returned.
+--      Flint Method:
+--         This value is obtained from the dial-in configuration word.
+--         if bit 3 == 1 and cpqSm2CommPort == internal(1)
+--            enabled
+--         else if bit 2 == 1 and cpqSm2CommPort == auxiliary(2)
+--            enabled
+--         else
+--            disabled.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 13 }
 
     cpqSm2CommSnmpTrapDelivery OBJECT-TYPE
@@ -1401,6 +2057,19 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             disabled(3)
               SNMP Trap delivery is disabled.  The Remote Insight firmware
               will not use this port to deliver SNMP traps."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This field is not applicable to Orwell, so the agents should return
+--      the enumeration of other(1).
+--    Flint Method:
+--      This value is obtained from the SNMP trap dial-out configuration word.
+--      if bit 0 == 0 and cpqSm2CommPort == internal(1)
+--         enabled
+--      else if bit 0 == 1 and cpqSm2CommPort == auxiliary(2)
+--         enabled
+--      else
+--         disabled.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 14 }
 
     cpqSm2CommPageDelivery OBJECT-TYPE
@@ -1427,6 +2096,19 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             disabled(3)
               Page delivery is disabled.  The Remote Insight firmware will not
               use this port to deliver pages."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This field is not applicable to Orwell, so the agents should return
+--      the enumeration of other(1).
+--    Flint Method:
+--      This value is obtained from the pager device configuration word.
+--      if bit 0 == 0 and cpqSm2CommPort == internal(1)
+--         enabled
+--      else if bit 0 == 1 and cpqSm2CommPort == auxiliary(2)
+--         enabled
+--      else
+--         disabled.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 15 }
 
     cpqSm2CommPagerBaudRate OBJECT-TYPE
@@ -1436,6 +2118,15 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "The baud rate to be used for pager communications over this medium
             by the Remote Insight."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This is derived via 'Get PCMCIA Modem or Serial Card Configuration'
+--      response message in the 'Async parameters for paging' word. Return
+--      bits 4-15 this word * 300.
+--    Flint Method:
+--      This is the FLINT bits 4-15 of the pager async parm word * 300.
+--      Set this value to 0 when cpqSm2CommPageDelivery is disabled(3).
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 16 }
 
     cpqSm2CommPagerParity OBJECT-TYPE
@@ -1464,6 +2155,16 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             even(4)
               This port is set for even parity when paging."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This is derived via 'Get PCMCIA Modem or Serial Card Configuration'
+--      response message in the 'Async parameters for paging' word. Interpret
+--      bits 2-3 of this word where 0 == none, 1 == odd,  and 2 == even.
+--    Flint Method:
+--      This is the FLINT bits 2-3 of the pager async parm word. 0 == none,
+--      1 == odd and 2 == even.
+--      Set this value to other(1) when cpqSm2CommPageDelivery is disabled(3).
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 17 }
 
     cpqSm2CommPagerDataBits OBJECT-TYPE
@@ -1487,6 +2188,16 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             eight(3)
               This port is set for eight data bits when paging."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This is derived via 'Get PCMCIA Modem or Serial Card Configuration'
+--      response message in the 'Async parameters for paging' word. Interpret
+--      bit 1 of this word where 0 == 8 data bits, 1 == 7 data bits.
+--    Flint Method:
+--      This is the FLINT bit 1 of the pager async parm word. 0 == 8 data bits,
+--      1 == 7 data bits.
+--      Set this value to other(1) when cpqSm2CommPageDelivery is disabled(3).
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 18 }
 
     cpqSm2CommPagerStopBits OBJECT-TYPE
@@ -1510,6 +2221,16 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             twoBits(3)
               This port is set for two stop bits when paging."
+-- :CPQ,DEV:
+--    Orwell Method:
+--      This is derived via 'Get PCMCIA Modem or Serial Card Configuration'
+--      response message in the 'Async parameters for paging' word. Interpret
+--      bit 0 of this word where 0 == 1 stop bit, 1 == 2 stop bits.
+--    Flint Method:
+--      This is the FLINT bit 0 of the pager async parm word. 0 == 1 stop bit,
+--      1 == 2 stop bits.
+--      Set this value to other(1) when cpqSm2CommPageDelivery is disabled(3).
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 19 }
 
     cpqSm2CommPcmciaModel OBJECT-TYPE
@@ -1522,6 +2243,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
              This is a NULL terminated ASCII string.  If the agent
              cannot determine the model name, it should return a NULL
              string."
+-- :CPQ,DEV:
+--      This model name can be returned from the 'Get PCMCIA Configuration'
+--      command using the 'ASCIIZ description of card' field.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2CommSettingsEntry 20 }
 
 -- ****************************************************************************
@@ -1538,7 +2263,7 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 --      Remote Insight/ Integrated Lights-Out.
 --
 --      Implementation of the cpqSm2Nic group is mandatory for all agents
---      that support the Compaq Remote Insight/ Integrated Lights-Out MIB.
+--      that support the Remote Insight/Integrated Lights-Out MIB.
 --
 -- ****************************************************************************
 
@@ -1590,6 +2315,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         cpqSm2NicRibFullQualDnsName   DisplayString
         }
 
+-- :CPQ,DEV:
+--         This table was added in the Orwell timeframe and is not applicable
+--         to Flint.
+-- :CPQ,ENDDEV:
 
     cpqSm2NicLocation OBJECT-TYPE
         SYNTAX  INTEGER {
@@ -1614,6 +2343,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             pcmcia(3)
               This is a PCMCIA network interface controller."
+-- :CPQ,DEV:
+--         In the initial release of Orwell, only the embedded NIC is
+--         supported, so the agents should return embedded(2).
+-- :CPQ,ENDDEV:
 
         ::= { cpqSm2NicConfigEntry 1 }
 
@@ -1628,6 +2361,11 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
              This is a NULL terminated ASCII string.  If the agent
              cannot determine the model name, it should return a NULL
              string."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Configuration' response message in the 'Product name of network
+--      interface' field.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicConfigEntry 2 }
 
     cpqSm2NicType OBJECT-TYPE
@@ -1653,6 +2391,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             tokenRing(3)
               This is a token ring network interface controller."
+-- :CPQ,DEV:
+--         In the initial release of Orwell, only the ethernet NIC is
+--         supported, so the agents should return ethernet(2).
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicConfigEntry 3 }
 
     cpqSm2NicMacAddress OBJECT-TYPE
@@ -1672,6 +2414,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
               16-bit addresses, if needed, are represented by setting
               their upper 4 octets to all 0's, i.e., AAFF would be
               represented as 00000000AAFF."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Configuration' response message in the 'MAC address' field.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicConfigEntry 4 }
 
     cpqSm2NicIpAddress OBJECT-TYPE
@@ -1686,6 +2432,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             with the Remote Insight/ Integrated Lights-Out.  All octets should
             be set to 0xff if there is not an IP address associated with the
             NIC. The order will be in network byte order (i.e. MSB first.)"
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Configuration' response message in the 'IP address' field.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicConfigEntry 5 }
 
     cpqSm2NicIpSubnetMask OBJECT-TYPE
@@ -1695,6 +2445,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Remote Insight/ Integrated Lights-Out Network Interface Controller
             Subnet Mask."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Configuration' response message in the 'Subnet mask' field.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicConfigEntry 6 }
 
     cpqSm2NicEnabledStatus OBJECT-TYPE
@@ -1720,6 +2474,12 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             disabled(3)
               This network interface controller is disabled."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Configuration' response message in the 'Option bits' field.
+--         If bit 0 (in Options bits) == 1 return enabled(2).
+--         If bit 0 (in Options bits) == 0 return disabled(3).
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicConfigEntry 7 }
 
     cpqSm2NicDuplexState OBJECT-TYPE
@@ -1750,6 +2510,12 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             notSupported(4)
               This network interface controller is does not support duplex
               state."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Full duplex' field.
+--         If Full duplex is zero, return halfDuplex(2).
+--         If Full duplex is non-zero, return fullDuplex(3).
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicConfigEntry 8 }
 
     cpqSm2NicSpeed OBJECT-TYPE
@@ -1762,6 +2528,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
              The speed of the network interface controller in megabits per
              second."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Current link speed' field.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicConfigEntry 9 }
 
     cpqSm2NicDhcpUse OBJECT-TYPE
@@ -1787,6 +2557,18 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             disabled(3)
               DHCP usage is disabled for this network interface controller."
+-- :CPQ,DEV:
+--      Orwell and prior agents:
+--         This information can be extracted from the 'Get Network Interface
+--         Configuration' response message in the 'Option bits' field.
+--            If bit 1 (in Options bits) == 1 return enabled(2).
+--            If bit 1 (in Options bits) == 0 return disabled(3).
+--      Thunderchild agents:
+--         This information can be extracted from the 'Get DNS, DHCP and WINS
+--         Configuration' response message (0x803d) in the 'Option bits' field.
+--            If bit 0 (in Options bits) == 1 return enabled(2).
+--            If bit 0 (in Options bits) == 0 return disabled(3).
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicConfigEntry 10 }
 
     cpqSm2NicCondition OBJECT-TYPE
@@ -1805,6 +2587,21 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         This represents the overall condition of the
         Remote Insight/ Integrated Lights-Out Network
         Interface Controller (NIC)."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Configuration' response message in the 'NIC Condition' field.
+
+--      In the initial release of Orwell Firmware, the firmware will only
+--      return other(1).  Future releases will support the other enumerations.
+--      In the future, a trap may be added which will be sent whenever the
+--      condition changes.  However, because agents do not send Sm2 traps
+--      through the Remote Insight/ Integrated Lights-Out itself, the firmware
+--      itself will also need to support that future trap.  Because of the
+--      numerous unknowns and potential risk, this trap will be left to future
+--      implementation.  However, the condition will be implemented in the original
+--      timeframe.  Note that this variable feeds into the overall MIB condition
+--      cpqSm2MibCondition.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicConfigEntry 11 }
 
     cpqSm2NicMtu OBJECT-TYPE
@@ -1817,6 +2614,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             The maximum packet size (in bytes) of the network interface
             controller."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Configuration' response message in the 'MTU' field.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicConfigEntry 12 }
 
     cpqSm2NicGatewayIpAddress OBJECT-TYPE
@@ -1832,6 +2633,13 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             If cpqSm2NicDhcpUse is enabled(2), this is the DHCP supplied gateway.
             If cpqSm2NicDhcpUse is disabled(3), this is the static gateway.
             The order will be in network byte order (i.e. MSB first.)"
+-- :CPQ,DEV:
+--      Thunderchild agents:
+--         This MIB variable and corresponding FW SMIF message was added in the
+--         Thunderchild timeframe. This information can be extracted from the
+--         'Get Network Interface Configuration' response message in the
+--         'Gateway IP' address field.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicConfigEntry 13 }
 
     cpqSm2NicRibFullQualDnsName OBJECT-TYPE
@@ -1846,6 +2654,21 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             This is composed of the DNS name and the Domain name associated
             with the Remote Insight/ Integrated Lights-Out."
+-- :CPQ,DEV:
+--      OS agents:
+--        IF Thunderchild and later
+--           1) Retrieve the 'DNS Name of RIB' field from the Firmware's
+--              Get Network Interface Configuration response message (0x8032).
+--           2) Retrieve the 'Domain Name for RIB' field from the Firmware's
+--              Get DNS, DHCP and WINS Configuration response message (0x803d).
+--           3) Copy 1) into a buffer, append a period (dot), and append 2).
+--              This combination will yield the fully qualified DNS name.
+--              For example, if 1)="xxx" and 2)="yyyy", then the fully qualified
+--              DNS name would be "xxx.yyyy"
+--        ELSE
+--           This capability did not exist pre-Thunderchild.  Return a string of
+--           length 0.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicConfigEntry 14 }
 
 
@@ -1898,6 +2721,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         cpqSm2NicRecvUnknownPackets   Counter
         }
 
+-- :CPQ,DEV:
+--         This table was added in the Orwell timeframe and is not applicable
+--         to Flint.
+-- :CPQ,ENDDEV:
 
     cpqSm2NicStatsLocation OBJECT-TYPE
         SYNTAX  INTEGER {
@@ -1922,6 +2749,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             pcmcia(3)
               This is a PCMCIA network interface controller."
+-- :CPQ,DEV:
+--      This contains the same value as the cpqSm2NicLocation variable and
+--      is used to provide the index for the Statistics Table.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicStatsEntry 1 }
 
     cpqSm2NicXmitBytes OBJECT-TYPE
@@ -1931,6 +2762,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Remote Insight/ Integrated Lights-Out Network Interface Controller
             Bytes Transmitted."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Transmit Statistics' section.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicStatsEntry 2 }
 
 
@@ -1941,6 +2776,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Remote Insight/ Integrated Lights-Out Network Interface Controller
             Total Transmit Packets."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Transmit Statistics' section.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicStatsEntry 3 }
 
     cpqSm2NicXmitUnicastPackets OBJECT-TYPE
@@ -1950,6 +2789,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Remote Insight/ Integrated Lights-Out Network Interface Controller
             Unicast Transmit Packets."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Transmit Statistics' section.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicStatsEntry 4 }
 
     cpqSm2NicXmitNonUniPackets OBJECT-TYPE
@@ -1959,6 +2802,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Remote Insight/ Integrated Lights-Out Network Interface Controller
             Non-Unicast Transmit Packets."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Transmit Statistics' section.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicStatsEntry 5 }
 
     cpqSm2NicXmitDiscardPackets OBJECT-TYPE
@@ -1968,6 +2815,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Remote Insight/ Integrated Lights-Out Network Interface Controller Total
             Transmit Discarded Packets."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Transmit Statistics' section.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicStatsEntry 6 }
 
     cpqSm2NicXmitErrorPackets OBJECT-TYPE
@@ -1977,6 +2828,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Remote Insight/ Integrated Lights-Out Network Interface Controller Total
             Error Transmit Packets."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Transmit Statistics' section.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicStatsEntry 7 }
 
     cpqSm2NicXmitQueueLength OBJECT-TYPE
@@ -1986,6 +2841,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Remote Insight/ Integrated Lights-Out Network Interface Controller Number
             of Outstanding Packets in Transmit Queue."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Transmit Statistics' section.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicStatsEntry 8 }
 
 
@@ -1996,6 +2855,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Remote Insight/ Integrated Lights-Out Network Interface Controller
             Bytes Received."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Receive Statistics' section.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicStatsEntry 9 }
 
     cpqSm2NicRecvTotalPackets OBJECT-TYPE
@@ -2005,6 +2868,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Remote Insight/ Integrated Lights-Out Network Interface Controller
             Total Receive Packets."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Receive Statistics' section.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicStatsEntry 10}
 
     cpqSm2NicRecvUnicastPackets OBJECT-TYPE
@@ -2014,6 +2881,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Remote Insight/ Integrated Lights-Out Network Interface Controller Unicast
             Receive Packets."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Receive Statistics' section.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicStatsEntry 11}
 
     cpqSm2NicRecvNonUniPackets OBJECT-TYPE
@@ -2023,6 +2894,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Remote Insight/ Integrated Lights-Out Network Interface Controller Non-Unicast
             Receive Packets."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Receive Statistics' section.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicStatsEntry 12}
 
     cpqSm2NicRecvDiscardPackets OBJECT-TYPE
@@ -2032,6 +2907,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Remote Insight/ Integrated Lights-Out Network Interface Controller Total Receive
             Discarded Packets."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Receive Statistics' section.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicStatsEntry 13 }
 
     cpqSm2NicRecvErrorPackets OBJECT-TYPE
@@ -2041,6 +2920,10 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Remote Insight/ Integrated Lights-Out Network Interface Controller Total Receive
             Error Packets."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Receive Statistics' section.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicStatsEntry 14 }
 
     cpqSm2NicRecvUnknownPackets OBJECT-TYPE
@@ -2050,7 +2933,452 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Remote Insight/ Integrated Lights-Out Network Interface Controller Number of Unknown
             Protocol Packets."
+-- :CPQ,DEV:
+--      This information can be extracted from the 'Get Network Interface
+--      Statistics' response message in the 'Receive Statistics' section.
+-- :CPQ,ENDDEV:
         ::= { cpqSm2NicStatsEntry 15 }
+
+
+-- ************************************************************************************
+--   Remote Insight/ Integrated Lights-Out Network Interface Configuration IPv6 Table
+-- ====================================================================================
+--
+-- The compaq enterprise               (1.3.6.1.4.1.232)
+--      cpqSm2 Group                   (1.3.6.1.4.1.232.9)
+--       cpqSm2Component Group         (1.3.6.1.4.1.232.9.2)
+--        cpqSm2Nic Group              (1.3.6.1.4.1.232.9.2.5)
+--         cpqSm2NicIpv6 Group         (1.3.6.1.4.1.232.9.2.5.3)
+
+-- ********************************************************************
+--    cpqSm2NicIpv6 OBJECT-TYPE
+--        SYNTAX  SEQUENCE OF CpqSm2NicIpv6Entry
+--        ACCESS  not-accessible
+--        STATUS  mandatory
+--        DESCRIPTION
+--            "The list of IPv6 network interface configuration settings for the Remote Insight/ Integrated Lights-Out."
+--        ::= { cpqSm2Nic 3 }
+
+    cpqSm2NicIpv6Gateway OBJECT-TYPE
+        SYNTAX  DisplayString
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "This value specifies the IPv6 gateway address."
+-- :CPQ,DEV:
+-- :CPQ,ENDDEV:
+        ::= { cpqSm2NicIpv6 1 }
+
+-- *********************************************************************
+
+-- The compaq enterprise               (1.3.6.1.4.1.232)
+--      cpqSm2 Group                   (1.3.6.1.4.1.232.9)
+--       cpqSm2Component Group         (1.3.6.1.4.1.232.9.2)
+--        cpqSm2Nic Group              (1.3.6.1.4.1.232.9.2.5)
+--         cpqSm2NicIpv6 Group         (1.3.6.1.4.1.232.9.2.5.3)
+--          cpqSm2NicIpv6Address Table (1.3.6.1.4.1.232.9.2.5.3.2)
+-- ****************************************************************************
+-- :CPQ,DEV:
+--  This table assumes the following:
+--  - Empty Nic IPv6 addresses will not be shown
+-- :CPQ,ENDDEV:
+
+    cpqSm2NicIpv6AddressTable OBJECT-TYPE
+        SYNTAX  SEQUENCE OF CpqSm2NicIpv6AddressEntry
+        ACCESS  not-accessible
+        STATUS  mandatory
+        DESCRIPTION
+            "A table of IPv6 Manual Address information."
+        ::= { cpqSm2NicIpv6 2 }
+
+    cpqSm2NicIpv6AddressEntry OBJECT-TYPE
+        SYNTAX  CpqSm2NicIpv6AddressEntry
+        ACCESS  not-accessible
+        STATUS  mandatory
+        DESCRIPTION
+            "A defined nic's IPv6 static address configuration settings for the Remote Insight/ Integrated Lights-Out."
+        INDEX   { cpqSm2NicIpv6Index }
+        ::= { cpqSm2NicIpv6AddressTable 1 }
+
+    CpqSm2NicIpv6AddressEntry ::= SEQUENCE {
+        cpqSm2NicIpv6Index             INTEGER,
+        cpqSm2NicIpv6Address           DisplayString,
+        cpqSm2NicIpv6Status            DisplayString,
+        cpqSm2NicIpv6PrefixLen         INTEGER
+        }
+
+    cpqSm2NicIpv6Index OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "An index that uniquely specifies this entry."
+        ::= { cpqSm2NicIpv6AddressEntry 1 }
+          
+    cpqSm2NicIpv6Address OBJECT-TYPE
+        SYNTAX  DisplayString
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote Insight/ Integrated Lights-Out Network Interface
+            Controller IPv6 Address with the CIDR(Classless Inter-Domain Routing) notation that the logical adapter presents to the network."
+        ::= { cpqSm2NicIpv6AddressEntry 2 }
+
+    cpqSm2NicIpv6Status OBJECT-TYPE
+        SYNTAX  DisplayString
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote Insight/ Integrated Lights-Out Network Interface
+            Controller IPv6 Address Status."
+        ::= { cpqSm2NicIpv6AddressEntry 3 }
+
+    cpqSm2NicIpv6PrefixLen OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote Insight/ Integrated Lights-Out Network Interface
+            Prefix specifies a subnet with a range of IP addresses."
+        ::= { cpqSm2NicIpv6AddressEntry 4 }
+
+-- *********************************************************************
+-- The compaq enterprise               (1.3.6.1.4.1.232)
+--      cpqSm2 Group                   (1.3.6.1.4.1.232.9)
+--       cpqSm2Component Group         (1.3.6.1.4.1.232.9.2)
+--        cpqSm2Nic Group              (1.3.6.1.4.1.232.9.2.5)
+--         cpqSm2NicIpv6 Group         (1.3.6.1.4.1.232.9.2.5.3)
+--          cpqSm2NicIpv6Dhcp Table    (1.3.6.1.4.1.232.9.2.5.3.3)
+-- ****************************************************************************
+-- :CPQ,DEV:
+--  This table assumes the following:
+--  - Empty Nic IPv6 DHCP addresses will not be shown
+-- :CPQ,ENDDEV:
+
+    cpqSm2NicIpv6DhcpTable OBJECT-TYPE
+        SYNTAX  SEQUENCE OF CpqSm2NicIpv6DhcpEntry
+        ACCESS  not-accessible
+        STATUS  mandatory
+        DESCRIPTION
+            "A table of IPv6 Dhcp Address information."
+        ::= { cpqSm2NicIpv6 3 }
+
+    cpqSm2NicIpv6DhcpEntry OBJECT-TYPE
+        SYNTAX  CpqSm2NicIpv6DhcpEntry
+        ACCESS  not-accessible
+        STATUS  mandatory
+        DESCRIPTION
+            "A defined nic's IPv6 DHCP configuration settings for the Remote Insight/ Integrated Lights-Out."
+        INDEX   { cpqSm2NicIpv6Index }
+        ::= { cpqSm2NicIpv6DhcpTable 1 }
+
+    CpqSm2NicIpv6DhcpEntry ::= SEQUENCE {
+        cpqSm2NicIpv6DhcpIndex         INTEGER,
+        cpqSm2NicIpv6Dhcp              DisplayString,
+        cpqSm2NicIpv6DhcpStatus        DisplayString,
+        cpqSm2NicIpv6DhcpPrefixLen     INTEGER
+        }
+
+    cpqSm2NicIpv6DhcpIndex OBJECT-TYPE
+        SYNTAX INTEGER
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "An index that uniquely specifies this entry."
+        ::= { cpqSm2NicIpv6DhcpEntry 1 }
+          
+    cpqSm2NicIpv6Dhcp OBJECT-TYPE
+        SYNTAX  DisplayString
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote Insight/ Integrated Lights-Out Network Interface
+            Controller IPv6 Address with the CIDR(Classless Inter-Domain Routing) notation that the logical adapter presents to the network."
+        ::= { cpqSm2NicIpv6DhcpEntry 2 }
+
+    cpqSm2NicIpv6DhcpStatus OBJECT-TYPE
+        SYNTAX  DisplayString
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote Insight/ Integrated Lights-Out Network Interface
+            Controller IPv6 Dhcp Status."
+        ::= { cpqSm2NicIpv6DhcpEntry 3 }
+
+    cpqSm2NicIpv6DhcpPrefixLen OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote Insight/ Integrated Lights-Out Network Interface
+            Prefix specifies a subnet with a range of IP addresses."
+        ::= { cpqSm2NicIpv6DhcpEntry 4 }
+
+-- *********************************************************************
+-- The compaq enterprise               (1.3.6.1.4.1.232)
+--      cpqSm2 Group                   (1.3.6.1.4.1.232.9)
+--       cpqSm2Component Group         (1.3.6.1.4.1.232.9.2)
+--        cpqSm2Nic Group              (1.3.6.1.4.1.232.9.2.5)
+--         cpqSm2NicIpv6 Group         (1.3.6.1.4.1.232.9.2.5.3)
+--          cpqSm2NicIpv6Slaac Table   (1.3.6.1.4.1.232.9.2.5.3.4)
+-- ****************************************************************************
+-- :CPQ,DEV:
+--  This table assumes the following:
+--  - Empty Nic IPv6 Slaac addresses will not be shown
+-- :CPQ,ENDDEV:
+
+    cpqSm2NicIpv6SlaacTable OBJECT-TYPE
+        SYNTAX  SEQUENCE OF CpqSm2NicIpv6SlaacEntry
+        ACCESS  not-accessible
+        STATUS  mandatory
+        DESCRIPTION
+            "A table of IPv6 Slaac Address information."
+        ::= { cpqSm2NicIpv6 4 }
+
+    cpqSm2NicIpv6SlaacEntry OBJECT-TYPE
+        SYNTAX  CpqSm2NicIpv6SlaacEntry
+        ACCESS  not-accessible
+        STATUS  mandatory
+        DESCRIPTION
+            "A defined nic's IPv6 Slaac address configuration settings for the Remote Insight/ Integrated Lights-Out."
+        INDEX   { cpqSm2NicIpv6SlaacIndex }
+        ::= { cpqSm2NicIpv6SlaacTable 1 }
+
+    CpqSm2NicIpv6SlaacEntry ::= SEQUENCE {
+        cpqSm2NicIpv6SlaacIndex        INTEGER,
+        cpqSm2NicIpv6Slaac             DisplayString,
+        cpqsm2NicIpv6SlaacStatus       DisplayString,
+        cpqSm2NicIpv6SlaacPrefixLen    INTEGER
+        }
+
+    cpqSm2NicIpv6SlaacIndex OBJECT-TYPE
+        SYNTAX INTEGER
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "An index that uniquely specifies this entry."
+        ::= { cpqSm2NicIpv6SlaacEntry 1 }
+          
+    cpqSm2NicIpv6Slaac OBJECT-TYPE
+        SYNTAX  DisplayString
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote Insight/ Integrated Lights-Out Network Interface
+            Controller IPv6 Slaac Address with the CIDR(Classless Inter-Domain Routing) notation that the logical adapter presents to the network."
+        ::= { cpqSm2NicIpv6SlaacEntry 2 }
+
+    cpqsm2NicIpv6SlaacStatus OBJECT-TYPE
+        SYNTAX  DisplayString
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote Insight/ Integrated Lights-Out Network Interface
+            Controller IPv6 Slaac Status."
+        ::= { cpqSm2NicIpv6SlaacEntry 3 }
+
+    cpqSm2NicIpv6SlaacPrefixLen OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote Insight/ Integrated Lights-Out Network Interface
+            Prefix specifies a subnet with a range of IP addresses."
+        ::= { cpqSm2NicIpv6SlaacEntry 4 }
+
+-- *********************************************************************
+-- The compaq enterprise               (1.3.6.1.4.1.232)
+--      cpqSm2 Group                   (1.3.6.1.4.1.232.9)
+--       cpqSm2Component Group         (1.3.6.1.4.1.232.9.2)
+--        cpqSm2Nic Group              (1.3.6.1.4.1.232.9.2.5)
+--         cpqSm2NicIpv6 Group         (1.3.6.1.4.1.232.9.2.5.3)
+--          cpqSm2NicIpv6Route Table   (1.3.6.1.4.1.232.9.2.5.3.5)
+-- ****************************************************************************
+-- :CPQ,DEV:
+--  This table assumes the following:
+--  - Empty Nic IPv6 Route addresses will not be shown
+-- :CPQ,ENDDEV:
+
+    cpqSm2NicIpv6RouteTable OBJECT-TYPE
+        SYNTAX  SEQUENCE OF CpqSm2NicIpv6RouteEntry
+        ACCESS  not-accessible
+        STATUS  mandatory
+        DESCRIPTION
+            "A table of IPv6 Route Address information."
+        ::= { cpqSm2NicIpv6 5 }
+
+    cpqSm2NicIpv6RouteEntry OBJECT-TYPE
+        SYNTAX  CpqSm2NicIpv6RouteEntry
+        ACCESS  not-accessible
+        STATUS  mandatory
+        DESCRIPTION
+            "A defined nic's IPv6 route configuration settings for the Remote Insight/ Integrated Lights-Out."
+        INDEX   { cpqSm2NicIpv6RouteIndex }
+        ::= { cpqSm2NicIpv6RouteTable 1 }
+
+    CpqSm2NicIpv6RouteEntry ::= SEQUENCE {
+        cpqSm2NicIpv6RouteIndex             INTEGER,
+        cpqSm2NicIpv6RouteDest              DisplayString,
+        cpqsm2NicIpv6RouteDestStatus        DisplayString,
+        cpqSm2NicIpv6RouteDestPrefixLen     INTEGER,
+        cpqSM2NicIpv6RouteGate              DisplayString,
+        cpqsm2NicIpv6RouteGateStatus        DisplayString
+        }
+
+    cpqSm2NicIpv6RouteIndex OBJECT-TYPE
+        SYNTAX INTEGER
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "An index that uniquely specifies this entry."
+        ::= { cpqSm2NicIpv6RouteEntry 1 }
+          
+    cpqSm2NicIpv6RouteDest OBJECT-TYPE
+        SYNTAX  DisplayString
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote Insight/ Integrated Lights-Out Network Interface
+            Controller IPv6 route destination address with the CIDR(Classless Inter-Domain Routing) notation that the logical adapter presents to the network."
+        ::= { cpqSm2NicIpv6RouteEntry 2 }
+
+    cpqsm2NicIpv6RouteDestStatus OBJECT-TYPE
+        SYNTAX  DisplayString
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote Insight/ Integrated Lights-Out Network Interface
+            Controller IPv6 route destination Status."
+        ::= { cpqSm2NicIpv6RouteEntry 3 }
+
+    cpqSm2NicIpv6RouteDestPrefixLen OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote Insight/ Integrated Lights-Out Network Interface
+            Route Destination Prefix specifies a subnet with a range of IP addresses."
+        ::= { cpqSm2NicIpv6RouteEntry 4 }
+
+    cpqSM2NicIpv6RouteGate OBJECT-TYPE
+        SYNTAX  DisplayString
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote Insight/ Integrated Lights-Out Network Interface
+            Controller IPv6 route gate address with the CIDR(Classless Inter-Domain Routing) notation that the logical adapter presents to the network."
+        ::= { cpqSm2NicIpv6RouteEntry 5 }
+
+    cpqsm2NicIpv6RouteGateStatus OBJECT-TYPE
+        SYNTAX  DisplayString
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote Insight/ Integrated Lights-Out Network Interface
+            Controller IPv6 route gate Status."
+        ::= { cpqSm2NicIpv6RouteEntry 6 }
+
+
+--  *********************************************************************
+--   Remote Insight/ Integrated Lights-Out Embedded Remote Support Group
+--   ===================================================================
+--
+-- The compaq enterprise               (1.3.6.1.4.1.232)
+--      cpqSm2 Group                   (1.3.6.1.4.1.232.9)
+--       cpqSm2Component Group         (1.3.6.1.4.1.232.9.2)
+--        cpqSm2Ers Group              (1.3.6.1.4.1.232.9.2.6)
+--
+--      The cpqSm2Ers group contains the configuration and statistics for the
+--      embedded remote support feature of Remote Insight/ Integrated Lights-Out.
+--
+--      Implementation of the cpqSm2Ers group is mandatory for all agents
+--      that support the Remote Insight/Integrated Lights-Out MIB.
+--
+-- ****************************************************************************
+    cpqSm2ErsTransactionType OBJECT-TYPE
+        SYNTAX  INTEGER {
+                    registration(1),
+                    serviceEvent(2),
+                    l2DataCollection(3),
+                    unregistration(4),
+                    ahsDataCollection(5)
+                    }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Embedded Remote Support transaction type.
+
+            The following values are defined:
+
+            registration(1)
+                Registration operation with Insight Remote Host or Insight Online Host.
+
+            serviceEvent(2)
+                Sending of service event to Insight Remote Host or Insight Online Host.
+
+            l2DataCollection(3)
+                L2 Data collection operation.
+
+            unregistration(4)
+                Unregistration with Insight Remote Host or Insight Online Host.
+
+            ahsDataCollection(5)
+                Active Health System data collection operation."
+-- :CPQ,DEV:
+--      This information is passed as the embedded remote support trap data and 
+--      is not directly queryable.
+-- :CPQ,ENDDEV:
+        ::= { cpqSm2Ers 1 }
+
+    cpqSm2ErsConnectionModel OBJECT-TYPE
+        SYNTAX  INTEGER {
+            insightOnline(1),
+            insightRemoteSupport(2)
+            }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Embedded Remote Support connection model configured on
+             the Remote Insight/ Integrated Lights-Out."
+-- :CPQ,DEV:
+--      This information is passed as the embedded remote support trap data and 
+--      is not directly queryable.
+-- :CPQ,ENDDEV:
+        ::= { cpqSm2Ers 2 }
+
+    cpqSm2ErsFailureCode OBJECT-TYPE
+        SYNTAX  INTEGER {
+            genericTransmitError(1),
+            clientTransmitTimeout(2),
+            clientReceiveTimeout(3),
+            proxyConnectError(4),
+            remoteHostConnectError(5),
+            remoteServiceError(6)
+            }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Embedded Remote Support transaction failure code."
+-- :CPQ,DEV:
+--      This information is passed as the embedded remote support trap data and 
+--      is not directly queryable.
+-- :CPQ,ENDDEV:
+        ::= { cpqSm2Ers 3 }
+
+    cpqSm2ErsRemoteHost OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..135))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Remote destination server's hostname and port as configured 
+             on the Remote Insight/ Integrated Lights-Out.
+
+             Example: myremotehost.hp.com:6789"
+-- :CPQ,DEV:
+--      This information is passed as the embedded remote support trap data and 
+--      is not directly queryable.
+-- :CPQ,ENDDEV:
+        ::= { cpqSm2Ers 4 }
 
 
 -- ****************************************************************************
@@ -2065,6 +3393,12 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 --  agent implementation may support all, some, or none of the traps.
 --  If traps are supported, the user should be provided with the option of
 --  disabling traps.
+-- :CPQ,DEV:
+--      The traps defined below that are assigned the 900x values will
+--      support the new trap format for Insight Manager v2.0 and beyond.
+--      These traps allow for a unique set of traps at the Compaq
+--      Enterprise (1.3.6.1.4.1.232.) across all MIBs
+-- :CPQ,ENDDEV:
 --
 -- ****************************************************************************
 
@@ -2076,13 +3410,22 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             The Remote Insight/ Integrated Lights-Out firmware has detected a server reset."
 
-              --#TYPE "Server Reset Detected"
+              --#TYPE "Server Reset Detected (9001)"
               --#SUMMARY "Server reset detected."
               --#ARGUMENTS {}
               --#SEVERITY CRITICAL
               --#TIMEINDEX 99
               --#STATE   DEGRADED
-
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY DEVICEBAY
+              --#LIFECYCLE
+              
+-- :CPQ,DEV:
+--      OS agents:
+--         This trap is never sent by the OS agents.
+--      Remote Insight/ Integrated Lights-Out f/w agent:
+--         This trap is sent when a server reset is detected.
+-- :CPQ,ENDDEV:
         ::= 9001
 
     cpqSm2ServerPowerOutage TRAP-TYPE
@@ -2094,13 +3437,22 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             The Remote Insight/ Integrated Lights-Out firmware has detected server
             power failure."
 
-              --#TYPE "Server Power Outage"
+              --#TYPE "Server Power Outage (9002)"
               --#SUMMARY "Server power outage detected."
               --#ARGUMENTS {}
               --#SEVERITY CRITICAL
               --#TIMEINDEX 99
               --#STATE   DEGRADED
-
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY POWER
+              --#ACTION "Check the server's power source."
+              
+-- :CPQ,DEV:
+--      OS agents:
+--         This trap is never sent by the OS agents.
+--      Remote Insight/ Integrated Lights-Out f/w agent:
+--         This trap is sent when server power fails.
+-- :CPQ,ENDDEV:
         ::= 9002
 
     cpqSm2UnauthorizedLoginAttempts TRAP-TYPE
@@ -2112,13 +3464,25 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             The Remote Insight/ Integrated Lights-Out firmware has detected
             unauthorized login attempts."
 
-              --#TYPE "Remote Insight/ Integrated Lights-Out Unauthorized Login Attempts"
-              --#SUMMARY "More than %d unauthorized login attempts detected."
+              --#TYPE "Remote Insight/ Integrated Lights-Out Unauthorized Login Attempts (9003)"
+              --#SUMMARY "Integrated Lights-Out detected more than %d unauthorized login attempts."
               --#ARGUMENTS {2}
               --#SEVERITY INFORMATIONAL
               --#TIMEINDEX 99
               --#STATE   OPERATIONAL
-
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY NONE
+              --#ACTION "Check the iLO log for more information on the login failure."
+              
+-- :CPQ,DEV:
+--      OS agents:
+--         This trap is sent when the Firmware's Get RIB Status Response
+--         command (0x8002) status word, bit 6 transitions to a 1.  The
+--         agent should reset the bit to 0, after issuing the trap.
+--      Remote Insight/ Integrated Lights-Out f/w agent:
+--         This trap is sent when more than cpqSm2CntlrBadLoginAttemptsThresh
+--         consecutive unauthorized login attempts are detected.
+-- :CPQ,ENDDEV:
         ::= 9003
 
     cpqSm2BatteryFailed TRAP-TYPE
@@ -2129,13 +3493,19 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             The Remote Insight battery has failed and needs to be replaced."
 
-              --#TYPE "Remote Insight Battery Failed"
+              --#TYPE "Remote Insight Battery Failed (9004)"
               --#SUMMARY "Remote Insight battery failed."
               --#ARGUMENTS {}
               --#SEVERITY CRITICAL
               --#TIMEINDEX 99
               --#STATE   FAILED
-
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY NONE
+              
+-- :CPQ,DEV:
+--      This trap is generated when cpqSm2CntlrBatteryStatus transitions
+--      to batteryFailed.
+-- :CPQ,ENDDEV:
         ::= 9004
 
     cpqSm2SelfTestError TRAP-TYPE
@@ -2147,13 +3517,20 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             The Remote Insight/ Integrated Lights-Out firmware has detected a Remote
             Insight self test error."
 
-              --#TYPE "Remote Insight/ Integrated Lights-Out Self Test Error"
+              --#TYPE "Remote Insight/ Integrated Lights-Out Self Test Error (9005)"
               --#SUMMARY "Remote Insight/ Integrated Lights-Out self test error %d."
               --#ARGUMENTS {2}
               --#SEVERITY CRITICAL
               --#TIMEINDEX 99
               --#STATE   FAILED
-
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY NONE
+              --#ACTION "To decode the error-code look into cpqSm2CntlrSelfTestErrors description. You can also check iLO logs & Diagnostic page to get more details on the error."
+              
+-- :CPQ,DEV:
+--      This trap is generated when cpqSm2CntlrSelfTestErrors transitions
+--      to non zero.
+-- :CPQ,ENDDEV:
         ::= 9005
 
     cpqSm2InterfaceError TRAP-TYPE
@@ -2165,13 +3542,22 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             The host OS has detected an error in the Remote Insight/ Integrated Lights-Out
             interface.  The firmware is not responding."
 
-              --#TYPE "Remote Insight/ Integrated Lights-Out Interface Error"
+              --#TYPE "Remote Insight/ Integrated Lights-Out Interface Error (9006)"
               --#SUMMARY "Server %s, Remote Insight/ Integrated Lights-Out interface error."
               --#ARGUMENTS {0}
               --#SEVERITY MAJOR
               --#TIMEINDEX 99
               --#STATE   DEGRADED
-
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY NONE
+              
+-- :CPQ,DEV:
+--      OS agents:
+--         This trap is generated when cpqSm2CntlrInterfaceStatus
+--         transitions to notResponding.
+--      Remote Insight/ Integrated Lights-Out f/w agent:
+--         This trap is never sent by the firmware.
+-- :CPQ,ENDDEV:
         ::= 9006
 
     cpqSm2BatteryDisconnected TRAP-TYPE
@@ -2182,13 +3568,19 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             The Remote Insight battery cable has been disconnected."
 
-              --#TYPE "Remote Insight Battery Disconnected"
+              --#TYPE "Remote Insight Battery Disconnected (9007)"
               --#SUMMARY "Remote Insight battery disconnected."
               --#ARGUMENTS {}
               --#SEVERITY MAJOR
               --#TIMEINDEX 99
               --#STATE   DEGRADED
-
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY NONE
+              
+-- :CPQ,DEV:
+--      This trap is generated when cpqSm2CntlrBatteryStatus transitions
+--      to batteryDisconnected.
+-- :CPQ,ENDDEV:
         ::= 9007
 
     cpqSm2KeyboardCableDisconnected TRAP-TYPE
@@ -2199,13 +3591,19 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             The Remote Insight keyboard cable has been disconnected."
 
-              --#TYPE "Remote Insight keyboard cable disconnected"
+              --#TYPE "Remote Insight keyboard cable disconnected (9008)"
               --#SUMMARY "Remote Insight keyboard cable disconnected."
               --#ARGUMENTS {}
               --#SEVERITY MAJOR
               --#TIMEINDEX 99
               --#STATE   DEGRADED
-
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY NONE
+              
+-- :CPQ,DEV:
+--      This trap is generated when cpqSm2CntlrKeyboardCableStatus transitions
+--      from connected to disconnected.
+-- :CPQ,ENDDEV:
         ::= 9008
 
     cpqSm2MouseCableDisconnected TRAP-TYPE
@@ -2216,13 +3614,19 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             The Remote Insight mouse cable has been disconnected."
 
-              --#TYPE "Remote Insight mouse cable disconnected"
+              --#TYPE "Remote Insight mouse cable disconnected (9009)"
               --#SUMMARY "Remote Insight mouse cable disconnected."
               --#ARGUMENTS {}
               --#SEVERITY MAJOR
               --#TIMEINDEX 99
               --#STATE   DEGRADED
-
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY NONE
+              
+-- :CPQ,DEV:
+--      This trap is generated when cpqSm2CntlrMouseCableStatus transitions
+--      from connected to disconnected.
+-- :CPQ,ENDDEV:
         ::= 9009
 
     cpqSm2ExternalPowerCableDisconnected TRAP-TYPE
@@ -2233,13 +3637,19 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             The Remote Insight external power cable has been disconnected."
 
-              --#TYPE "Remote Insight external power cable disconnected"
+              --#TYPE "Remote Insight external power cable disconnected (9010)"
               --#SUMMARY "Remote Insight external power cable disconnected."
               --#ARGUMENTS {}
               --#SEVERITY MAJOR
               --#TIMEINDEX 99
               --#STATE   DEGRADED
-
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY NONE
+              
+-- :CPQ,DEV:
+--      This trap is generated when cpqSm2CntlrExternalPowerCableStatus transitions
+--      from connected to disconnected.
+-- :CPQ,ENDDEV:
         ::= 9010
 
 -- New for 5.30.0.0
@@ -2251,13 +3661,22 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
 
             The Remote Insight/ Integrated Lights-Out firmware has detected the logs are full."
 
-              --#TYPE "Remote Insight/ Integrated Lights-Out Logs Full."
-              --#SUMMARY "Remote Insight/ Integrated Lights-Out Logs Full"
+              --#TYPE "Remote Insight/ Integrated Lights-Out Logs Full. (9011)"
+              --#SUMMARY "Remote Insight/ Integrated Lights-Out logs full."
               --#ARGUMENTS {}
-              --#SEVERITY INFORMATIONAL
+              --#SEVERITY MINOR
               --#TIMEINDEX 99
               --#STATE   OPERATIONAL
-
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY LOGS
+              --#LIFECYCLE
+              
+-- :CPQ,DEV:
+--      OS agents:
+--         This trap is never sent by the OS agents.
+--      Remote Insight/ Integrated Lights-Out f/w agent:
+--         This trap is sent when the logs are full.
+-- :CPQ,ENDDEV:
         ::= 9011
 
 -- New for 5.30.0.0
@@ -2270,13 +3689,22 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             The Remote Insight/ Integrated Lights-Out firmware has detected the security override jumper
             has been toggled to the engaged position."
 
-              --#TYPE "Security override engaged."
+              --#TYPE "Security override engaged. (9012)"
               --#SUMMARY "Remote Insight/ Integrated Lights-Out firmware has detected the security override jumper has been engaged."
               --#ARGUMENTS {}
               --#SEVERITY INFORMATIONAL
               --#TIMEINDEX 99
               --#STATE   OPERATIONAL
+              --#SIMPLE_SEVERITY OK
+              --#HWSTATUS_CATEGORY NONE              
+              --#LIFECYCLE
 
+-- :CPQ,DEV:
+--      OS agents:
+--         This trap is never sent by the OS agents.
+--      Remote Insight/ Integrated Lights-Out f/w agent:
+--         This trap is sent when the security override jumper has been toggled.
+-- :CPQ,ENDDEV:
         ::= 9012
 
 -- New for 5.30.0.0
@@ -2289,14 +3717,172 @@ CPQSM2-MIB DEFINITIONS ::= BEGIN
             The Remote Insight/ Integrated Lights-Out firmware has detected the security override jumper
             has been toggled to the disengaged position."
 
-              --#TYPE "Security override disengaged."
+              --#TYPE "Security override disengaged. (9013)"
               --#SUMMARY "Remote Insight/ Integrated Lights-Out firmware has detected the security override jumper has been disengaged."
               --#ARGUMENTS {}
               --#SEVERITY INFORMATIONAL
               --#TIMEINDEX 99
               --#STATE   OPERATIONAL
+              --#SIMPLE_SEVERITY OK
+              --#HWSTATUS_CATEGORY NONE            
+              --#LIFECYCLE
 
+-- :CPQ,DEV:
+--      OS agents:
+--         This trap is never sent by the OS agents.
+--      Remote Insight/ Integrated Lights-Out f/w agent:
+--         This trap is sent when the security override jumper has been toggled.
+-- :CPQ,ENDDEV:
         ::= 9013
 
+   cpqSm2ServerFatalError TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName }
+        DESCRIPTION
+            "Server Fatal Error Detected.
+
+            The Remote Insight/ Integrated Lights-Out firmware has 
+detected a server fatal error."
+
+              --#TYPE "Server Fatal Error Detected (9014)"
+              --#SUMMARY "Server fatal error detected."
+              --#ARGUMENTS {}
+              --#SEVERITY CRITICAL
+              --#TIMEINDEX 99
+              --#STATE   DEGRADED
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY NONE              
+-- :CPQ,DEV:
+--      Added for Net Integrity Blades:
+-- :CPQ,ENDDEV:
+
+        ::= 9014
+
+   cpqSm2NicLinkDown TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName }
+        DESCRIPTION
+            "The iLO NIC Link is Down.
+
+            The Remote Insight/ Integrated Lights-Out firmware has 
+detected the loss of network link."
+
+              --#TYPE "The iLO NIC Link is Down (9015)"
+              --#SUMMARY "The iLO NIC link has been lost."
+              --#ARGUMENTS {}
+              --#SEVERITY CRITICAL
+              --#TIMEINDEX 99
+              --#STATE   DEGRADED
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY NETWORK
+              --#ACTION "Check the network connections for the iLO."              
+-- :CPQ,DEV:
+--      Added for NES OSM:
+--      OS agents:
+--         This trap is generated when cpqSm2NicCondition
+--         transitions from ok(2) to failed(4)
+--      Remote Insight/ Integrated Lights-Out f/w agent:
+--         This trap is never sent by the firmware.
+-- :CPQ,ENDDEV:
+
+        ::= 9015
+
+   cpqSm2NicLinkUp TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName }
+        DESCRIPTION
+            "The iLO NIC Link is Up.
+
+            The Remote Insight/ Integrated Lights-Out firmware has 
+detected the presence of network link."
+
+              --#TYPE "The iLO NIC Link is Up (9016)"
+              --#SUMMARY "The iLO NIC link has been restored."
+              --#ARGUMENTS {}
+              --#SEVERITY INFORMATIONAL
+              --#TIMEINDEX 99
+              --#STATE   OPERATIONAL
+              --#SIMPLE_SEVERITY OK
+              --#HWSTATUS_CATEGORY NETWORK              
+-- :CPQ,DEV:
+--      Added for NES OSM:
+--      OS agents:
+--         This trap is generated when cpqSm2NicCondition
+--         transitions from failed(4) to ok(2).
+--      Remote Insight/ Integrated Lights-Out f/w agent:
+--         This trap is never sent by the firmware.
+-- :CPQ,ENDDEV:
+
+        ::= 9016
+
+    cpqSm2ServerPowerOn TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName,  cpqHoTrapFlags, cpqHoGUIDCanonical }
+        DESCRIPTION
+            "The server has been powered on. This will be sent once a server power on transition has occurred." 
+              --#TYPE "Server powered on (9017)"
+              --#SUMMARY "The server has been powered on."
+              --#ARGUMENTS {}
+              --#SEVERITY INFORMATIONAL
+              --#TIMEINDEX 99
+              --#STATE   OPERATIONAL
+              --#SIMPLE_SEVERITY OK
+              --#HWSTATUS_CATEGORY POWER
+              --#LIFECYCLE              
+    ::= 9017  
+ 
+    cpqSm2ServerPowerOff TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName,  cpqHoTrapFlags, cpqHoGUIDCanonical }
+        DESCRIPTION
+            "The server has been powered off. This will be sent once the server has been powered off, either by OS, or the power button. "
+ 
+              --#TYPE "Server powered off (9018)"
+              --#SUMMARY "The server has been powered off."
+              --#ARGUMENTS {}
+              --#SEVERITY INFORMATIONAL
+              --#TIMEINDEX 99
+              --#STATE   DEGRADED
+              --#SIMPLE_SEVERITY OK
+              --#HWSTATUS_CATEGORY POWER
+              --#LIFECYCLE
+    ::= 9018 
+ 
+    cpqSm2ServerPowerOnFailure TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName, cpqHoTrapFlags, cpqHoGUIDCanonical }
+        DESCRIPTION
+            "A request was made to power on the server, however the server could not be powered on due to a failure condition."
+ 
+              --#TYPE "Server power on failure (9019)"
+              --#SUMMARY "The server could not be powered on."
+              --#ARGUMENTS {}
+              --#SEVERITY CRITICAL
+              --#TIMEINDEX 99
+              --#STATE   DEGRADED
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY POWER
+    ::= 9019
+
+    cpqSm2IrsCommFailure TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName, cpqHoTrapFlags, cpqHoGUIDCanonical, cpqSiProductName,
+                     cpqSiSysProductId, cpqSiSysSerialNum, cpqSiAssetTag,
+                     cpqSm2ErsTransactionType, cpqSm2ErsConnectionModel,
+                     cpqSm2ErsFailureCode, cpqSm2ErsRemoteHost }
+        DESCRIPTION
+            "The iLO to Insight Remote Support or Insight Online communication failed."
+
+              --#TYPE "iLO to Insight Remote Support communication failure (9020)"
+              --#SUMMARY "The iLO to Insight Remote Support or Insight Online communication failed."
+              --#ARGUMENTS {}
+              --#SEVERITY MAJOR
+              --#TIMEINDEX 99
+              --#STATE   DEGRADED
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY REMOTESUPPORT
+              --#ACTION "Please check the connectivity to Insight Remote Support or Insight Online Host."
+    ::= 9020
+	
 END
 

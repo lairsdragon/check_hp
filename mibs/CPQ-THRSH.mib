@@ -1,23 +1,24 @@
 -- ****************************************************************************
 --
---                   Threshold Management Functions
+--                    Threshold Management Functions
 --         Management Information Base for SNMP Network Management
 --
 --
---      Copyright 2002 Compaq Information Technologies Group, L.P.
+--      Copyright 1993,2003 Hewlett-Packard Development Company, L.P.
 --
---      Compaq and the Compaq logo are trademarks of Compaq Information
---      Technologies Group, L.P. in the U.S. and/or other countries.  All
---      other product names mentioned herein may be trademarks of their
---      respective companies.
+--      Hewlett-Packard Company shall not be liable for technical or
+--      editorial errors or omissions contained herein. The information in
+--      this document is provided "as is" without warranty of any kind and
+--      is subject to change without notice. The warranties for HP products
+--      are set forth in the express limited warranty statements
+--      accompanying such products. Nothing herein should be construed as
+--      constituting an additional warranty.
 --
---      Compaq shall not be liable for technical or editorial errors or
---      omissions contained herein. The information in this document is
---      provided "as is" without warranty of any kind and is subject to
---      change without notice.  The warranties for Compaq products are set
---      forth in the express limited warranty statements accompanying such
---      products. Nothing herein should be construed as constituting an
---      additional warranty.
+--      Confidential computer software. Valid license from HP required for
+--      possession, use or copying. Consistent with FAR 12.211 and 12.212,
+--      Commercial Computer Software, Computer Software Documentation, and
+--      Technical Data for Commercial Items are licensed to the U.S.
+--      Government under vendor's standard commercial license.
 --
 --      Refer to the READMIB.RDM file for more information about the
 --      organization of the information in the Compaq Enterprise.
@@ -33,7 +34,6 @@ CPQTHRSH-MIB DEFINITIONS ::= BEGIN
     IMPORTS
         compaq                  FROM CPQHOST-MIB
         enterprises             FROM RFC1155-SMI
-        Counter                 FROM RFC1155-SMI
         DisplayString           FROM RFC1213-MIB
         OBJECT-TYPE             FROM RFC-1212
         TRAP-TYPE               FROM RFC-1215
@@ -61,10 +61,10 @@ CPQTHRSH-MIB DEFINITIONS ::= BEGIN
 --
 --
 --      An SNMP agent conforming to this document will return a
---      cpqMeMibRevMajor of one (1) and a cpqMeMibRevMinor of three (3).
+--      cpqMeMibRevMajor of one (1) and a cpqMeMibRevMinor of four (4).
 --
 --      Implementation of the cpqMeMibRev group is mandatory for all agents
---      supporting the Compaq Threshold Management MIB.
+--      supporting the Threshold Management MIB.
 --
 -- ****************************************************************************
 
@@ -107,7 +107,7 @@ CPQTHRSH-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "The overall condition.
 
-             This object represents the overal status of the Compaq
+             This object represents the overall status of the
              threshold management system represented by this MIB."
         ::= { cpqMeMibRev 3 }
 
@@ -123,7 +123,7 @@ CPQTHRSH-MIB DEFINITIONS ::= BEGIN
 --          cpqMeOsCommonModuleTable   (1.3.6.1.4.1.232.10.2.1.4.2) deprecated
 --
 --  Implementation of the cpqMeOsCommon group is mandatory for all
---  agents that support the Compaq Threshold Management MIB.
+--  agents that support the Threshold Management MIB.
 --
 -- ****************************************************************************
 
@@ -220,7 +220,7 @@ CPQTHRSH-MIB DEFINITIONS ::= BEGIN
             This field will be set to year = 0 if the agent cannot provide
             the module date.  The hour, minute, and second field will be set
             to zero (0) if they are not relevant.  The year field is set
-            with the most significant octect first."
+            with the most significant octet first."
         ::= { cpqMeOsCommonModuleEntry 4 }
 
     cpqMeOsCommonModulePurpose OBJECT-TYPE
@@ -241,13 +241,13 @@ CPQTHRSH-MIB DEFINITIONS ::= BEGIN
 --        cpqMeAlarm Group             (1.3.6.1.4.1.232.10.2.2)
 --         cpqMeAlarmTable             (1.3.6.1.4.1.232.10.2.2.2)
 --
---      The cpqMeAlarms group describes the table for controlling Compaq
+--      The cpqMeAlarms group describes the table for controlling
 --      Threshold Management software's user definable threshold functions.
 --
---      The Compaq Threshold Management alarm group provides a flexible way
+--      The Threshold Management alarm group provides a flexible way
 --      for users and/or management software to start the sampling of any
 --      integer SNMP object on the server being managed for comparison to
---      given thresholds.  Once started the Compaq Threshold Management will
+--      given thresholds.  Once started the Threshold Management will
 --      poll the selected object, compare it to given thresholds, and
 --      issue an SNMP trap if the value crosses the threshold.  Only
 --      variables that resolve to an ASN.1 primitive type of INTEGER
@@ -261,7 +261,7 @@ CPQTHRSH-MIB DEFINITIONS ::= BEGIN
 --
 --
 --      Implementation of the cpqMeAlarm group is optional for agents
---      supporting the Compaq Threshold Management MIB.
+--      supporting the Threshold Management MIB.
 --
 -- ****************************************************************************
 
@@ -702,10 +702,10 @@ CPQTHRSH-MIB DEFINITIONS ::= BEGIN
              instances of those objects contained within the variable
              list are those of the alarm entry which generated this trap."
 
-              --#TYPE "Rising Threshold Passed"
+              --#TYPE "Rising Threshold Passed (10001)"
               --#SUMMARY "%s: Variable %s has value %d >= %d."
               --#ARGUMENTS {4,0,2,3}
-              --#SEVERITY CRITICAL
+              --#SEVERITY MAJOR
               --#TIMEINDEX 99
 
         ::= 10001
@@ -722,10 +722,10 @@ CPQTHRSH-MIB DEFINITIONS ::= BEGIN
              instances of those objects contained within the variable
              list are those of the alarm entry which generated this trap."
 
-              --#TYPE "Falling Threshold Passed"
+              --#TYPE "Falling Threshold Passed (10002)"
               --#SUMMARY "%s: Variable %s has value %d <= %d."
               --#ARGUMENTS {4,0,2,3}
-              --#SEVERITY CRITICAL
+              --#SEVERITY INFORMATIONAL
               --#TIMEINDEX 99
 
         ::= 10002
@@ -744,10 +744,10 @@ CPQTHRSH-MIB DEFINITIONS ::= BEGIN
              instances of those objects contained within the variable
              list are those of the alarm entry which generated this trap."
 
-              --#TYPE "Rising Threshold Passed"
+              --#TYPE "Rising Threshold Passed (10003)"
               --#SUMMARY "%s: Variable %s has value %d >= %d."
               --#ARGUMENTS {6,2,4,5}
-              --#SEVERITY CRITICAL
+              --#SEVERITY MAJOR
               --#TIMEINDEX 99
 
         ::= 10003
@@ -765,10 +765,10 @@ CPQTHRSH-MIB DEFINITIONS ::= BEGIN
              instances of those objects contained within the variable
              list are those of the alarm entry which generated this trap."
 
-              --#TYPE "Falling Threshold Passed"
+              --#TYPE "Falling Threshold Passed (10004)"
               --#SUMMARY "%s: Variable %s has value %d <= %d."
               --#ARGUMENTS {6,2,4,5}
-              --#SEVERITY CRITICAL
+              --#SEVERITY INFORMATIONAL
               --#TIMEINDEX 99
 
         ::= 10004
@@ -788,10 +788,10 @@ CPQTHRSH-MIB DEFINITIONS ::= BEGIN
              instances of those objects contained within the variable
              list are those of the alarm entry which generated this trap."
 
-              --#TYPE "Rising Threshold Passed"
+              --#TYPE "Rising Threshold Passed (10005)"
               --#SUMMARY "%s: Variable %s has value %d >= %d."
               --#ARGUMENTS {6,2,4,5}
-              --#SEVERITY CRITICAL
+              --#SEVERITY MAJOR
               --#TIMEINDEX 99
 
         ::= 10005
@@ -810,13 +810,58 @@ CPQTHRSH-MIB DEFINITIONS ::= BEGIN
              instances of those objects contained within the variable
              list are those of the alarm entry which generated this trap."
 
-              --#TYPE "Falling Threshold Passed"
+              --#TYPE "Falling Threshold Passed (10006)"
               --#SUMMARY "%s: Variable %s has value %d <= %d."
+              --#ARGUMENTS {6,2,4,5}
+              --#SEVERITY INFORMATIONAL
+              --#TIMEINDEX 99
+
+        ::= 10006
+
+    cpqMeCriticalRisingAlarmExtended TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName, cpqHoTrapFlags,
+                     cpqMeAlarmVariable, cpqMeAlarmSampleType,
+                     cpqMeAlarmValue, cpqMeAlarmRisingThreshold,
+                     cpqMeAlarmOwner, cpqMeAlarmSeverity,
+                     cpqMeAlarmExtendedDescription }
+        DESCRIPTION
+            "Critical Rising Threshold passed.
+
+             An alarm entry has crossed its Critical rising threshold.  The
+             instances of those objects contained within the variable
+             list are those of the alarm entry which generated this trap."
+
+              --#TYPE "Critical Rising Threshold Passed (10007)"
+              --#SUMMARY "%s: Variable %s has value %d >= %d."
               --#ARGUMENTS {6,2,4,5}
               --#SEVERITY CRITICAL
               --#TIMEINDEX 99
 
-        ::= 10006
+        ::= 10007
+
+    cpqMeCriticalFallingAlarmExtended TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName, cpqHoTrapFlags,
+                     cpqMeAlarmVariable, cpqMeAlarmSampleType,
+                     cpqMeAlarmValue, cpqMeAlarmFallingThreshold,
+                     cpqMeAlarmOwner, cpqMeAlarmSeverity,
+                     cpqMeAlarmExtendedDescription }
+        DESCRIPTION
+            "Critical Falling Threshold passed.
+
+             An alarm entry has crossed its Critical falling threshold.  The
+             instances of those objects contained within the variable
+             list are those of the alarm entry which generated this trap."
+
+              --#TYPE "Critical Falling Threshold Passed (10008)"
+              --#SUMMARY "%s: Variable %s has value %d <= %d."
+              --#ARGUMENTS {6,2,4,5}
+              --#SEVERITY INFORMATIONAL
+              --#TIMEINDEX 99
+
+        ::= 10008
+
 
 END
 

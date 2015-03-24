@@ -1,3 +1,13 @@
+Version 2.18
+============
+Updated state information for newer generations of HP equipment. Thanks to
+Jason Wasser who pointet out an error and by debugging helped discover the
+missing information provided by new Gen9 servers. This release now includes
+the latest MIBS as they are freely available with the HP SIM 7.4 release.
+Last not least, after Jason pointed this out, the /usr/lib64/nagios/plugins
+folder is now automatically searched as well.
+
+
 Version 2.17
 ============
 Added check for a Drive Array's accelerator condition as suggested by Robert

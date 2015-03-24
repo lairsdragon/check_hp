@@ -1,23 +1,35 @@
 -- ****************************************************************************
+-- :CPQ,DEV:
 --
---                       Compaq System Information
+-- * SYSTEM INFORMATION SNMP MIB DEFINITIONS
+--
+-- * $Date: 2008/05/12 12:42:06Z $
+-- * $Revision: 1.38 $
+--
+-- Hewlett-Packard Company
+-- Confidential - Need To Know
+-- ****************************************************************************
+-- :CPQ,ENDDEV:
+--
+--                           System Information
 --         Management Information Base for SNMP Network Management
 --
 --
---      Copyright 2002 Compaq Information Technologies Group, L.P.
+--      Copyright 1992,2008 Hewlett-Packard Development Company, L.P.
 --
---      Compaq and the Compaq logo are trademarks of Compaq Information
---      Technologies Group, L.P. in the U.S. and/or other countries.  All
---      other product names mentioned herein may be trademarks of their
---      respective companies.
+--      Hewlett-Packard Company shall not be liable for technical or
+--      editorial errors or omissions contained herein. The information in
+--      this document is provided "as is" without warranty of any kind and
+--      is subject to change without notice. The warranties for HP products
+--      are set forth in the express limited warranty statements
+--      accompanying such products. Nothing herein should be construed as
+--      constituting an additional warranty.
 --
---      Compaq shall not be liable for technical or editorial errors or
---      omissions contained herein. The information in this document is
---      provided "as is" without warranty of any kind and is subject to
---      change without notice.  The warranties for Compaq products are set
---      forth in the express limited warranty statements accompanying such
---      products. Nothing herein should be construed as constituting an
---      additional warranty.
+--      Confidential computer software. Valid license from HP required for
+--      possession, use or copying. Consistent with FAR 12.211 and 12.212,
+--      Commercial Computer Software, Computer Software Documentation, and
+--      Technical Data for Commercial Items are licensed to the U.S.
+--      Government under vendor's standard commercial license.
 --
 --      Refer to the READMIB.RDM file for more information about the
 --      organization of the information in the Compaq Enterprise.
@@ -50,6 +62,9 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
     cpqSiSystemBoard    OBJECT IDENTIFIER ::= { cpqSiComponent 4 }
     cpqSiBoardRev       OBJECT IDENTIFIER ::= { cpqSiComponent 5 }
     cpqSiRackServer     OBJECT IDENTIFIER ::= { cpqSiComponent 6 }
+-- :CPQ,DEV:
+--  cpqSiVideo deprecated in 3.40 release
+-- :CPQ,ENDDEV:
     cpqSiVideo          OBJECT IDENTIFIER ::= { cpqSiComponent 7 }
     cpqSiMonitor        OBJECT IDENTIFIER ::= { cpqSiComponent 8 }
     cpqSiHotPlugSlot    OBJECT IDENTIFIER ::= { cpqSiComponent 9 }
@@ -57,23 +72,180 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
     cpqSiDockingStation OBJECT IDENTIFIER ::= { cpqSiComponent 11 }
     cpqSiFru            OBJECT IDENTIFIER ::= { cpqSiComponent 12 }
     cpqSiRackEnclosure  OBJECT IDENTIFIER ::= { cpqSiComponent 13 }
+    cpqSiServerBlade    OBJECT IDENTIFIER ::= { cpqSiComponent 14 }
+    cpqSiRack           OBJECT IDENTIFIER ::= { cpqSiComponent 15 }
+    cpqSiMP             OBJECT IDENTIFIER ::= { cpqSiComponent 16 }
 
     cpqSiOsCommon       OBJECT IDENTIFIER ::= { cpqSiInterface 4 }
 
 -- ****************************************************************************
---   Compaq System Information MIB Revision
---   ======================================
+--   System Information MIB Revision
+--   ===============================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
 --       cpqSiMibRev Group             (1.3.6.1.4.1.232.2.1)
 --
 --    Implementation of the MibRev group is mandatory for all Insight Agents
---    supporting the Compaq System Information MIB.
+--    supporting the System Information MIB.
 --
 --     An Agent conforming to this document will return a
---     cpqSiMibRevMajor of one (1) and a cpqSiMibRevMinor of nineteen (19).
+--     cpqSiMibRevMajor of one (1) and a cpqSiMibRevMinor of thirty-seven (37).
 --
+-- :CPQ,DEV:
+--      MIB Rev of 1.3 is for AUGUSTA time frame
+--      MIB Rev of 1.4 is for 2Q94 release time frame
+--      MIB Rev of 1.5 is for 1Q95 release time frame
+--      MIB Rev of 1.6 is for 2.50 release time frame.
+--      MIB Rev of 1.7 is for 2.60 release time frame and implies support for:
+--          - cpqSiAssetTag variable
+--          - cpqSiVideo group
+--      MIB Rev of 1.8 is for 3.00 release time frame - items added:
+--          - cpqSiProcMicroPatchTable
+--      MIB Rev of 1.9 is for 3.10 release time frame - items added:
+--          - cpqSiHoodRemoved trap
+--          - cpqSiPowerMgmtStatus
+--          - cpqSiRebootFlags
+--          - deprecated cpqSiReboot
+--          - cpqSiHoodRemovedTime
+--      MIB Rev of 1.10 is for 3.40 release time frame - items added:
+--          - new cpqSiHotPlugSlot group
+--              cpqSiHotPlugSlotTable
+--          - new itmes in cpqSiSecurity Group
+--              cpqSiHoodSensorConfiguration, cpqSiSmartCoverLockStatus
+--          - new items in cpqSiMemModule Table:
+--              cpqSiMemModuleTechnology, cpqSiMemModuleVendor
+--              cpqSiMemModulePartNo, cpqSiMemModuleDate
+--              cpqSiMemModuleSerialNo, cpqSiMemModuleECCStatus
+--          - new items in cpqSiSystemBoard Group
+--              cpqSiMemECCCondition, cpqSiMemErrorIndex,
+--              cpqSiMemConfigChangeData
+--          - deprecate cpqSiVideo Group (now cpqSiMonitorTable)
+--          - new cpqSiMonitor Group
+--              cqSiMonitorOverallCondition, cpqSiMonitorTable
+--          - new traps
+--              cpqSiMonitorConditionOK, cpqSiMonitorConditionDegraded
+--              cpqSiMonitorConditionFailed,
+--              cpqSiCorrMemErrStatusDegraded, cpqSiCorrMemErrStatusOk
+--              cpqSiMemConfigChange 
+--      MIB Rev of 1.11 is for 3.50 release time frame - items added:
+--          - new item in cpqSiAsset Group
+--              cpqSiOwnershipTag
+--          - new items in cpqSiSecurity Group
+--              cpqSiUSBPortControl
+--          - new group cpqSiSystemBattery
+--              cpqSiSystemBatteryOverallCondition and
+--              cpqSiSystemBatteryTable
+--          - new cpqSiDockingStation with leafs
+--          - new traps
+--              cpqSiSysBatteryFailure
+--      MIB Rev of 1.12 is for Koala (4.0/3.70) release time frame.
+--      MIB Rev of 1.13 is for Dingo (4.20) release time frame.
+--          - new item in cpqSiAsset Group
+--              cpqSiSysServiceNum
+--          - added cpqSiSysBatteryFirmwareRevision
+--          - added cpqSiSysBatteryHardwareRevision
+--          - added cpqSiSysBatteryFullCap and cpqSiSysBatteryDesignCap
+--          - added capacityDegraded enum to cpqSiSysBatteryStatus
+--          - added cpqSiSysBatteryChargingDegraded trap
+--          - added cpqSiSysBatteryCalibrationError trap
+--      MIB Rev of 1.14 is for Maremma (4.21) release time frame.
+--          - added rimm and srimm enum to cpqSiMemModuleType
+--          - added rdram enum to cpqSiMemModuleTechnology
+--      MIB Rev of 1.15 is for release 4.23.
+--          - deprecates cpqSiOsCommonModuleTable.
+--      MIB Rev of 1.16 is for 4.30 release time frame.
+--        NOTE: This revision also includes support for Digital Servers
+--          - added support for cpqSiFirmwareRevTable
+--          - added support for cpqSiFirmwareCfgTable
+--          - added support for cpqSiFruTable
+--      MIB Rev of 1.17 is for 4.50 release time frame.
+--          - added new enumerations for cpqSiHotPlugSlotErrorStatus
+--          - added cpqSiServerSystemId
+--      MIB Rev of 1.18 is for 5.00 release time frame.
+--          - addition of optional location table elements for partitioned
+--            systems.
+--      MIB Rev of 1.19 is for 5.30 release time frame.
+--          - added cpqSiRackEnclosure information for rack and enclosure
+--            managed systems.
+--      MIB Rev of 1.20 is for 6.20 release time frame.
+--          - updated cpqSiMemModuleTable for Advanced Memory Protection systems.
+--      MIB Rev of 1.21 is for 6.30 release time frame.
+--          - modified CpqSiMemModule, CpqSiHotplugSlot, CpqFirmwareRev
+--            for cellular systems.
+--      MIB Rev of 1.22 is for 7.00 release time frame.
+--          - modified CpqSiMemModule for cellular systems for manufacturer's
+--            part number and manufacturer's serial number.
+--      MIB Rev of 1.23 is for 7.10 release time frame.
+--          - new item in cpqSiAsset Group
+--              cpqSiSysProductId
+--      MIB Rev of 1.23B is for 7.10B release time frame.
+--          - Add trap number to trap #TYPE fields.
+--      MIB Rev of 1.24 is for 7.20 release time frame.
+--          - changed cpqSiAssetTag to read-write.
+--      MIB Rev of 1.25 is for 7.50 release time frame
+--          - cpqSiAssetTagMaxLength OID - added
+--          - cpqSiFirmwareRevCellTablePtr - status changed to deprecated
+--      MIB Rev of 1.26 is for 7.60 release time frame
+--          - cpqSiFirmwareLocation OID - added
+--          - cpqSiFirmwareStatus OID - added
+--      MIB Rev of 1.27 is for 7.70 release time frame
+--          - cpqSiMemModuleCellStatus - description changed
+--      MIB Rev of 1.28 is for 7.80 release time frame
+--          - cpqSiRackEnclosureMgrModel OID - added
+--          - cpqSiRackEnclosureMgrName OID - added
+--          - cpqSiServerBlade Group - added
+--          - cpqSiServerBladeEnclosureBayNumber OID - added
+--          - cpqSiServerBladeHeight OID - added
+--          - cpqSiRack Group - added
+--          - cpqSiRackName OID - added
+--          - cpqSiRackUUID OID - added
+--          - cpqSiMP Group - added
+--          - cpqSiMPHostName OID - added
+--          - cpqSiMPHealthStatus OID - added
+--      MIB Rev of 1.29 is for 7.90 release time frame
+--          - cpqSiRackEnclosureMgrFwRev OID - added
+--          - cpqSiRackEnclosureMgrProductID OID - added
+--          - cpqSiRackEnclosureMgrUUID OID - added
+--          - updated the description for cpqSiRackEnclosureMgrSerialNumber
+--      MIB Rev of 1.30 is for 8.00 release time frame
+--          - cpqSiServerBladeWidth OID - added
+--          - cpqSiRackEnclosureMgrProductID - typo fixed
+--          - cpqSiRackEnclosureMgrUUID - typo fixed
+--          - cpqSiRackEnclosureMgrType OID - modified for C class enclosure
+--          - cpqSiUSBPortControl OID - Addition of type 4 and 5 for USB device
+--          - cpqSiMemModuleType - Added type 12 for fb-dimm
+--      MIB Rev of 1.31 is for 8.10 release time frame
+--          - cpqSiVirtualSystemTable - added
+--          - cpqSiSysSerialNum - description modified
+--      MIB Rev of 1.32 is for 8.10 release time frame
+--          - cpqSiPowerScheme - added
+--          - cpqSiPowerSchemeName - added
+--          - cpqSiCurrentPerformanceStatePointer - added
+--          - cpqSiMinPerformanceState - added
+--          - cpqSiMaxPerformanceState - added
+--          - cpqSiPerfStateTable - added
+--      MIB Rev of 1.33 is for 8.10 release time frame
+--          - cpqSiTPMmodule - added
+--      MIB Rev of 1.34 is for 8.20 release time frame
+--          - cpqSiMemModuleTable - deprecated this table and merge into
+--          - cpqHeResMem2ModuleTable of cpqhlth
+--      MIB Rev of 1.35 is for 8.25 release time frame
+--          - cpqSiFormFactor - Added enumeration for Multiboard Chassis
+--          - Added type in cpqSiRackEnclosureMgrType for multiboard chassis
+--            value 5 for T2 100 series server
+--      MIB Rev of 1.36 is for 9.00 release time frame
+--          - cpqSiRackEnclosureMgrMatrix and cpqSiRackEnclosureMgrMatrixID 
+--            added in CpqSiRackEnclosureMgrEntry Table.
+--      MIB Rev of 1.37 is for 9.10 release time frame
+--          - cpqSiVirtualSerialPortControl is added in CpqSiSecurity Group.
+--          - Added new #LIFECYCLE flag to two traps.
+--          - Updated several trap #SUMMARY strings.
+--  
+-- ****************************************************************************
+--
+--
+-- :CPQ,ENDDEV:
 --
 -- ****************************************************************************
 
@@ -116,13 +288,13 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "The overall condition.
 
-            This object represents the overall status of the Compaq server
+            This object represents the overall status of the server
             information represented by this MIB."
         ::= { cpqSiMibRev 3 }
 
 -- ****************************************************************************
---   Compaq System Information Common
---   ================================
+--   System Information Common
+--   =========================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
@@ -160,8 +332,8 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
 
 -- ****************************************************************************
---   Compaq System Information Common Module Table
---   =============================================
+--   System Information Common Module Table
+--   ======================================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
@@ -240,7 +412,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
                2       3    month                     1..12
                3       4    day                       1..31
                4       5    hour                      0..23
-               5       6    minute                    0..59
+               5       6    minute                    0..59 
                6       7    second                    0..60
                             (use 60 for leap-second)
 
@@ -248,7 +420,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
             This field will be set to year = 0 if the agent cannot provide
             the module date.  The hour, minute, and second field will be set
             to zero (0) if they are not relevant.  The year field is set
-            with the most significant octect first."
+            with the most significant octet first."
         ::= { cpqSiOsCommonModuleEntry 4 }
 
     cpqSiOsCommonModulePurpose OBJECT-TYPE
@@ -260,19 +432,19 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         ::= { cpqSiOsCommonModuleEntry 5 }
 
 -- ****************************************************************************
---   Compaq System Information Asset Group
---   =====================================
+--   System Information Asset Group
+--   ==============================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
 --       cpqSiComponent Group          (1.3.6.1.4.1.232.2.2)
 --        cpqSiAsset Group             (1.3.6.1.4.1.232.2.2.2)
 --
---  The cpqSiAsset group contains the serial numbers of any Compaq hardware
+--  The cpqSiAsset group contains the serial numbers of any hardware
 --  that supports asset management.
 --
 --  Implementation of the cpqSiAsset group is mandatory for all Insight
---  Agents that support the Compaq System Information MIB.
+--  Agents that support the System Information MIB.
 --
 -- ****************************************************************************
 
@@ -281,7 +453,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-            "The serial number of the system unit.
+            "The serial number of the physical system unit.
 
             The string will be empty if the system does not report the
             serial number function."
@@ -295,7 +467,8 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
             desktop(4),
             tower(5),
             mini-tower(6),
-            rack-mount(7)
+            rack-mount(7),
+            nultiboard-chasis(8)
             }
         ACCESS  read-write
         STATUS  mandatory
@@ -303,10 +476,25 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
             "The form factor of the system. Setting this variable to
              unknown will fail."
         ::= { cpqSiAsset 2 }
+-- :CPQ,DEV:
+-- This information comes out of the SIT's general peripheral and input
+-- information ( ID 07h) byte 04h.  Today there is no way to tell if the
+-- system is raq-mount or not so the following system EV is defined:
+-- CQHCIM:
+--          BYTE 0 :  Bit 0     : 0 - non-rackmount system
+--                                1 - rackmount system
+--                    Bit 1-7   : reserved
+-- Form factor Information in CQHCIM, if it exists, will always override
+-- the form factor type in the SIT. The agent should set CQHCIM appropriately
+-- when this variable is set to rack-mount(7).
+--
+-- Information will be taken from SMBIOS Type 3 record if EV CQHCIM won't
+-- available on the system like 100 series.
+-- :CPQ,ENDDEV:
 
     cpqSiAssetTag OBJECT-TYPE
         SYNTAX  DisplayString (SIZE (0..255))
-        ACCESS  read-only
+        ACCESS  read-write
         STATUS  mandatory
         DESCRIPTION
             "The customer changeable identifier that is set to the system
@@ -327,10 +515,15 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
             protected.
 
             An example could be:
-              Property of Compaq Computer Corporation
+              Property of Hewlett-Packard Company
 
             The string should be NULL terminated.  This item will be
             empty if the system does not report this function."
+-- :CPQ,DEV:
+--
+-- This is for the Desktop Agents.
+--
+-- :CPQ,ENDDEV:
         ::= { cpqSiAsset 4 }
 
     cpqSiSysServiceNum OBJECT-TYPE
@@ -342,23 +535,120 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
             The string will be empty if the system does not report the
             system service number."
+-- :CPQ,DEV:
+-- This number is taken from the CQHSRV ev.
+-- :CPQ,ENDDEV:
         ::= { cpqSiAsset 5 }
+
+    cpqSiSysProductId OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..255))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "The product id string of the system unit.
+
+            The string will be empty if the system does not report the
+            product id."
+        ::= { cpqSiAsset 6 }
+
+    cpqSiAssetTagMaxLength OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+            " Maximum allowed size in bytes of the asset tag."
+
+        ::= { cpqSiAsset 7 }
+
+-- ****************************************************************************
+--   Virtual System Information Table
+--   ================================
+--
+-- The compaq enterprise               (1.3.6.1.4.1.232)
+--      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
+--       cpqSiComponent Group          (1.3.6.1.4.1.232.2.2)
+--        cpqSiAsset Group             (1.3.6.1.4.1.232.2.2.2)
+--         cpqSiVirtualSystemTable     (1.3.6.1.4.1.232.2.2.2.8)
+--          cpqSiVirtualSystemEntry    (1.3.6.1.4.1.232.2.2.2.8.1)
+--
+-- ****************************************************************************
+
+    cpqSiVirtualSystemTable OBJECT-TYPE
+        SYNTAX  SEQUENCE OF CpqSiVirtualSystemEntry
+        ACCESS  not-accessible
+        STATUS  optional
+        DESCRIPTION
+            "A table of virtual system information entries."
+        ::= { cpqSiAsset 8 }
+
+    cpqSiVirtualSystemEntry OBJECT-TYPE
+        SYNTAX  CpqSiVirtualSystemEntry
+        ACCESS  not-accessible
+        STATUS  optional
+        DESCRIPTION
+            "A virtual system information table entry."
+        INDEX   { cpqSiVirtualSystemIndex }
+        ::= { cpqSiVirtualSystemTable 1 }
+
+    CpqSiVirtualSystemEntry ::= SEQUENCE {
+        cpqSiVirtualSystemIndex            INTEGER,
+        cpqSiVirtualSystemSerialNumber     DisplayString,
+        cpqSiVirtualSystemUUID             DisplayString
+    }
+
+    cpqSiVirtualSystemIndex OBJECT-TYPE
+        SYNTAX  INTEGER (0..255)
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+            "The unique index of the virtual system information entry."
+        ::= { cpqSiVirtualSystemEntry 1 }
+
+    cpqSiVirtualSystemSerialNumber OBJECT-TYPE
+        SYNTAX  DisplayString
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+             "The HP Virtual Serial Number for the computer system package.  The Virtual
+              Serial Number is the system serial number exposed to the operating
+              system when running in an HP Virtual Connect environment.  The Virtual
+              Serial Number presented here will correspond to the Virtual UUID at the
+              same index location."
+-- :CPQ,DEV:
+--   Only enabled on HP Virtual connect systems with the virtual serial number enabled.
+-- :CPQ,ENDDEV:
+        ::= { cpqSiVirtualSystemEntry 2 }
+
+    cpqSiVirtualSystemUUID OBJECT-TYPE
+        SYNTAX  DisplayString
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+             "The HP Virtual UUID for the computer system package.  The Virtual
+              UUID is the UUID number exposed to the operating system when running
+              in an HP Virtual Connect environment.  The Virtual UUID presented
+              here will correspond to the Virtual serial number at the same index
+              location."
+-- :CPQ,DEV:
+--   Only enabled on HP Virtual connect systems with the virtual serial number enabled.
+-- :CPQ,ENDDEV:
+        ::= { cpqSiVirtualSystemEntry 3 }
 
 
 -- ****************************************************************************
---   Compaq System Information Security Group
---   ========================================
+--   System Information Security Group
+--   =================================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
 --       cpqSiComponent Group          (1.3.6.1.4.1.232.2.2)
 --        cpqSiSecurity Group          (1.3.6.1.4.1.232.2.2.3)
 --
---  The Security group describes how the security features on your Compaq
+--  The Security group describes how the security features on your
 --  computer are currently configured.
 --
 --  Implementation of the security group is mandatory for all agents that
---  support the Compaq System Information MIB.
+--  support the System Information MIB.
 --
 -- ****************************************************************************
 
@@ -432,7 +722,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         STATUS  mandatory
         DESCRIPTION
             "The state of the access control for the primary serial port
-            interface embedded in the Compaq system board."
+            interface embedded in the system board."
         ::= { cpqSiSecurity 6 }
 
     cpqSiSerialPortBControl OBJECT-TYPE
@@ -445,7 +735,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         STATUS  mandatory
         DESCRIPTION
             "The state of the access control for the secondary serial port
-            interface embedded in the Compaq system board."
+            interface embedded in the system board."
         ::= { cpqSiSecurity 7 }
 
     cpqSiParallelPortControl OBJECT-TYPE
@@ -458,7 +748,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         STATUS  mandatory
         DESCRIPTION
             "The state of the access control for the parallel port interface
-            embedded in the Compaq system board."
+            embedded in the system board."
         ::= { cpqSiSecurity 8 }
 
     cpqSiFloppyDiskControl OBJECT-TYPE
@@ -471,7 +761,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         STATUS  mandatory
         DESCRIPTION
             "The state of the access control for the floppy diskette
-            interface embedded in the Compaq system board."
+            interface embedded in the system board."
         ::= { cpqSiSecurity 9 }
 
     cpqSiFixedDiskControl OBJECT-TYPE
@@ -484,7 +774,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         STATUS  mandatory
         DESCRIPTION
             "The state of the access control for the fixed disk interface
-            embedded in the Compaq system board."
+            embedded in the system board."
         ::= { cpqSiSecurity 10 }
 
     cpqSiHoodRemovedTime OBJECT-TYPE
@@ -492,8 +782,15 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-            "Last detection of hood removed by Compaq Smart Hood Sensor."
+            "Last detection of hood removed by Smart Hood Sensor."
 
+-- :CPQ,DEV:
+-- This is for the Desktop Agents.  Server agents do not need to
+-- support this variable in the 3.1 time frame.
+--
+-- Time and date format should be local specific and should include
+--      MM/DD/YYYY HH:MM:SS
+-- :CPQ,ENDDEV:
         ::= { cpqSiSecurity 11 }
 
     cpqSiHoodSensorConfiguration OBJECT-TYPE
@@ -506,7 +803,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-            "This is the current configuration of the Compaq Smart Cover
+            "This is the current configuration of the Smart Cover
              sensor.
 
              The following values are currently defined:
@@ -540,7 +837,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-            "This is the current status of the Compaq Smart Cover
+            "This is the current status of the Smart Cover
              Lock. The following values are currently defined:
 
              other(1)
@@ -558,9 +855,43 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
              locked(3)
                Smart Cover Lock is locked. The administrator password is
                required to unlock the hood."
+-- :CPQ,DEV:
+-- This lock will be implemented in certain Desktops.
+-- :CPQ,ENDDEV:
          ::= { cpqSiSecurity 13 }
 
     cpqSiUSBPortControl OBJECT-TYPE
+        SYNTAX  INTEGER {
+            other(1),
+            disabled(2),
+            enabled(3),
+            legacydisabled(4),
+            externalportdisabled(5)
+            }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "The state of the access control for the Universal
+            Serial Bus interface(s) embedded in the system
+            board.
+            
+             other(1)
+               If Status could not be determined.
+
+             disabled(2)
+               USB interface is disable.
+
+             enabled(3)
+               USB interface is enable.
+               
+             legacydisabled(4)
+               Legacy USB interface is disabled.
+               
+             externalportdisabled(5)
+               External USB Ports are disabled."
+        ::= { cpqSiSecurity 14 }
+
+    cpqSiVirtualSerialPortControl OBJECT-TYPE
         SYNTAX  INTEGER {
             other(1),
             disabled(2),
@@ -569,25 +900,27 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-            "The state of the access control for the Universal
-            Serial Bus interface(s) embedded in the Compaq system
-            board."
-        ::= { cpqSiSecurity 14 }
+            "The state of the access control for the virtual serial port interface
+            embedded in the system board."
+-- :CPQ,DEV:
+-- This for virtual serial port control info[enabled/disabled]
+-- :CPQ,ENDDEV: 
+        ::= { cpqSiSecurity 15 }   
 
 -- ****************************************************************************
---   Compaq System Information System Board Group
---   ============================================
+--   System Information System Board Group
+--   =====================================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
 --       cpqSiComponent Group          (1.3.6.1.4.1.232.2.2)
 --        cpqSiSystemBoard Group       (1.3.6.1.4.1.232.2.2.4)
 --
---  The cpqSiSystemBoard group describe features of your Compaq computer
+--  The cpqSiSystemBoard group describe features of your computer
 --  system board.
 --
 --  Implementation of the cpqSiSystemBoard group is mandatory for all agents
---  that support the Compaq System Information MIB.
+--  that support the System Information MIB.
 --
 -- ****************************************************************************
 
@@ -598,7 +931,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "The machine product ID.
 
-            This value indicates the Compaq product type of the system board
+            This value indicates the product type of the system board
             in this system.  The value 127 will be given if the machine ID
             cannot be determined.  A value of 127 will also be used for the
             special case of a machine containing neither EISA nor ISA slots."
@@ -611,7 +944,13 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "The machine product name.
 
-            The name of the Compaq machine used in this system."
+            The name of the machine used in this system."
+-- :CPQ,DEV:
+--      If the machine name cannot be determined, this item
+--      should return the following generic string:
+--             Personal Computer
+--
+-- :CPQ,ENDDEV:
         ::= { cpqSiSystemBoard 2 }
 
     cpqSiAuxiliaryInput OBJECT-TYPE
@@ -627,8 +966,8 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         ::= { cpqSiSystemBoard 4 }
 
 -- ****************************************************************************
---   Compaq System Information Memory Module Table
---   =============================================
+--   System Information Memory Module Table
+--   ======================================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
@@ -638,7 +977,8 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 --          cpqSiMemModuleEntry        (1.3.6.1.4.1.232.2.2.4.5.1)
 --
 -- ****************************************************************************
-
+--   Deprecated this table in 8.20 time frame please use the 
+--   cpqHeResMem2ModuleTable tables to get value
 
     cpqSiMemModuleTable OBJECT-TYPE
         SYNTAX  SEQUENCE OF CpqSiMemModuleEntry
@@ -662,14 +1002,19 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         cpqSiMemModuleIndex           INTEGER,
         cpqSiMemModuleSize            INTEGER,
         cpqSiMemModuleType            INTEGER,
-        cpqSiMemModuleSpeed           INTEGER,
+        cpqSiMemModuleSpeed           INTEGER,              -- deprecated
         cpqSiMemModuleTechnology      INTEGER,
         cpqSiMemModuleManufacturer    DisplayString,
         cpqSiMemModulePartNo          DisplayString,
         cpqSiMemModuleDate            OCTET STRING,
         cpqSiMemModuleSerialNo        DisplayString,
         cpqSiMemModuleECCStatus       INTEGER,
-        cpqSiMemModuleHwLocation      DisplayString
+        cpqSiMemModuleHwLocation      DisplayString,
+        cpqSiMemModuleFrequency       INTEGER,
+        cpqSiMemModuleCellTablePtr    INTEGER,
+        cpqSiMemModuleCellStatus      INTEGER,
+        cpqSiMemModulePartNoMfgr      DisplayString,
+        cpqSiMemModuleSerialNoMfgr    DisplayString
     }
 
     cpqSiMemBoardIndex OBJECT-TYPE
@@ -677,7 +1022,10 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-            "The slot in which the memory board is installed."
+            "The slot in which the memory board or cartridge is installed.
+
+            A value of 0 indicates memory installed directly on the
+            system board."
         ::= { cpqSiMemModuleEntry 1 }
 
     cpqSiMemModuleIndex OBJECT-TYPE
@@ -694,10 +1042,12 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         STATUS  mandatory
         DESCRIPTION
             "Module memory size in kilobytes.  A kilobyte of memory is
-            defined as 1024 bytes."
+            defined as 1024 bytes.
+
+            A size of 0 indicates the module is not present."
         ::= { cpqSiMemModuleEntry 3 }
 
-    cpqSiMemModuleType OBJECT-TYPE
+    cpqSiMemModuleType OBJECT-TYPE 
         SYNTAX  INTEGER {
                 other(1),
                 board(2),
@@ -705,11 +1055,12 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
                 cpqDoubleWidthModule(4),
                 simm(5),
                 pcmcia(6),
-                compaq-specific(7),
+                compaq-specific(7), 
                 dimm(8),
                 smallOutlineDimm(9),
                 rimm(10),
-                srimm(11)
+                srimm(11),
+                fb-dimm(12)
              }
         ACCESS  read-only
         STATUS  mandatory
@@ -720,10 +1071,13 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
              on a system board or memory expansion board."
         ::= { cpqSiMemModuleEntry 4 }
 
+-- :CPQ,DEV:
+--   Deprecated in 6.20.  Use cpqSiMemModuleFrequency instead.
+-- :CPQ,ENDDEV:
     cpqSiMemModuleSpeed OBJECT-TYPE
         SYNTAX  INTEGER (0..65535)
         ACCESS  read-only
-        STATUS  mandatory
+        STATUS  deprecated
         DESCRIPTION
             "Module memory speed in nanoseconds.  The value zero (0) will
              be given if the module speed cannot be determined."
@@ -754,6 +1108,9 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
               This field will be a null (size 0) string if the manufacturer
               name is not available."
+-- :CPQ,DEV:
+--   Desktops only - Servers should populate the cpqHe
+-- :CPQ,ENDDEV:
         ::= { cpqSiMemModuleEntry 7 }
 
     cpqSiMemModulePartNo OBJECT-TYPE
@@ -765,6 +1122,9 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
               This field will be a null (size 0) string if the manufacturer
               part number is not available."
+-- :CPQ,DEV:
+--   For servers this is the spare(?) part number from RESMEM_DIMM_INFO.
+-- :CPQ,ENDDEV:
         ::= { cpqSiMemModuleEntry 8 }
 
     cpqSiMemModuleDate OBJECT-TYPE
@@ -785,8 +1145,11 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
                            (use 60 for leap-second)
 
              This field will be set to year = 0 if the date of manufacture
-             is not available.  The hour, minute, and second field will
+             is not available.  The hour, minute, and second fields will
              always be set to 0."
+-- :CPQ,DEV:
+--   Not populated for servers.
+-- :CPQ,ENDDEV:
         ::= { cpqSiMemModuleEntry 9 }
 
     cpqSiMemModuleSerialNo OBJECT-TYPE
@@ -798,6 +1161,9 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
               This field will be a null (size 0) string if the serial number
               is not available."
+-- :CPQ,DEV: 
+--   Not populated for servers.
+-- :CPQ,ENDDEV:
         ::= { cpqSiMemModuleEntry 10 }
 
     cpqSiMemModuleECCStatus OBJECT-TYPE
@@ -827,6 +1193,20 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
                  degradedModuleIndexUnknown(4):
                    The correctable error count has exceeded threshold.
                    The module index not available."
+-- :CPQ,DEV:
+-- For desktops:
+--
+--   If the memory modules do not support module indexing for ECC errors,
+--   then all similar memory modules should be set to
+--   "degradedModuleIndexUnknown" when any one of these modules
+--   become degraded.
+--
+-- For servers:
+--
+--   Use the cpqHeResMemModuleCondition in the health mib for the condition.
+--   This will not be populated for servers.
+--
+-- :CPQ,ENDDEV:
         ::= { cpqSiMemModuleEntry 11 }
 
     cpqSiMemModuleHwLocation OBJECT-TYPE
@@ -838,11 +1218,88 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
              multi SBB hardware only, for the memory module.
              A NULL string indicates that the hardware location could not
              be determined or is irrelevant."
+-- :CPQ,DEV:
+--   Not populated for ProLiant servers.
+-- :CPQ,ENDDEV:
         ::= { cpqSiMemModuleEntry 12 }
 
+
+-- :CPQ,DEV:
+--   The following were added in the 6.20 time-frame.
+-- :CPQ,ENDDEV:
+    cpqSiMemModuleFrequency OBJECT-TYPE
+        SYNTAX  INTEGER (0..65535)
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "The memory module frequency in MHz.  The value zero (0) will
+             be given if the module frequency cannot be determined."
+        ::= { cpqSiMemModuleEntry 13 }
+
+-- :CPQ,DEV:
+--   The following were added in the 6.30 time-frame for cellular systems.
+-- :CPQ,ENDDEV:
+    cpqSiMemModuleCellTablePtr OBJECT-TYPE
+        SYNTAX  INTEGER (0..15)
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+            "Index for the cell in cpqSeCellTable where the memory board is
+             installed."
+        ::= { cpqSiMemModuleEntry 14 }
+
+    cpqSiMemModuleCellStatus OBJECT-TYPE
+        SYNTAX  INTEGER {
+            other(1),
+            ok(2),
+            deconfigured(3)
+        }
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+             "This provides the current status for this memory module.
+
+              The following status values are supported:
+
+                 other(1):
+                   The memory module status is not available
+
+                 ok(2):
+                   The memory module is active
+
+                 deconfigured(3):
+                   The memory module is not ready"
+        ::= { cpqSiMemModuleEntry 15 }
+
+-- :CPQ,DEV:
+--   The following were added in the 7.00 time-frame for cellular systems.
+-- :CPQ,ENDDEV: 
+
+    cpqSiMemModulePartNoMfgr OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..255))
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+             "The memory module's manufacturer's part number.
+
+              This field will be a null (size 0) string if the manufacturer
+              part number is not available."
+        ::= { cpqSiMemModuleEntry 16 }
+
+    cpqSiMemModuleSerialNoMfgr OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..255))
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+             "The memory module's manufacturer's serial number.
+
+              This field will be a null (size 0) string if the manufacturer
+              serial number is not available."
+        ::= { cpqSiMemModuleEntry 17 }
+  
 -- ****************************************************************************
---   Compaq System Information System Board Group
---   ============================================
+--   System Information System Board Group
+--   =====================================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
@@ -857,24 +1314,24 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-            "The Compaq System ID.
+            "The System ID.
 
-            This value indicates the Compaq system ID of the system board
+            This value indicates the system ID of the system board
             in this system.  This ID replaces the product ID used in
             older machines (cpqSiProductId).  A value of 7Eh for the
             cpqSiProductId indicates that the cpqSiSystemId should be
-            used to identify the Compaq system.  A value of zero (0)
+            used to identify the system.  A value of zero (0)
             indicates that the system ID function is not supported on this
             machine.  In this case, the cpqSiProductId should be used to
             identify the system."
         ::= { cpqSiSystemBoard 6 }
-
+ 
     cpqSiSystemCpuId OBJECT-TYPE
         SYNTAX  INTEGER (0..65535)
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-            "The Compaq System ID : CPU Component.
+            "The System ID : CPU Component.
 
             This value indicates the CPU type of the system board
             in this system.  A value of zero (0) indicates that the CPU
@@ -916,7 +1373,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
             This field will be set to year = 0 if quick test ROM is not
             present.  The hour, minute, and second field will be set
             to zero (0) if they are not relevant.  The year field is set
-                   with the most significant octect first."
+                   with the most significant octet first."
         ::= { cpqSiSystemBoard 9 }
 
     cpqSiReboot OBJECT-TYPE
@@ -945,7 +1402,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
                       Setting this object to available(3) has no effect.
 
                  rebootToCpqUtils(2693)
-                      the system will reboot to the Compaq Utilities if
+                      the system will reboot to the System Utilities if
                       the reboot functionality is available.  If possible,
                       the agent will attempt to gracefully shutdown the
                       operating system before performing the reboot.
@@ -968,12 +1425,32 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
                         "
 
+-- :CPQ,DEV:
+--
+-- defaultOnlyAvailable implies that the system partition is not present, or
+-- cannot be rebooted to (for some reason.)  The OS should determine this
+-- status to the best of its ability.
+--
+-- Available or unavailable is intended to reflect whether this operation can
+-- be performed by the management station getting this information at this
+-- moment, as best the agent can determine this information.  This should
+-- take into account whether the machine supports this function and any agent
+-- configuration parameters.
+--
+--      If reboot to System utilities is selected the one-time boot EV should
+--      be set for this action and then the CSM power cycle should be
+--      performed.
+--      If reboot to default is selected the CSM power cycle should be
+--      performed.
+--      A strategy for a consistent way to perform a graceful downing of the
+--      server is to be determined.
+-- :CPQ,ENDDEV:
         ::= { cpqSiSystemBoard 10 }
 
 
 -- ****************************************************************************
---   Compaq System Information Processor Microcode Patch Table
---   =========================================================
+--   System Information Processor Microcode Patch Table
+--   ==================================================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
@@ -1070,8 +1547,8 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
 
 -- ****************************************************************************
---   Compaq System Information System Board Group
---   ============================================
+--   System Information System Board Group
+--   =====================================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
@@ -1124,6 +1601,37 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
                      Bit 0:      Cold Boot"
 
 
+-- :CPQ,DEV:
+-- Bit 31 is reserved for the Insight Manager console during a set
+-- operation. When this bit is set to 1, the agent is to perform the
+-- reboot operation designated by the combination of bits defined below:
+--
+--  0x80000010  -> UPS multi-server shutdown functionality
+--
+--  0x8000000A  -> Warm boot back to OS
+--  0x80000009  -> Cold boot back to OS
+--  0x80000006  -> Warm boot to Utils
+--  0x80000005  -> Cold boot to Utils
+--  0x80000022  -> Warm boot to RBSU
+--  0x80000021  -> Cold boot to RBSU
+--
+-- This item deprecates cpqSiReboot. The enumerations for cpqSiReboot map
+-- to the following bit settings:
+--
+--    notAvailable             0x00000000
+--    available                0x0000001F
+--    defaultOnlyAvailable     0x0000001B
+--    rebootToCpqUtils         0x80000006
+--    rebootToDefault          0x8000000A
+--
+-- Cold boot requires a power cycle via a hardware mechanism like CSM or OSB.
+-- Reboot to Utils requires a set to the one-time boot EV.
+--
+-- UPS multi-server shutdown support:
+-- Bit 4 is used for UPS multi-server shutdown functionality. Agents should
+-- not report this bit on get operations.  If a set is received with this bit set,
+-- agent software should process as UPS multi-server shutdown.
+-- :CPQ,ENDDEV:
 
         ::= { cpqSiSystemBoard 13 }
 
@@ -1134,7 +1642,13 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "Placeholder for memory module number for ECC traps.
             Represents the number of the memory module for which an ECC status
-            change has occured. Set to 65535 if module number not available."
+            change has occurred. Set to 65535 if module number not available."
+-- :CPQ,DEV:
+-- This is currently only being implemented in Desktop agents.  The current
+-- definition assumes all memory is on a single memory board.  For the server
+-- agents to use this in the future, the index definition will probably have to
+-- change to just INTEGER with the memory board index in the upper two bytes.
+-- :CPQ,ENDDEV:
         ::= { cpqSiSystemBoard 14 }
 
     cpqSiMemECCCondition OBJECT-TYPE
@@ -1168,6 +1682,52 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         STATUS  mandatory
         DESCRIPTION
             "Text string for the memory configuration change trap."
+-- :CPQ,DEV:
+--   Desktop agents string format:
+--             The trap message should be built based on the
+--             memory modules that have changed. The following message
+--             template should be used.  This template has been calculated to
+--             not exceed 380 bytes for worst case condition of all 8 modules
+--             changing. Note that SIMM machines have 4 or 8 slots and
+--             DIMM machines have 3 slots.
+--
+--             Message Template:
+--            "Memory configuration change. The following has changed:<cr-lf>
+--             Prev:<cr-lf>
+--             <module_val>: <size_val> MB, <speed_val> ns, S/N <s/n_val><cr-lf>
+--             Curr:<cr-lf>
+--             <module_val>: <size_val> MB, <speed_val> ns, S/N <s/n_val><cr-lf>"
+--
+--             where:
+--             <cr-lf>         = (0x0D 0x0A)
+--             <module_val> = 1..8
+--             <size_val>   = 0..9999
+--             <speed_val>  = 0..999
+--             <s/n_val>    = xxxxxxxx, if no s/n is available then do not display
+--
+--             Some possible examples are shown below:
+--
+--             "Memory configuration change.  The following has changed:
+--             Prev:
+--             1: 8 MB, 72 ns
+--             2: 8 MB, 72 ns
+--             3: 8 MB, 72 ns
+--             4: 8 MB, 72 ns
+--             Curr:
+--             1: 4 MB, 72 ns
+--             2: 4 MB, 72 ns
+--             3: empty
+--             4: empty"
+--
+--             or
+--
+--            "Memory configuration change.  The following has changed:
+--             Prev:
+--             3: 16 MB, 72 ns, S/N XYZ123AB
+--             Curr:
+--             3: empty"
+--
+-- :CPQ,ENDDEV:
         ::= { cpqSiSystemBoard 16 }
 
     cpqSiServerSystemId OBJECT-TYPE
@@ -1179,11 +1739,178 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
              This value is used to uniquely identify systems via a unique
              ID on systems that do not support the EISA bus."
+-- :CPQ,DEV:
+--   This corresponds to the EISA id of SLOT 0 in systems which still
+--   use System Config.
+--   On SOS systems, this id is embedded in the option ROM space and
+--   can be found by searching for '$', 0x0E, 0x11.
+--   On newer SMBIOS systems use record 195 for the Server System ID.
+-- :CPQ,ENDDEV:
         ::= { cpqSiSystemBoard 17 }
 
+    cpqSiPowerScheme OBJECT-TYPE
+        SYNTAX  INTEGER {
+            unsupported(1),
+            other(2),
+            power-saver(3),
+            balanced(4),
+            high-performance(5),
+            user-defined(6)
+        }
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+             "The current active power plan or power scheme of the system."
+        ::= { cpqSiSystemBoard 18 }
+
+    cpqSiPowerSchemeName OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..255))
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+             "The name of current active power plan or power scheme of the
+        system. When cpqSiPowerScheme has a value of user-defined(6), the 
+        user defined name can be populated here."
+        ::= { cpqSiSystemBoard 19 }
+
+    cpqSiCurrentPerformanceStatePointer OBJECT-TYPE
+        SYNTAX  INTEGER (0..65535)
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+             "Pointer to cpqSiPerfStateIndex in cpqSiPerfStateTable to indicate the current performance state of the system."
+    -- :CPQ,DEV:
+    --   Only enabled on systems that support p state.
+    -- :CPQ,ENDDEV:
+       ::= { cpqSiSystemBoard 20 }
+ 
+   cpqSiMinPerformanceState OBJECT-TYPE
+        SYNTAX  INTEGER (0..65535)
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+             "The slowest performance state by the selected power state policy."
+    -- :CPQ,DEV:
+    --   Only enabled on systems that support p state.
+    -- :CPQ,ENDDEV:
+       ::= { cpqSiSystemBoard 21 }
+
+    cpqSiMaxPerformanceState OBJECT-TYPE
+        SYNTAX  INTEGER (0..65535)
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+             "The fastest performance state supported by the selected power state policy."
+    -- :CPQ,DEV:
+    --   Only enabled on systems that support p state.
+    -- :CPQ,ENDDEV:
+       ::= { cpqSiSystemBoard 22 }
+
 -- ****************************************************************************
---   Compaq System Information Board Revision Group
---   ==============================================
+--   Performance State Table
+--   ================================
+--
+-- The compaq enterprise               (1.3.6.1.4.1.232)
+--      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
+--       cpqSiComponent Group          (1.3.6.1.4.1.232.2.2)
+--        cpqSiSystemBoard Group       (1.3.6.1.4.1.232.2.2.4)
+--         cpqSiPerfStateTable         (1.3.6.1.4.1.232.2.2.4.23)
+--          cpqSiPerfStateEntry        (1.3.6.1.4.1.232.2.2.4.23.1)
+--
+-- ****************************************************************************
+
+     cpqSiPerfStateTable OBJECT-TYPE
+         SYNTAX  SEQUENCE OF CpqSiPerfStateEntry
+         ACCESS  not-accessible
+         STATUS  optional
+         DESCRIPTION
+              "A table of supported performance states of the system."
+     -- :CPQ,DEV:
+     --   Only enabled on systems that support p state.
+     -- :CPQ,ENDDEV:
+        ::= { cpqSiSystemBoard 23 }
+
+    cpqSiPerfStateEntry OBJECT-TYPE
+        SYNTAX  CpqSiPerfStateEntry
+        ACCESS  not-accessible
+        STATUS  optional
+        DESCRIPTION
+             "An entry describing a supported performance state of the system."
+        INDEX   { cpqSiPerfStateIndex }
+        ::= { cpqSiPerfStateTable 1 }
+
+    CpqSiPerfStateEntry ::= SEQUENCE {
+        cpqSiPerfStateIndex           INTEGER,
+        cpqSiPerfState                INTEGER,
+        cpqSiPerfStateCpuFrequency    INTEGER,
+        cpqSiPerfStateCpuPower        INTEGER
+    }
+
+    cpqSiPerfStateIndex OBJECT-TYPE
+        SYNTAX  INTEGER (0..65535)
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+             "Index into the performance state table. cpqSiCurrentPerformanceStatePointer should point to one of these values."
+        ::= { cpqSiPerfStateEntry 1 }
+
+    cpqSiPerfState OBJECT-TYPE
+        SYNTAX  INTEGER (0.. 65535)
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+             "Performance state number. A unique number assigned to a performance state instance."
+     -- :CPQ,DEV:
+     --   This will be the p-state number assigned by the operating system only if p-state feature is enabled.
+     -- :CPQ,ENDDEV:
+        ::= { cpqSiPerfStateEntry 2 }
+
+    cpqSiPerfStateCpuFrequency OBJECT-TYPE
+        SYNTAX  INTEGER (0..2147483647)
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+            "The processor frequency in megahertz for this performance state instance."
+     -- :CPQ,DEV:
+     --   This will be populated only if p-state feature is enabled.
+     -- :CPQ,ENDDEV:
+        ::= { cpqSiPerfStateEntry 3 }
+
+    cpqSiPerfStateCpuPower OBJECT-TYPE
+        SYNTAX  INTEGER (0..2147483647)
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+             "The processor power setting in milliwatts for this performance state instance."
+     -- :CPQ,DEV:
+     --   This will be populated only if p-state feature is enabled.
+     -- :CPQ,ENDDEV:
+        ::= { cpqSiPerfStateEntry 4 }
+
+    cpqSiTPMmodule OBJECT-TYPE
+        SYNTAX  INTEGER {
+            other(1),
+            absent(2),
+            presentEnabled (3),
+            presentDisabled (4)
+        }
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+             "This field will be populated if TPM module is present in the system board.
+            other(1)
+               No record of TPM exist.
+            absent(2)
+               TPM module is not present in the system.
+            presentEnabled(3)
+               TPM module is present in the system and currently enabled.
+            presentDisabled(4)
+               TPM module is present in the system and currently not enabled."
+       ::= { cpqSiSystemBoard 24 }
+
+-- ****************************************************************************
+--   System Information Board Revision Group
+--   =======================================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
@@ -1193,7 +1920,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 --  The cpqSiBoardRev group describes the board revision information.
 --
 --  Implementation of the cpqSiBoardRev group is mandatory for all
---  agents that support the Compaq System Information MIB in a system that
+--  agents that support the System Information MIB in a system that
 --  supports the board revision feature.
 --
 -- ****************************************************************************
@@ -1221,8 +1948,8 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         ::= { cpqSiBoardRev 2 }
 
 -- ****************************************************************************
---   Compaq System Information Board Revision Table
---   ==============================================
+--    System Information Board Revision Table
+--   ========================================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
@@ -1261,7 +1988,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
     cpqSiBoardRevSlotIndex OBJECT-TYPE
         SYNTAX  INTEGER (0..255)
         ACCESS  read-only
-        STATUS  mandatory
+        STATUS  mandatory 
         DESCRIPTION
             "The slot in which the board described in this entry resides.
              Zero (0) indicates the system board."
@@ -1303,6 +2030,14 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
             "The current revision for the board described in this entry.
             This value will be N/A if there is no current revision
             information."
+-- :CPQ,DEV:
+--  The format for this field is 'AB ver:x' where AB is the
+--  Board revision and x is the assembly version.
+--  Obtain this information from EISA Type string in NVRAM.
+--  It is updated by CF.  See the latest Wellness spec.
+--  System ROM issues will generate an F1 msg when a board is replaced
+--  (not the same revision).  Then CF will update NVRAM.
+-- :CPQ,ENDDEV:
         ::= { cpqSiBoardRevEntry 4 }
 
     cpqSiBoardRevPrev OBJECT-TYPE
@@ -1313,6 +2048,14 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
             "The revision for the board described in this entry prior to the
             current configuration.  This value will be N/A if there is no
             previous revision information."
+-- :CPQ,DEV:
+--  The format for this field is 'AB ver:x' where AB is the
+--  Board revision and x is the assembly version.
+--  Obtain this information from EISA Type string in NVRAM.
+--  It is updated by CF.  See the latest Wellness spec.
+--  System ROM issues will generate an F1 msg when a board is replaced
+--  (not the same revision).  Then CF will update NVRAM.
+-- :CPQ,ENDDEV:
         ::= { cpqSiBoardRevEntry 5 }
 
     cpqSiBoardRevHwLocation OBJECT-TYPE
@@ -1327,8 +2070,8 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         ::= { cpqSiBoardRevEntry 6 }
 
 -- ****************************************************************************
---   Compaq System Information Firmware Revision Table
---   =================================================
+--   System Information Firmware Revision Table
+--   ==========================================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
@@ -1356,9 +2099,12 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         ::= { cpqSiFirmwareRevTable 1 }
 
     CpqSiFirmwareRevEntry ::= SEQUENCE {
-        cpqSiFirmwareRevIndex    INTEGER,
-        cpqSiFirmwareRevDesc     DisplayString,
-        cpqSiFirmwareRevString   DisplayString
+        cpqSiFirmwareRevIndex          INTEGER,
+        cpqSiFirmwareRevDesc           DisplayString,
+        cpqSiFirmwareRevString         DisplayString,
+        cpqSiFirmwareRevCellTablePtr   INTEGER, 
+        cpqSiFirmwareLocation          DisplayString,
+        cpqSiFirmwareStatus            INTEGER
     }
 
     cpqSiFirmwareRevIndex OBJECT-TYPE
@@ -1385,9 +2131,37 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
             "Version number, possibly of the form Vx.y or Vx.y-z."
         ::= { cpqSiFirmwareRevEntry 3 }
 
+    cpqSiFirmwareRevCellTablePtr OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-only
+        STATUS  deprecated
+        DESCRIPTION
+            "Index for the cell in cpqSeCellTable where this firmware is located"
+        ::= { cpqSiFirmwareRevEntry 4 }
+
+    cpqSiFirmwareLocation OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..255))
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+            "Description of which board the firmware is located in."
+        ::= { cpqSiFirmwareRevEntry 5 }
+
+    cpqSiFirmwareStatus OBJECT-TYPE
+        SYNTAX  INTEGER {
+            unknown(1),
+            active(2),
+            inactive(3)
+        }
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+             "The current status for this firmware."
+        ::= { cpqSiFirmwareRevEntry 6 }
+
 -- ****************************************************************************
---   Compaq System Information Firmware Configuration Table
---   ======================================================
+--   System Information Firmware Configuration Table
+--   ===============================================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
@@ -1408,7 +2182,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
              intended to be easily extensible and support arbitrary
              datatypes.  It includes such switches as powerup options,
              default dump device, etc.
-             Note - the string comparision for svrFwSymbolName is case
+             Note - the string comparison for svrFwSymbolName is case
              insensitive."
         ::= { cpqSiBoardRev 5 }
 
@@ -1447,8 +2221,8 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
 
 -- ****************************************************************************
---   Compaq System Information Ups Shutdown Group
---   ============================================
+--   System Information Ups Shutdown Group
+--   =====================================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
@@ -1459,7 +2233,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 --  family.
 --
 --  Implementation of the cpqSiRackServer group is mandatory for all
---  agents that support the Compaq System Information MIB in a system that
+--  agents that support the System Information MIB in a system that
 --  supports Rack Server features.
 --
 -- ****************************************************************************
@@ -1474,7 +2248,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         STATUS  mandatory
         DESCRIPTION
             "This entry describes this system's role in a rack-mounted
-             uninterruptable power supply family. The master both
+             uninterruptible power supply family. The master both
              communicates with the UPS and derives its power from the
              UPS.  The slave derives its power from the UPS, but does
              not communicate with it."
@@ -1486,27 +2260,27 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         STATUS  mandatory
         DESCRIPTION
             "This entry describes the name of the master server in a
-             rack-mounted uninterruptable power supply family. A slave
+             rack-mounted uninterruptible power supply family. A slave
              system would communicate with this server to derive UPS
              status."
         ::= { cpqSiRackServer 2 }
 
 
 -- ****************************************************************************
---   Compaq System Information Video Group
---   =====================================
+--   System Information Video Group
+--   ==============================
 --
 -- The compaq enterprise               (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
 --       cpqSiComponent Group          (1.3.6.1.4.1.232.2.2)
 --        cpqSiVideo Group             (1.3.6.1.4.1.232.2.2.7)
 --
---  The Video group describes the Compaq manageable video displays that is
+--  The Video group describes the manageable video displays that are
 --  attached to the system.
 --
 --  Implementation of the video group is mandatory for all agents that
---  support the Compaq System Information MIB when a Compaq manageable
---  video display is in the system.
+--  support the System Information MIB when a manageable video display
+--  is in the system.
 --
 -- ****************************************************************************
 
@@ -1606,19 +2380,19 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         ::= { cpqSiVideo 9 }
 
 -- ****************************************************************************
---   Compaq System Information Monitor Group
---   =======================================
+--   System Information Monitor Group
+--   ================================
 --
 --   The compaq enterprise             (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
 --       cpqSiComponent Group          (1.3.6.1.4.1.232.2.2)
 --        cpqSiMonitor Group           (1.3.6.1.4.1.232.2.2.8)
 --
---   The Monitor group describes all Compaq manageable video displays
---   that are attached to the system.
+--   The Monitor group describes all manageable video displays
+--   that are attached to the system. 
 --
 --   Implementation of the monitor group is mandatory for all agents that
---   support the Compaq System Information MIB when a Compaq manageable
+--   support the Compaq System Information MIB when a manageable
 --   video display is in the system.
 --
 -- ****************************************************************************
@@ -1652,12 +2426,29 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
              failed(4)
                The monitor has detected a fault.  The monitor will not
                be useable. Action should be taken to replace the monitor."
+-- :CPQ,DEV:
+--      The cpqSiMonitorOverallCondition is set as follows:
+--
+--      other(1):       if all cpqSiMonitorThermalCondition and
+--                      cpqSiMonitorOperationalCondition are "other."
+--
+--      OK(2):          If all cpqSiMonitorThermalCondition and
+--                      cpqSiMonitorOperationalCondition are "OK"
+--
+--      degraded(3):    If either cpqSiMonitorThermalCondition or
+--                      any cpqSiMonitorOperationalCondition is "degraded"
+--                      and no cpqMonitorOperationalCondition is "failed"
+--
+--      failed(4):      If any cpqMonitorOperationalCondition is "failed"
+--
+--      This designed is for single or multiple monitor support.
+-- :CPQ,ENDDEV:
         ::= { cpqSiMonitor 1 }
 
 
 -- ****************************************************************************
---   Compaq System Information Monitor Group
---   =======================================
+--   System Information Monitor Group
+--   ================================
 --
 --   The compaq enterprise             (1.3.6.1.4.1.232)
 --      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
@@ -1666,13 +2457,13 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 --         cpqSiMonitorTable           (1.3.6.1.4.1.232.2.2.8.2)
 --          cpqSiMonitorEntry          (1.3.6.1.4.1.232.2.2.8.2.1)
 --
---   The Monitor Table describes all Compaq manageable video displays
+--   The Monitor Table describes all manageable video displays
 --   that are attached to the system.
 --
 -- ****************************************************************************
 
     cpqSiMonitorTable OBJECT-TYPE
-        SYNTAX  SEQUENCE OF CpqSiMonitorEntry
+        SYNTAX  SEQUENCE OF CpqSiMonitorEntry 
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
@@ -1713,6 +2504,10 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "A unique index for each video display connected to the system."
 
+-- :CPQ,DEV:
+--   If there is only one monitor in the system, then cppSiMonitorIndex should
+--   equal zero (0).
+-- :CPQ,ENDDEV:
        ::= { cpqSiMonitorEntry 1 }
 
     cpqSiMonitorEdidRaw OBJECT-TYPE
@@ -1825,7 +2620,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-            "This provides the condition of the monitor’s internal temperature.
+            "This provides the condition of the monitor's internal temperature.
 
             This value will be one of the following:
 
@@ -1865,7 +2660,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
             degraded(3)
               The monitor is not functioning within normal operating limits.
-              At least one of the opertional features has become degraded.
+              At least one of the operational features has become degraded.
 
             failed(4)
               The monitor is not functioning within normal operating limits.
@@ -1909,6 +2704,20 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
               At least one of the operational features has failed.
               The monitor should be replaced."
 
+-- :CPQ,DEV:
+--  The current list of Monitor fault reporting features that should be
+--  supported by the Insight Agent is shown below:
+--                                                             States
+--  Fault Reporting Features                        OK  Degraded Failed Unknown
+--  ===========================================     === ======== ====== =======
+--  Internal Temperature outside normal range       yes yes      no     yes
+--  Power supply voltage outside normal range       yes no       yes    yes
+--  Power supply current outside normal range       yes no       yes    yes
+--  Horizontal deflection outside normal range      yes no       yes    yes
+--  Vertical deflection outside normal range        yes no       yes    yes
+--  I/O controller not responding.                  yes no       yes    yes
+--
+-- :CPQ,ENDDEV:
         ::= { cpqSiMonitorEntry 14 }
 
 
@@ -1925,7 +2734,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 --  slot information.
 --
 --  Implementation of the cpqSiHotPlugSlot group is mandatory for all
---  agents that support the Compaq System Information MIB.
+--  agents that support the System Information MIB.
 --
 -- ****************************************************************************
 
@@ -1969,6 +2778,15 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
             failed(4)
               If there are failed slot entries."
+-- :CPQ,DEV:
+--
+-- cpqSiMibCondition needs to be updated to reflect the value of
+-- this MIB.
+--
+-- Insight Manager displays colored border around
+-- Expansion Board button based on the value of this MIB.
+--
+-- :CPQ,ENDDEV:
         ::= { cpqSiHotPlugSlot 2 }
 
     cpqSiHotPlugSlotChangeCount OBJECT-TYPE
@@ -1991,7 +2809,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 --        cpqSiHotPlugSlot Group       (1.3.6.1.4.1.232.2.2.9)
 --         cpqSiHotPlugSlotTable       (1.3.6.1.4.1.232.2.2.9.4)
 --
---  The cpqSiHotPlugSlot group describes the Compaq manageable Hot Plug
+--  The cpqSiHotPlugSlot group describes the manageable Hot Plug
 --  Slots in the system.  This table will be missing if the system does
 --  not support hot plug slots.
 --
@@ -2053,6 +2871,12 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
             "This value indicates whether a board is present(2) in or
             absent(3) from the slot.  A value of other(1) indicates
             the information could not be obtained."
+-- :CPQ,DEV:
+--
+-- Only UnixWare 7 (Gemini) implements "presentbutsuspended" starting
+-- at Koala (3.70) release.
+--
+-- :CPQ,ENDDEV:
         ::= { cpqSiHotPlugSlotEntry 3 }
 
     cpqSiHotPlugSlotPowerState OBJECT-TYPE
@@ -2096,6 +2920,15 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
             failed(4)
               If the slot is failed for any reason.  See the status code
               for more information on the failure."
+-- :CPQ,DEV:
+--
+-- This MIB is set to degraded (3) only when one of the following conditions
+-- is true:
+--   1. cpqSiHotPlugSlotBoardPresent is present (2) AND
+--      cpqSiHotPlugSlotPowerState is poweroff (3).
+--   2. cpqSiHotPlugSlotBoardPresent is presentbutsuspended (4).
+--
+-- :CPQ,ENDDEV:
         ::= { cpqSiHotPlugSlotEntry 5 }
 
     cpqSiHotPlugSlotErrorStatus OBJECT-TYPE
@@ -2150,7 +2983,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
     cpqSiHotPlugSlotHwLocation OBJECT-TYPE
         SYNTAX  DisplayString (SIZE (0..255))
-        ACCESS  read-only
+        ACCESS  read-only 
         STATUS  optional
         DESCRIPTION
             "A text description of the hardware location, on complex
@@ -2169,12 +3002,12 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 --        cpqSiSystemBattery Group     (1.3.6.1.4.1.232.2.2.10)
 --
 --  The cpqSiSystemBattery group describes information about the system
---  (protable) batteries that are used to power your system.  These
+--  (portable) batteries that are used to power your system.  These
 --  are the rechargeable batteries.
 --
 --
---  Implementation of the cpqSiBattery group is mandatory for all
---  agents that support the Compaq System Information MIB.
+--  Implementation of the cpqSiBattery group is mandatory for all 
+--  agents that support the System Information MIB.
 --
 -- ****************************************************************************
 
@@ -2210,6 +3043,20 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
                One of more of the System Batteries has failed.  The failed
                battery is no longer usable. Action should be taken to replace
                the battery."
+-- :CPQ,DEV:
+--      The cpqSiSystemBatteryOverallCondition is set as follows:
+--
+--      other(1):       If all cpqSiSysBatteryCondition equal unknown
+--
+--      ok(2):          If all cpqSiSysBatteryCondition and ok.
+--
+--      degraded(3):    If any cpqSiSysBatteryCondition equal to degraded
+--                          but not equal to failed 
+--
+--      failed(4):      If any cpqSiSysBatteryCondition equal to
+--                          failed.
+--
+-- :CPQ,ENDDEV:
         ::= { cpqSiSystemBattery 1 }
 
 
@@ -2335,7 +3182,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
             This field will be set to year = 0 if the agent cannot provide
             the module date.  The hour, minute, and second field will be set
             to zero (0) if they are not relevant.  The year field is set
-            with the most significant octect first.
+            with the most significant octet first.
 
             The string will be empty if the battery does support
             this function."
@@ -2412,10 +3259,10 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
                    The battery can no longer be fully recharged.
 
                    User Action:
-                   If using multiple batteries, run Compaq Power
+                   If using multiple batteries, run the Power
                    Conservation Utility to identify the battery
                    location.  Contact your System Administrator or
-                   Compaq Authorized Reseller to order a replacement
+                   Authorized Reseller to order a replacement
                    battery.
 
                  chargeFault(4):
@@ -2426,14 +3273,14 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
                    recommended temperature range.  Check for foreign
                    objects in the battery slots.  Remove and reinsert all
                    batteries to resume normal battery operation.
-                   Contact your System Administrator or Compaq Authorized
+                   Contact your System Administrator or Authorized
                    Reseller if you are still experiencing problems.
 
                  batteryFailure(5):
                    The battery has failed and must be replaced.
 
                    User Action:
-                   Contact your System Administrator or Compaq Authorized
+                   Contact your System Administrator or Authorized
                    Reseller to order a replacement battery.  Recycle your
                    old battery. For proper disposal information, refer
                    to the documentation that came with your computer."
@@ -2537,7 +3384,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 --
 --
 --  Implementation of the cpqSiDockingStation group is mandatory for all
---  agents that support the Compaq System Information MIB.
+--  agents that support the System Information MIB.
 --
 -- ****************************************************************************
 
@@ -2613,7 +3460,7 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 --
 --
 --  Implementation of the cpqSiFru group is mandatory for all
---  Server Agents that support the Compaq System Information MIB.
+--  Server Agents that support the System Information MIB.
 --
 -- ****************************************************************************
 
@@ -2657,7 +3504,11 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
              cpqSiFruCabinetIDNumber      INTEGER,
              cpqSiFruSiteLocation         INTEGER,
              cpqSiFruDiagStatus           INTEGER,
-             cpqSiFruExtendedDiagStatus   INTEGER
+             cpqSiFruExtendedDiagStatus   INTEGER,
+             cpqSiFruCellTablePtr         INTEGER,
+             cpqSiFruIOCTablePtr          INTEGER,
+             cpqSiFruFileId               DisplayString,
+             cpqSiFruScanRev              DisplayString
                   }
 
      cpqSiFruIndex OBJECT-TYPE
@@ -2838,11 +3689,42 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
          ACCESS  read-only
          STATUS  mandatory
          DESCRIPTION
-            "Diagnostic Status value returned by Device Specific
+            "Diagnostic Status value returned by Device Specific 
             diagnostics.  Usually through a diagnostic status register
             on the device.  See product manual for bit descriptions."
          ::= { cpqSiFruEntry 19 }
 
+     cpqSiFruCellTablePtr OBJECT-TYPE
+         SYNTAX  INTEGER
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+             "Index for the cell in cpqSeCellTable where this FRU is physically located."
+         ::= { cpqSiFruEntry 20 }
+
+     cpqSiFruIOCTablePtr OBJECT-TYPE
+         SYNTAX  INTEGER
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+             "Index for the I/O Chassis in cpqSeIOCTablePtr where this FRU is physically located"
+         ::= { cpqSiFruEntry 21 }
+
+    cpqSiFruFileId OBJECT-TYPE
+         SYNTAX  DisplayString (SIZE (0..255))
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+             "This represents the FRU file identifier"
+         ::= { cpqSiFruEntry 22 }
+
+    cpqSiFruScanRev  OBJECT-TYPE
+         SYNTAX  DisplayString (SIZE (0..255))
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+            "This represents FRU scan revision"
+         ::= { cpqSiFruEntry 23 }
 
 -- ****************************************************************************
 --   System Information Rack and Enclosure Group
@@ -2856,6 +3738,11 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 --  The cpqSiRackEnclosure group indicates the availability of rack and/or
 --  enclosure based systems.
 --
+-- :CPQ,DEV:
+--   This table will be empty for stand-alone servers.
+--   ICE systems will have one entry for noEnclosureManagement(2).
+--   GARdian systems will have one entry for enclosureManagement(3).
+-- :CPQ,ENDDEV:
 -- ****************************************************************************
 
      cpqSiRackEnclosureMgrTable OBJECT-TYPE
@@ -2882,8 +3769,15 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
              cpqSiRackEnclosureMgrIpAddr              DisplayString,
              cpqSiRackEnclosureMgrWebLink             DisplayString,
              cpqSiRackEnclosureMgrCondition           INTEGER,
-             cpqSiRackEnclosureMgrSerialNumber        DisplayString
-                  }
+             cpqSiRackEnclosureMgrSerialNumber        DisplayString,
+             cpqSiRackEnclosureMgrModel               DisplayString,
+             cpqSiRackEnclosureMgrName                DisplayString,
+             cpqSiRackEnclosureMgrFwRev               DisplayString,
+             cpqSiRackEnclosureMgrProductID           DisplayString,
+             cpqSiRackEnclosureMgrUUID                DisplayString,
+             cpqSiRackEnclosureMgrMatrix              INTEGER,
+             cpqSiRackEnclosureMgrMatrixID            DisplayString
+             }
 
      cpqSiRackEnclosureMgrIndex  OBJECT-TYPE
          SYNTAX  INTEGER
@@ -2897,7 +3791,9 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
         SYNTAX  INTEGER {
             other(1),
             noEnclosureManagement(2),
-            enclosureManagement(3)
+            enclosureManagement(3),
+            onboardAdminManagement(4),
+            multiboardchassis(5)
             }
         ACCESS  read-only
         STATUS  mandatory
@@ -2913,7 +3809,14 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
             enclosureManagement(3)
               The server is part of a rack/enclosure managed system with a
-              dedicated enclosure manager."
+              dedicated enclosure manager.
+              
+            onboardAdminManagement(4)
+               The server is part of a rack/enclosure managed system with a
+               onboard Administrator.
+               
+            multiboardchassis(5)
+               The server is part of a nultiple board chassis. "
          ::= { cpqSiRackEnclosureMgrEntry 2 }
 
      cpqSiRackEnclosureMgrIpAddr OBJECT-TYPE
@@ -2949,9 +3852,9 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
          ACCESS  read-only
          STATUS  mandatory
          DESCRIPTION
-             "The overall condition of the Enclosure Manager.  For more detailed
+             "The overall condition of the Enclosure.  For more detailed
              status information, follow the cpqSiEnclosureMgrWebLink through
-             the Compaq Web Management Agent interface.
+             the Web Management Agent interface.
 
              other(1)
                This is the default condition for systems when
@@ -2983,17 +3886,214 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
          ACCESS  read-only
          STATUS  mandatory
          DESCRIPTION
-             "The serial number of the enclosure containing the enclosure
-             manager.
+             "The serial number of the enclosure.
 
              The string will be empty if the enclosure does not report the
              information or it could not be determined."
          ::= { cpqSiRackEnclosureMgrEntry 6 }
 
+     cpqSiRackEnclosureMgrModel OBJECT-TYPE
+         SYNTAX  DisplayString
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+             "The model name of the enclosure.
+              The string will be empty if it could not be determined."
+         ::= { cpqSiRackEnclosureMgrEntry 7 }
+	
+     cpqSiRackEnclosureMgrName OBJECT-TYPE
+         SYNTAX  DisplayString
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+            "The name of the enclosure. This name logically groups together the 
+             Blade servers installed in the same enclosure and it is shared 
+             with the other servers in the enclosure.
+             The string will be empty if it could not be determined."
+         ::= { cpqSiRackEnclosureMgrEntry 8 }
+
+     cpqSiRackEnclosureMgrFwRev OBJECT-TYPE
+         SYNTAX  DisplayString
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+             "The Firmware revision of the Enclosure Manager/Onboard Administrator.
+              The string will be empty if it could not be determined."
+         ::= { cpqSiRackEnclosureMgrEntry 9 }
+
+     cpqSiRackEnclosureMgrProductID OBJECT-TYPE
+         SYNTAX  DisplayString
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+            "The Enclosure product identifier. The string will be empty 
+             if it could not be determined." 
+         ::= { cpqSiRackEnclosureMgrEntry 10 }
+
+     cpqSiRackEnclosureMgrUUID OBJECT-TYPE
+         SYNTAX  DisplayString
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+            "The Enclosure unique identifier. The string will be empty 
+             if it could not be determined." 
+         ::= { cpqSiRackEnclosureMgrEntry 11 }    
+
+     cpqSiRackEnclosureMgrMatrix   OBJECT-TYPE
+         SYNTAX  INTEGER
+         ACCESS  read-only
+         STATUS  mandatory
+         DESCRIPTION
+            " Value 0 not configured in a BladeSystem Matrix environment. 
+                    1 configured in a BladeSystem Matrix environment."
+         ::= { cpqSiRackEnclosureMgrEntry 12 }
+
+     cpqSiRackEnclosureMgrMatrixID   OBJECT-TYPE
+         SYNTAX  DisplayString
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+             " Value BladeSystem Matrix vX.Y.Z Where 
+               X major version.   
+               Y minor version.  
+               Z update version. 
+               Is only valid if cpqSiRackEnclosureMgrMatrix value is a 1.  
+               By default is NULL"
+         ::= { cpqSiRackEnclosureMgrEntry 13 }
+
+-- ****************************************************************************
+--   System Information Server Blade Group
+--   ===========================================
+--
+-- The compaq enterprise               (1.3.6.1.4.1.232)
+--      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
+--       cpqSiComponent Group          (1.3.6.1.4.1.232.2.2)
+--        cpqSiServerBlade Group       (1.3.6.1.4.1.232.2.2.14)
+--
+--  The cpqsiServerBlade group describes the server Blade system.
+--
+-- ****************************************************************************
+
+     cpqSiServerBladeEnclosureBayNumber OBJECT-TYPE
+         SYNTAX  INTEGER
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+             "This value specifies the enclosure bay number occupied by the blade.
+              In case of a blade occupying multiple bays, this will be the lowest
+              enclosure bay number of all the bay numbers occupied by this balde"
+         ::= { cpqSiServerBlade 1 }
+
+     cpqSiServerBladeHeight OBJECT-TYPE
+         SYNTAX  INTEGER {
+                    unknown(1),
+                    halfHeightBlade(2),
+                    fullHeightBlade(3)
+                 }
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+            "Blade height is the Blade length.
+
+            unknown(1)
+              This indicates it could not be determined.
+
+            halfHeightBlade(2)
+              This indicates a half-height server Blade.
+
+            fullHeightBlade(3)
+              This indicates a full-height server Blade."
+
+         ::= { cpqSiServerBlade 2 }
+
+     cpqSiServerBladeWidth OBJECT-TYPE
+         SYNTAX  INTEGER {
+                    unknown(1),
+                    singleWide(2),
+                    doubleWide(3)
+                 }
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+            "Width of the Blade in terms of Enclosure Bays. This pertain to the
+            Blade side that connects to the enclosure backplane."
+         ::= { cpqSiServerBlade 3 }
+	
+-- ****************************************************************************
+--   System Information Rack Group
+--   ===========================================
+--
+-- The compaq enterprise               (1.3.6.1.4.1.232)
+--      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
+--       cpqSiComponent Group          (1.3.6.1.4.1.232.2.2)
+--        cpqSiRack Group              (1.3.6.1.4.1.232.2.2.15)
+--
+--  The cpqSiRack group describes the rack details.
+--
+-- ****************************************************************************
+
+     cpqSiRackName OBJECT-TYPE
+         SYNTAX  DisplayString
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+             "The rack name. This name is used to logically group together 
+              enclosures in a rack and it is shared with other enclosures 
+              in the rack. 
+              The string will be empty if it could not be determined." 
+         ::= { cpqSiRack 1 }
+
+     cpqSiRackUUID OBJECT-TYPE
+         SYNTAX  DisplayString
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+             "The rack unique identifier. The string will be empty 
+             if it could be determined." 
+         ::= { cpqSiRack 2 }
+    
+-- ****************************************************************************
+--   System Information MP Group
+--   ==============================
+--
+-- The compaq enterprise               (1.3.6.1.4.1.232)
+--      cpqSystemInfo Group            (1.3.6.1.4.1.232.2)
+--       cpqSiComponent Group          (1.3.6.1.4.1.232.2.2)
+--        cpqSiMP Group                (1.3.6.1.4.1.232.2.2.16)
+--
+--  The cpqSiMP group contains information about the Management Processor.
+--
+-- ****************************************************************************
+
+     cpqSiMPHostName OBJECT-TYPE
+         SYNTAX  DisplayString
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+             "The host name of the Management Processor.
+              The string will be empty if it could not be determined."
+         ::= { cpqSiMP 1 }
+
+     cpqSiMPHealthStatus OBJECT-TYPE
+         SYNTAX  INTEGER {
+             unknown(1),
+             ok(2),
+             degraded(3),
+             failed(4)
+         }
+         ACCESS  read-only
+         STATUS  optional
+         DESCRIPTION
+             "The health status of the Management Processor." 
+         ::= { cpqSiMP 2 }
 
 -- ****************************************************************************
 --  System Info MIB Trap Definitions
 --  ================================
+-- :CPQ,DEV:
+--    System Info MIB trap definitions are based on the compaq (232)
+--    enterprise and begin with 2001 through 2999.
+-- :CPQ,ENDDEV: 
 --
 --  The SNMP trap messages must not be bigger than 484 octets (bytes).
 --
@@ -3017,13 +4117,16 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
             User Action: Replace the cover (hood), ensure the system's cover
             is properly installed. Verify the system is in working order."
 
-        --#TYPE "System hood is removed"
+        --#TYPE "System hood is removed (2001)"
         --#SUMMARY "Hood is removed from unit."
         --#ARGUMENTS {}
         --#SEVERITY MAJOR
         --#TIMEINDEX 99
         --#STATE DEGRADED
-
+        --#SIMPLE_SEVERITY MAJOR
+        --#HWSTATUS_CATEGORY NONE
+        --#ACTION "Replace the cover, ensuring it is properly installed. Verify the system is in working order."
+        
         ::= 2001
 
     cpqSiMonitorConditionOK TRAP-TYPE
@@ -3036,12 +4139,18 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
              User Action:  None."
 
-        --#TYPE "Monitor Condition OK"
+        --#TYPE "Monitor Condition OK (2002)"
         --#SUMMARY "The monitor's condition has been set to OK."
         --#ARGUMENTS {}
         --#SEVERITY INFORMATIONAL
         --#TIMEINDEX 99
         --#STATE OPERATIONAL
+        --#SIMPLE_SEVERITY OK
+        --#HWSTATUS_CATEGORY NONE
+-- :CPQ,DEV:
+--   This trap should be sent when should be sent when cpqSiMonitorStatus
+--   transistions from thermalDegraded(4) or operationalFailure(5) to OK(2).
+-- :CPQ,ENDDEV:
         ::=  2002
 
 
@@ -3062,13 +4171,15 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
              cools, another alarm indicating an improving condition, such as
              Monitor OK, will be issued."
 
-        --#TYPE "Monitor Condition Degraded"
+        --#TYPE "Monitor Condition Degraded (2003)" 
         --#SUMMARY "The monitor's condition has been set to degraded."
         --#ARGUMENTS {}
         --#SEVERITY MINOR
         --#TIMEINDEX 99
         --#STATE DEGRADED
-
+        --#SIMPLE_SEVERITY MAJOR
+        --#HWSTATUS_CATEGORY NONE
+        
        ::=  2003
 
      cpqSiMonitorConditionFailed TRAP-TYPE
@@ -3087,13 +4198,16 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
              Refer to the appropriate Maintenance and Service Guide for
              detailed information on a component replacement."
 
-        --#TYPE "Monitor Condition Failed"
+        --#TYPE "Monitor Condition Failed (2004)"
         --#SUMMARY "The monitor's condition has been set to failed."
         --#ARGUMENTS {}
         --#SEVERITY CRITICAL
         --#TIMEINDEX 99
         --#STATE NONOPERATIONAL
-
+        --#SIMPLE_SEVERITY CRITICAL
+        --#HWSTATUS_CATEGORY NONE
+        --#ACTION "Replace the failed monitor."
+        
        ::=  2004
 
      cpqSiCorrMemErrStatusDegraded TRAP-TYPE
@@ -3112,13 +4226,16 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
              Refer to the appropriate Maintenance and Service Guide for detailed
              information on a component replacement."
 
-        --#TYPE "Excessive Correctable Memory Errors"
-        --#SUMMARY "The Memory Module %d ECC status has been set to degraded."
+        --#TYPE "Excessive Correctable Memory Errors (2005)"
+        --#SUMMARY "The memory module %d ECC status has been set to degraded."
         --#ARGUMENTS {3}
         --#SEVERITY MINOR
         --#TIMEINDEX 99
         --#STATE DEGRADED
-
+        --#SIMPLE_SEVERITY MAJOR
+        --#HWSTATUS_CATEGORY MEMORY
+        --#ACTION "Schedule maintenance for the system and replace the failing memory module."
+        
         ::=  2005
 
      cpqSiCorrMemErrStatusOk TRAP-TYPE
@@ -3131,20 +4248,22 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
              User Action: None."
 
-        --#TYPE "Correctable Memory Errors Count OK"
-        --#SUMMARY "The Memory Module %d ECC status has been set to OK."
+        --#TYPE "Correctable Memory Errors Count OK (2006)"
+        --#SUMMARY "The memory module %d ECC status has been set to ok."
         --#ARGUMENTS {3}
         --#SEVERITY INFORMATIONAL
         --#TIMEINDEX 99
         --#STATE OPERATIONAL
-
+        --#SIMPLE_SEVERITY OK
+        --#HWSTATUS_CATEGORY MEMORY
+        
        ::=  2006
 
      cpqSiMemConfigChange TRAP-TYPE
         ENTERPRISE compaq
         VARIABLES  { sysName, cpqHoTrapFlags, cpqSiMemConfigChangeData }
         DESCRIPTION
-            "A memory configuration change has occured. CpqSiMemConfigChangeData
+            "A memory configuration change has occurred. CpqSiMemConfigChangeData
              will indicate which memory modules slots have changed.
 
              User Action: You may want to verify a valid reason for a memory
@@ -3152,12 +4271,18 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
              a Desktop running NT, the memory configuration change information
              is also logged in the NT System Log."
 
-        --#TYPE "Memory modules have changed"
+        --#TYPE "Memory modules have changed (2007)"
         --#SUMMARY "The system's memory configuration has changed."
         --#ARGUMENTS {}
         --#SEVERITY INFORMATIONAL
         --#TIMEINDEX 99
         --#STATE OPERATIONAL
+        --#SIMPLE_SEVERITY OK
+        --#HWSTATUS_CATEGORY MEMORY         
+-- :CPQ,DEV:
+--             This trap has been designed for the Desktop Agent.
+--             See cpqSiMemConfigChangeData for a message template.
+-- :CPQ,ENDDEV:
        ::=  2007
 
     cpqSiHotPlugSlotBoardRemoved TRAP-TYPE
@@ -3172,13 +4297,16 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
            User Action: None."
 
-        --#TYPE "Hot Plug Slot Board Removed"
-        --#SUMMARY "Hot Plug Slot Board Removed from Chassis %d, Slot %d."
+        --#TYPE "Hot Plug Slot Board Removed (2008)"
+        --#SUMMARY "Hot plug slot board removed from chassis %d, slot %d."
         --#ARGUMENTS {2, 3}
         --#SEVERITY INFORMATIONAL
         --#TIMEINDEX 99
         --#STATE OPERATIONAL
-
+        --#SIMPLE_SEVERITY OK
+        --#HWSTATUS_CATEGORY NONE
+        --#LIFECYCLE
+        
         ::= 2008
 
     cpqSiHotPlugSlotBoardInserted TRAP-TYPE
@@ -3193,13 +4321,16 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
 
            User Action: None."
 
-        --#TYPE "Hot Plug Slot Board Inserted"
-        --#SUMMARY "Hot Plug Slot Board Inserted into Chassis %d, Slot %d."
+        --#TYPE "Hot Plug Slot Board Inserted (2009)"
+        --#SUMMARY "Hot plug slot board inserted into chassis %d, slot %d."
         --#ARGUMENTS {2, 3}
         --#SEVERITY INFORMATIONAL
         --#TIMEINDEX 99
         --#STATE OPERATIONAL
-
+        --#SIMPLE_SEVERITY OK
+        --#HWSTATUS_CATEGORY NONE
+        --#LIFECYCLE
+        
         ::= 2009
 
     cpqSiHotPlugSlotPowerUpFailed TRAP-TYPE
@@ -3216,13 +4347,21 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
            correctly and the board type and revision are the same as
            the replaced board."
 
-        --#TYPE "Hot Plug Slot Board Failed"
-        --#SUMMARY "Hot Plug Slot Board Failed in Chassis %d, Slot %d, Error %d."
+        --#TYPE "Hot Plug Slot Board Failed (2010)"
+        --#SUMMARY "Hot plug slot board failed in chassis %d, slot %d, error %d."
         --#ARGUMENTS {2, 3, 4}
         --#SEVERITY CRITICAL
         --#TIMEINDEX 99
         --#STATE FAILED
-
+        --#SIMPLE_SEVERITY CRITICAL
+        --#HWSTATUS_CATEGORY NONE
+        --#ACTION "Ensure the board and all cables are installed correctly and that the board type and revision are the same as the replaced board."
+        
+-- :CPQ,DEV:
+-- One of the two traps, BoardInserted or BoardFailed will be generated
+-- when a board is inserted depending of the success or failure of the
+-- board to be powered up.
+-- :CPQ,ENDDEV:
         ::= 2010
 
     cpqSiSysBatteryFailure  TRAP-TYPE
@@ -3234,17 +4373,25 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
            and must be replaced.
 
            User Action:  Contact your System Administrator or
-           Compaq Authorized Reseller to order a replacement battery.
+           Authorized Reseller to order a replacement battery.
            Recycle your old battery. For proper disposal information,
            refer to the documentation that came with your computer."
 
-        --#TYPE "Battery Failure"
+        --#TYPE "Battery Failure (2011)"
         --#SUMMARY "Battery %d has failed."
         --#ARGUMENTS {2}
         --#SEVERITY MAJOR
         --#TIMEINDEX 99
         --#STATE DEGRADED
-
+        --#SIMPLE_SEVERITY MAJOR
+        --#HWSTATUS_CATEGORY NONE
+        --#ACTION "Replace the failed battery."
+        
+-- :CPQ,DEV:
+--     This trap should be generated when cpqSiSysBatteryStatus goes
+--            from ok to permanentFailure.
+--
+-- :CPQ,ENDDEV:
         ::= 2011
 
     cpqSiSysBatteryChargingDegraded TRAP-TYPE
@@ -3257,17 +4404,25 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
             no longer be fully recharged.
 
             User Action: If using multiple batteries, run
-            Compaq Power Conservation Utility to identify the
+            the Power Conservation Utility to identify the
             battery location.  Contact your System Administrator
-            or Compaq Authorized Reseller to order a replacement
+            or Authorized Reseller to order a replacement
             battery."
 
-        --#TYPE "Battery Charging Degradation"
+        --#TYPE "Battery Charging Degradation (2012)"
         --#SUMMARY "Battery %d has degraded charging capacity."
         --#ARGUMENTS {2}
         --#SEVERITY MAJOR
         --#TIMEINDEX 99
         --#STATE DEGRADED
+        --#SIMPLE_SEVERITY MAJOR
+        --#HWSTATUS_CATEGORY NONE        
+        --#ACTION "Replace the failing battery."        
+-- :CPQ,DEV:
+--     This trap should be generated when cpqSiSysBatteryStatus goes
+--            from ok  to capacityDegraded.
+--
+-- :CPQ,ENDDEV:
         ::= 2012
 
 
@@ -3280,16 +4435,24 @@ CPQSINFO-MIB DEFINITIONS ::= BEGIN
             indicated by cpqSiSysBatteryIndex.  The battery can
             not correctly indicate capacity.
 
-            User Action: Run Compaq Power Conservation Utility.  Contact
-            your System Administrator or Compaq Authorized Reseller to
+            User Action: Run the Power Conservation Utility.  Contact
+            your System Administrator or Authorized Reseller to
             order a replacement battery."
 
-        --#TYPE "Battery Calibration Error"
+        --#TYPE "Battery Calibration Error (2013)"
         --#SUMMARY "Battery %d has calibration error."
         --#ARGUMENTS {2}
         --#SEVERITY MAJOR
         --#TIMEINDEX 99
         --#STATE DEGRADED
+        --#SIMPLE_SEVERITY MAJOR
+        --#HWSTATUS_CATEGORY NONE
+        --#ACTION "Replace the failing battery."        
+-- :CPQ,DEV:
+--     This trap should be generated when cpqSiSysBatteryStatus goes
+--            from ok  to chargingCalibrationError.
+--
+-- :CPQ,ENDDEV:
         ::= 2013
 
 END

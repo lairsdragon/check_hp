@@ -1,23 +1,34 @@
 -- ****************************************************************************
+-- :CPQ,DEV:
 --
---                        Compaq Storage Systems
+-- * STORAGE SYSTEMS SNMP MIB DEFINITIONS
+--
+-- * $Date: 2008/05/05 11:35:46Z $
+-- * $Revision: 1.73 $
+--
+-- Hewlett-Packard Company
+-- Confidential - Need To Know
+-- ****************************************************************************
+-- :CPQ,ENDDEV:
+--
+--                            Storage Systems
 --         Management Information Base for SNMP Network Management
 --
 --
---      Copyright 2002 Compaq Information Technologies Group, L.P.
+--      Copyright 1992,2012 Hewlett-Packard Development Company, L.P.
+--      Hewlett-Packard Company shall not be liable for technical or
+--      editorial errors or omissions contained herein. The information in
+--      this document is provided "as is" without warranty of any kind and
+--      is subject to change without notice. The warranties for HP products
+--      are set forth in the express limited warranty statements
+--      accompanying such products. Nothing herein should be construed as
+--      constituting an additional warranty.
 --
---      Compaq and the Compaq logo are trademarks of Compaq Information
---      Technologies Group, L.P. in the U.S. and/or other countries.  All
---      other product names mentioned herein may be trademarks of their
---      respective companies.
---
---      Compaq shall not be liable for technical or editorial errors or
---      omissions contained herein. The information in this document is
---      provided "as is" without warranty of any kind and is subject to
---      change without notice.  The warranties for Compaq products are set
---      forth in the express limited warranty statements accompanying such
---      products. Nothing herein should be construed as constituting an
---      additional warranty.
+--      Confidential computer software. Valid license from HP required for
+--      possession, use or copying. Consistent with FAR 12.211 and 12.212,
+--      Commercial Computer Software, Computer Software Documentation, and
+--      Technical Data for Commercial Items are licensed to the U.S.
+--      Government under vendor's standard commercial license.
 --
 --      Refer to the READMIB.RDM file for more information about the
 --      organization of the information in the Compaq Enterprise.
@@ -32,7 +43,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
     IMPORTS
         compaq                  FROM CPQHOST-MIB
-        enterprises             FROM RFC1155-SMI
+--      enterprises             FROM RFC1155-SMI
         Counter                 FROM RFC1155-SMI
         DisplayString           FROM RFC1213-MIB
         OBJECT-TYPE             FROM RFC-1212
@@ -59,7 +70,98 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 --
 --
 --      An agent conforming to this document will return a cpqSsMibRevMajor
---      of one (1) and a cpqSsMibRevMinor of seventeen (17).
+--      of one (1) and a cpqSsMibRevMinor of thirty six (36).
+-- :CPQ,DEV:
+--      MIB Rev of 1.1 is for AUGUSTA time frame
+--      MIB Rev of 1.2 is for the CIM 2.1 (1Q94) time frame
+--      MIB Rev of 1.3 is for 2Q94 release time frame
+--      MIB Rev of 1.4 is for ProLiant3 and future storage systems
+--      MIB Rev of 1.5 is for 2.60 release and implies support for:
+--              - new trap format
+--      MIB Rev of 1.6 is for 2.61 time frame and implies support for:
+--              - Dazzler
+--      MIB Rev of 1.7 is for 3.20 time frame and implies support for:
+--              - Trojan
+--      MIB Rev of 1.8 is for 3.40 time frame and implies support for:
+--              - Trojan serial number
+--      MIB Rev of 1.9 is for 3.50 time frame and implies support for:
+--              - Siamese
+--      MIB Rev of 1.10 is for 4.23 time frame and implies support for:
+--              - Golden Eye
+--      MIB Rev of 1.11 is for 4.80 time frame and implies support for:
+--              - Deprecate old traps and create new ones for service.
+--      MIB Rev of 1.12 is for 5.00 time frame and implies support for:
+--              - Add cpqSsChassisModel to chassis table
+--      MIB Rev of 1.13 is for 5.20 time frame and implies support for:
+--              - Voyager
+--      MIB Rev of 1.14 is for 5.30 time frame and implies support for:
+--              - Add Voyager Switch support.
+--      MIB Rev of 1.15 is for 5.40 time frame and implies support for:
+--              - Add cpqSsChassisRsoStatus and cpqSsChassisRsoCondition
+--                to the chassis table and cpqSsExRecoveryServerStatusChange
+--                trap for RSO.
+--              - Add enterpriseModularArray and enterpriseVirtualArray for
+--                Tru64.
+--      MIB Rev of 1.16 is for 6.00 time frame and implies support for:
+--              - Add Aurora support (cpqSsChassisScsiIoModuleType).
+--              - Add Borealis support (cpqSsScsiAttachmentPathStatus and
+--                cpqSsScsiAttachmentPathCondition).
+--      MIB Rev of 1.17 is for 6.10 time frame and implies support for:
+--              - Add new cpqSsChassisRsoStatus value.
+--      MIB Rev of 1.18 is for 6.30 time frame and implies support for:
+--              - Remove Compaq from descriptions.
+--      MIB Rev of 1.19 is for 6.40 time frame and implies support for:
+--              - Copernicus 2+2 channel controller (big controller index),
+--                IPF and new traps.
+--              - Add cpqSsBoxCntlrHwLocation to cpqSsDrvBoxEntry.
+--      MIB Rev of 1.20 is for 7.00 time frame and implies support for:
+--              - Add cpqSsBoxBackplaneSpeed to cpqSsDrvBoxEntry.
+--              - Add cpqSsBackplaneSpeed to cpqSsBackplaneEntry.
+--      MIB Rev of 1.21 is for 7.06 time frame and implies support for:
+--              - Add support for Intrepid, King Cobra and Black Widow.
+--      MIB Rev of 1.22 is for 7.10 time frame and implies support for:
+--              - Add proLiant5 enumeration to cpqSsBoxBackPlaneVersion.
+--      MIB Rev of 1.23 is for 7.20 time frame and implies support for:
+--              - Add support for Sabrejet.
+--              - Add trap number to trap #TYPE fields.
+--      MIB Rev of 1.24 is for 7.30 time frame and implies support for:
+--              - Add support for Redstone.
+--      MIB Rev of 1.25 is for 7.40 time frame and implies support for:
+--              - Add cpqSsBoxLocationString, cpqSs6FanStatusChange,
+--                cpqSs6TempStatusChange and cpqSs6PwrSupplyStatusChange.
+--              - Add cpqSsChassisPreferredPathMode to the chassis table.
+--              - Add cpqSsChassisProductId to the chassis table.
+--      MIB Rev of 1.26 is for 7.50 time frame and implies support for:
+--              - Enabled VARBINDSEVERITY so HPSIM will honor cpqHoTrapFlags
+--      MIB Rev of 1.27 is for 7.70 time frame and implies support for:
+--              - Add new status values to cpqSsBackplaneFanStatus and
+--                cpqSsBackplaneFtpsStatus.
+--              - Add a second fan bay to cpqSsFanModuleLocation.
+--      MIB Rev of 1.28 is for 7.80 time frame and implies support for:
+--              - Add support for MSA2000s.
+--              - Remove unnecessary import of enterprises.
+--      MIB Rev of 1.29 is for IA64 Linux:
+--              - Changed the cpqSsBoxBusIndex range from 1..255 to 0..255.
+--      MIB Rev of 1.30 is for 8.00 time frame and implies support for:
+--              - Add cpqSsDrvBoxPathTable for multi-path support.
+--              - Add value sasArray(8) to cpqSsIoSlotControllerType.
+--      MIB Rev of 1.31 is for 8.10 time frame and implies support for:
+--              - Removed MSA2060s and MSA2070s.
+--      MIB Rev of 1.32 is for 8.31 time frame and implies support for:
+--              - Add support for MSA2012sa.
+--      MIB Rev of 1.33 is for 9.00 time frame and implies support for:
+--              - Add support for MDS600 GSI status.
+--              - Added #SIMPLE_SEVERITY and #HWSTATUS_CATEGORY to
+--                current traps. 
+--      MIB Rev of 1.34 is for 9.10 time frame and implies support for:
+--              - Added sataAttached(4) in cpqSsBoxConnectionType.
+--              - Updated several trap #SUMMARY strings.
+--      MIB Rev of 1.35 is for 9.30 time frame and implies support for:
+--              - Added #ACTION to current traps. 
+--      MIB Rev of 1.36 is for 9.40 time frame and implies support for:
+--              - Changed #HWSTATUS_CATEGORY from NONE to STORAGE for
+--                traps 8025, 8032 and 8033. 
+-- :CPQ,ENDDEV:
 --
 --    Implementation of the MibRev group is mandatory.
 --
@@ -122,7 +224,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Drive Box Table."
+        "Drive Box Table."
     ::= { cpqSsDrvBox 1 }
 
     cpqSsDrvBoxEntry OBJECT-TYPE
@@ -130,53 +232,65 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Drive Box Entry."
+        "Drive Box Entry."
     INDEX   { cpqSsBoxCntlrIndex, cpqSsBoxBusIndex }
     ::= { cpqSsDrvBoxTable 1 }
 
         CpqSsDrvBoxEntry ::= SEQUENCE
         {
-              cpqSsBoxCntlrIndex            INTEGER,
-              cpqSsBoxBusIndex              INTEGER,
-              cpqSsBoxType                  INTEGER,
-              cpqSsBoxModel                 DisplayString,
-              cpqSsBoxFWRev                 DisplayString,
-              cpqSsBoxVendor                DisplayString,
-              cpqSsBoxFanStatus             INTEGER,
-              cpqSsBoxCondition             INTEGER,
-              cpqSsBoxTempStatus            INTEGER,
-              cpqSsBoxSidePanelStatus       INTEGER,
-              cpqSsBoxFltTolPwrSupplyStatus INTEGER,
-              cpqSsBoxBackPlaneVersion      INTEGER,
-              cpqSsBoxTotalBays             INTEGER,
-              cpqSsBoxPlacement             INTEGER,
-              cpqSsBoxDuplexOption          INTEGER,
-              cpqSsBoxBoardRevision         INTEGER,
-              cpqSsBoxSerialNumber          DisplayString
+              cpqSsBoxCntlrIndex             INTEGER,
+              cpqSsBoxBusIndex               INTEGER,
+              cpqSsBoxType                   INTEGER,
+              cpqSsBoxModel                  DisplayString,
+              cpqSsBoxFWRev                  DisplayString,
+              cpqSsBoxVendor                 DisplayString,
+              cpqSsBoxFanStatus              INTEGER,
+              cpqSsBoxCondition              INTEGER,
+              cpqSsBoxTempStatus             INTEGER,
+              cpqSsBoxSidePanelStatus        INTEGER,
+              cpqSsBoxFltTolPwrSupplyStatus  INTEGER,
+              cpqSsBoxBackPlaneVersion       INTEGER,
+              cpqSsBoxTotalBays              INTEGER,
+              cpqSsBoxPlacement              INTEGER,
+              cpqSsBoxDuplexOption           INTEGER,
+              cpqSsBoxBoardRevision          INTEGER,
+              cpqSsBoxSerialNumber           DisplayString,
+              cpqSsBoxCntlrHwLocation        DisplayString,
+              cpqSsBoxBackplaneSpeed         INTEGER,
+              cpqSsBoxConnectionType         INTEGER,
+              cpqSsBoxHostConnector          DisplayString,
+              cpqSsBoxBoxOnConnector         INTEGER,
+              cpqSsBoxLocationString         DisplayString,
+              cpqSsBoxInitiatorSasAddress    DisplayString,
+              cpqSsBoxTargetSasAddress       DisplayString,
+              cpqSsBoxLocalManageIpAddress   DisplayString,
+              cpqSsBoxPartnerManageIpAddress DisplayString,
+              cpqSsBoxConnectionStatus       INTEGER,
+              cpqSsBoxTargetBasedManagement  INTEGER,
+              cpqSsBoxGSIStatus              INTEGER,
+              cpqSsBoxGSIMessages            DisplayString              
         }
 
     cpqSsBoxCntlrIndex OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+        "Drive Box Controller Index.
+
+        The controller index indicates to which adapter card instance
+        this table entry belongs."
+    ::= { cpqSsDrvBoxEntry 1 }
+
+    cpqSsBoxBusIndex OBJECT-TYPE
         SYNTAX  INTEGER (0..255)
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Drive Box Controller Index.
-
-        The controller index indicates to which adapter card instance
-        this table entry belongs.  The controller index is the physical
-        slot in the computer system where the adapter card is located."
-    ::= { cpqSsDrvBoxEntry 1 }
-
-    cpqSsBoxBusIndex OBJECT-TYPE
-        SYNTAX  INTEGER (1..255)
-        ACCESS  read-only
-        STATUS  mandatory
-        DESCRIPTION
-        "Compaq Drive Box Bus Index.
+        "Drive Box Bus Index.
 
         The bus index indicates to which bus instance on an adapter card
-        this table entry belongs.  The instances start at one and
-        increment for each bus on a card."
+        this table entry belongs."
     ::= { cpqSsDrvBoxEntry 2 }
 
     cpqSsBoxType OBJECT-TYPE
@@ -194,7 +308,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  deprecated
         DESCRIPTION
-        "Compaq Drive Box Type.
+        "Drive Box Type.
 
         This is the type of drive box.  The following types are defined:
 
@@ -202,30 +316,30 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
               The agent does not recognize this drive storage system.
 
             proLiant(2)
-              This is a Compaq ProLiant Storage System.
+              This is a ProLiant Storage System.
 
             proLiant2(3)
-              This is a Compaq ProLiant-2 Storage System.
+              This is a ProLiant-2 Storage System.
 
             proLiant2Internal(4)
               This is an internal ProLiant-2 Storage System that is found
-              in some Compaq Servers.
+              in some servers.
 
             proLiant2DuplexTop(5)
-              This is the top portion of a Compaq ProLiant-2 Storage
-              System that has dual SCSI busses which are duplexed.
+              This is the top portion of a ProLiant-2 Storage System that
+              has dual SCSI busses which are duplexed.
 
             proLiant2DuplexBottom(6)
-              This is the bottom portion of a Compaq ProLiant-2 Storage
-              System that has dual SCSI busses which are duplexed.
+              This is the bottom portion of a ProLiant-2 Storage System that
+              has dual SCSI busses which are duplexed.
 
             proLiant2InternalDuplexTop(7)
-              This is the top portion of a Compaq ProLiant Server
-              into which the internal SCSI busses are duplexed.
+              This is the top portion of a ProLiant Server into which the
+              internal SCSI busses are duplexed.
 
             proLiant2InternalDuplexBottom(8)
-              This is the bottom portion of a Compaq ProLiant Server
-              into which the internal SCSI busses are duplexed."
+              This is the bottom portion of a ProLiant Server into which the
+              internal SCSI busses are duplexed."
     ::= { cpqSsDrvBoxEntry 3 }
 
     cpqSsBoxModel OBJECT-TYPE
@@ -233,7 +347,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Drive Box Model.
+        "Drive Box Model.
 
         This is a description of the drive box's model.
         This can be used for identification purposes."
@@ -244,7 +358,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Drive Box Firmware Revision.
+        "Drive Box Firmware Revision.
 
         This is the revision level of the drive box.
         This can be used for identification purposes."
@@ -255,7 +369,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Drive Box Vendor
+        "Drive Box Vendor
 
         This is the drive box's vendor name.
         This can be used for identification purposes."
@@ -273,7 +387,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Drive Box Fan Status.
+        "Drive Box Fan Status.
 
          This is the current status of the fans in the drive box.
          This value will be one of the following:
@@ -296,6 +410,33 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
               sufficient cooling capacity to allow the system to continue.
               The fan should be replaced."
 
+-- :CPQ,DEV:
+--  Storage System Fan Status (Developer Comments)
+--      This object contains information about the status of a
+--      fan module.  The following values are defined:
+--
+--   'other'    := The Alarm Page cannot be retrieved (i.e., no conclusion
+--                 can be made about the fan status). }
+--
+--   'ok'       := <default value>
+--                 If the Alarm Page 'fan valid bit' (FanV) is set to 1
+--                 and the Alarm Page 'fan bit alarm' (Fan) is set to 0
+--                 and the Alarm Page 'fan degraded bit' (Fan0) is set to 0.
+--
+--
+--   'failed'   := If the Alarm Page 'fan valid bit' (FanV) is set to 1
+--                 and the Alarm Page 'fan bit alarm' (Fan) is set to 1.
+--
+--
+--   'noFan'    := If the Alarm Page 'fan valid bit' (FanV) is set to 0.
+--
+--   'degraded' := If the Alarm Page 'fan valid bit' (FanV) is set to 1
+--                 and the Alarm Page 'fan bit alarm' (Fan) is set to 0
+--                 and the Alarm Page 'fan degraded bit' (Fan0) is set to 1.
+--
+-- refer to the following for further information on Alarm Page functionality:
+--       o Nile Protocol Specification, Code Version JB15 or later
+-- :CPQ,ENDDEV:
     ::= { cpqSsDrvBoxEntry 7 }
 
     cpqSsBoxCondition OBJECT-TYPE
@@ -309,7 +450,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq SCSI Drive Box Condition.
+        "SCSI Drive Box Condition.
 
         This is the overall condition of the drive box.
         The following values are defined:
@@ -332,6 +473,27 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             failed(4)
               The storage system has failed."
+--:CPQ,DEV:
+--
+--  SCSI Drive Box Condition (Developer Comments)
+--      This object contains information about the condition of a
+--      SCSI Drive Box.
+--
+--   'other'    := { BoxFanStatus == other(1) | BoxTempStatus == other(1)
+--                                  | BoxSidePanelStatus == other(1)
+--                                  | BoxFltTolPwrSupplyStatus == other(1) }
+--
+--   'ok'       := { <default value> }
+--
+--   'degraded' := { BoxTempStatus == degraded(3)
+--                            | BoxSidePanelStatus == sidePanelRemoved(3)
+--                            | BoxFltTolPwrSupplyStatus == degraded(3)
+--                            | BoxFanStatus == degraded(5) 
+--                            | GSI Status == degraded(3)}
+--
+--   'failed' := { BoxFanStatus == failed(3) | BoxTempStatus == failed(4) }
+--
+--:CPQ,ENDDEV:
     ::= { cpqSsDrvBoxEntry 8 }
 
     cpqSsBoxTempStatus OBJECT-TYPE
@@ -367,6 +529,10 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
             noTemp(5)
               This unit does not support temperature monitoring."
 
+-- :CPQ,DEV:
+-- If any temperature sensor is failed, then this object should be set to
+-- failed.
+-- :CPQ,ENDDEV:
     ::= { cpqSsDrvBoxEntry 9 }
 
     cpqSsBoxSidePanelStatus OBJECT-TYPE
@@ -380,7 +546,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
             ACCESS  read-only
             STATUS  mandatory
             DESCRIPTION
-            "Compaq Drive Box Side Panel Status.
+            "Drive Box Side Panel Status.
 
             This value will be one of the following:
             other(1)
@@ -430,6 +596,37 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
             noFltTolPower(5)
               This unit does not support fault tolerant power supply
               monitoring."
+-- :CPQ,DEV:
+--  NOTE: With the addition of hot plug power supplies, it is now possible
+--        for the power supply sub-system to transition from noFltTolPower(5)
+--        to ok(2) at runtime.  Also, when a redundant supply is removed at
+--        runtime, is this a failure or a configuration change?
+-- :CPQ,ENDDEV:
+-- :CPQ,DEV:
+--  Drive Box Fault Tolerance Power Supply Status (Developer Comments)
+--      This object contains information about the status of a
+--      power supply.  The following values are defined:
+--
+--   'other'    := { The Alarm Page cannot be retrieved (i.e., no conclusion
+--                   can be made about power supply status). }
+--
+--   'ok'       := { <default value>
+--                   If the Alarm Page 'power valid bit' (PwrV) is set to 1
+--                   and the Alarm Page 'power bit alarm' (Pwr) is set to 0.
+--
+--   'degraded' := { If the Alarm Page 'power valid bit' (PwrV) is set to 1
+--                   and the Alarm Page 'power bit alarm' (Pwr) is set to 1.
+--
+--   'failed'    := { No failure conditions can currently be determined
+--                    at this point in time. }
+--
+--   'noFltTolPower' := { If the Alarm Page 'power valid bit' (PwrV)
+--                        is set to 0. }
+--
+-- refer to the following for further information on Alarm Page functionality:
+--       o ProLiant Redundant Power Supply Software Interface
+--       o Nile Protocol Specification, Code Version BG09 or later
+-- :CPQ,ENDDEV:
 
     ::= { cpqSsDrvBoxEntry 11 }
 
@@ -440,12 +637,13 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
           proLiant(2),
           proLiant2(3),
           proLiant3(4),
-          proLiant4(5)
+          proLiant4(5),
+          proLiant5(6)
         }
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Drive Box Back Plane Version.
+        "Drive Box Back Plane Version.
 
         This is the version of the drive box back plane.  The following
         types are defined:
@@ -455,16 +653,41 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
                plane.
 
             proLiant(2)
-              This is a Compaq ProLiant Storage System.
+              This is a ProLiant Storage System.
 
             proLiant2(3)
-              This is a Compaq ProLiant-2 Storage System.
+              This is a ProLiant-2 Storage System.
 
             proLiant3(4)
-              This is a Compaq ProLiant-3 Storage System.
+              This is a ProLiant-3 Storage System.
 
             proLiant4(5)
-              This is a Compaq ProLiant-4 Storage System."
+              This is a 4th generation Proliant Storage System.
+
+            proLiant5(6)
+              This is a 5th generation ProLiant Storage System."
+-- :CPQ,DEV:
+--      This value is derived from the inquiry data product id field.
+--      The storage system product id field is of the following form:
+--
+--             PROLIANT <version>-<bays><placement> [<duplexed>]
+--      Offset 012345678    9    10 11       12    13   14-15
+--
+--      <version>   Back plane version of the storage system (offset 9).
+--                  Currently '1', '2', '3' or '4'.
+--      <bays>      Total bays in the storage system (offset 11).
+--                  Currently '2', '3', '4', '5' or '7'.
+--      <placement> Placement of the storage system (offset 12).
+--                  Currently 'I' for internal or 'E' for external.
+--      <duplexed>  Duplex option for this storage system (offset 14 and 15).
+--                  Currently 'DB' for duplex bottom, 'DT' for duplex top or
+--                  blank for not duplexed.
+--
+--      Example:    "PROLIANT 2-4E DB" is a 4 bay, bottom portion of a
+--                  duplexed Proliant2 storage system located external
+--                  to the system.
+--
+-- :CPQ,ENDDEV:
     ::= { cpqSsDrvBoxEntry 12 }
 
 
@@ -473,9 +696,10 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-           "Compaq Drive Box Total Bays.
+           "Drive Box Total Bays.
 
-            This is the total number of bays in this storage system."
+            This is the total number of bays in this storage system. If the 
+            value cannot be determined or does not apply, -1 is returned."
     ::= { cpqSsDrvBoxEntry 13 }
 
 
@@ -489,7 +713,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-           "Compaq Drive Box Placement.
+           "Drive Box Placement.
 
             The following values are defined:
 
@@ -517,7 +741,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-           "Compaq Drive Box Duplex Option.
+           "Drive Box Duplex Option.
 
             The following values are defined:
 
@@ -540,7 +764,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-           "Compaq Drive Box Board Revision.
+           "Drive Box Board Revision.
 
             This is the board revision of this storage system backplane."
     ::= { cpqSsDrvBoxEntry 16 }
@@ -550,13 +774,287 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "COMPAQ Drive Box Serial Number.
+           "Drive Box Serial Number.
 
-        This is the drive box's serial number which is normally display on the
-        front panel.  This can be used for identification purposes."
+            This is the drive box's serial number which is normally display
+            on the front panel.  This can be used for identification
+            purposes. If the box's serial number cannot be determined, the 
+            agent will return a NULL string."
+-- :CPQ,DEV:
+-- The current Trojan f/w (JB1B) will hang if a S/N command is issued to a
+-- duplexed box, new f/w (JB1C) will fix this problem.
+-- To read the serial number do the following:
+--
+--    /* Read the serial number if it is a Trojan storage box */
+--    if (cpqSsBoxBackPlaneVersion >= proLiant4 )
+--    {
+--       if ( !(  (Duplexed) &&        /* duplex and f/w = "JB1B" */
+--                (0 == strcmp (FirmwareRev, "JB1B") ) ) )
+--       {
+--          Read the Trojan serial number
+--       }
+--    }
+--
+-- :CPQ,ENDDEV:
     ::= { cpqSsDrvBoxEntry 17 }
 
+    cpqSsBoxCntlrHwLocation OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..255))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "A text description of the hardware location of the controller
+            to which this box is attached.  A NULL string indicates that
+            the hardware location could not be determined or is irrelevant."
+    ::= { cpqSsDrvBoxEntry 18 }
 
+    cpqSsBoxBackplaneSpeed OBJECT-TYPE
+        SYNTAX  INTEGER
+        {
+           other(1),
+           ultra3(2),
+           ultra320(3)
+        }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Drive Box Backplane Speed.
+
+            The following values are defined:
+
+            other(1)
+              The agent is unable to determine the backplane speed for this
+              storage system.
+
+            ultra3(2)
+              This storage system is capable of Ultra3 speeds.
+
+            ultra320(3)
+              This storage system is capable of Ultra320 speeds."
+    ::= { cpqSsDrvBoxEntry 19 }
+
+    cpqSsBoxConnectionType OBJECT-TYPE
+        SYNTAX  INTEGER
+        {
+           other(1),
+           scsiAttached(2),
+           sasAttached(3),
+           sataAttached(4)
+        }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Drive Box Connection Type.
+
+            The following values are defined:
+
+            other(1)
+              The agent is unable to determine the type of connection to
+              this storage system.
+
+            scsiAttached(2)
+              This storage system is attached to the host via SCSI.
+
+            sasAttached(3)
+              This storage system is attached to the host via SAS.
+              
+            sataAttached(4)
+              This storage system is attached to the host via SATA."
+    ::= { cpqSsDrvBoxEntry 20 }
+
+    cpqSsBoxHostConnector OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..4))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Drive Box Host Connector.
+
+            This is the host connector to which the drive box is attached.
+            If the host connector cannot be determined, the agent will
+            return a NULL string."
+    ::= { cpqSsDrvBoxEntry 21 }
+
+    cpqSsBoxBoxOnConnector OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Drive Box, Box on Connector.
+
+            The box on connector indicates which box instance this table
+            entry belongs.  The instances start at one and increment for
+            each box attached to a connector.  If the value cannot be
+            determined or does not apply, -1 is returned."
+    ::= { cpqSsDrvBoxEntry 22 }
+
+    cpqSsBoxLocationString OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..255))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Drive Box Location String.
+
+            This string describes the location of the drive box in relation
+            to the controller to which it is attached.  If the location
+            string cannot be determined, the agent will return a NULL string."
+    ::= { cpqSsDrvBoxEntry 23 }
+    
+    cpqSsBoxInitiatorSasAddress OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..16))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Drive Box Initiator SAS Address String.
+
+           This string describes the SAS address of the initiator connected 
+           to the drive box. If the drive box initiator SAS address string 
+           cannot be determined, the agent will return a NULL string."
+    ::= { cpqSsDrvBoxEntry 24 }
+   
+    cpqSsBoxTargetSasAddress OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..16))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Drive Box Target SAS Address String.
+
+           This string describes the SAS address of the target (i.e. the 
+           drive box itself). If the drive box target SAS address string 
+           cannot be determined, the agent will return a NULL string."
+    ::= { cpqSsDrvBoxEntry 25 }
+   
+    cpqSsBoxLocalManageIpAddress OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..64))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Drive Box Local Management IP Address String.
+
+           This string reports the management IP address for the 
+           storage box primary controller. If the drive box local management
+           IP address string cannot be determined, the agent will return a 
+           NULL string."
+    ::= { cpqSsDrvBoxEntry 26 }
+   
+    cpqSsBoxPartnerManageIpAddress OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..64))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Drive Box Partner Management IP Address String.
+
+           This string reports the management IP address for the 
+           storage box partner controller. If the drive box partner management
+           IP address string cannot be determined, the agent will return a 
+           NULL string."
+    ::= { cpqSsDrvBoxEntry 27 }
+   
+    cpqSsBoxConnectionStatus OBJECT-TYPE
+        SYNTAX  INTEGER
+        {
+           other(1),
+           notSupported(2),
+           connected(3),
+           notConnected(4)
+        }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Drive Box Connection Status.
+
+           The following values are defined:
+
+           other(1)
+              The agent is unable to determine the storage system's
+              connection status.
+
+           notSupported(2)
+              Reporting this storage system's connection status is not 
+              supported.
+
+           connected(3)
+              The storage system is connected.
+            
+           notConnected(4)
+              The storage system is disconnected."
+    ::= { cpqSsDrvBoxEntry 28 }
+    
+    cpqSsBoxTargetBasedManagement OBJECT-TYPE
+        SYNTAX  INTEGER
+        {
+           other(1),
+           tbmNotSupported(2),
+           tbmSupported(3)           
+        }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Drive Box Target Based Management.
+
+           The following values are defined:
+
+           other(1)
+              The agent is unable to determine if this storage system 
+              supports target based management. 
+
+           tbmNotSupported(2)
+              The storage system does not support target based
+              management.
+
+           tbmSupported(3)
+              The storage system supports target based management."
+    ::= { cpqSsDrvBoxEntry 29 }
+    
+    cpqSsBoxGSIStatus OBJECT-TYPE
+        SYNTAX  INTEGER
+        {
+          other(1),
+          ok(2),
+          degraded(3),
+          failed(4)
+        }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+        "Drive Box GSI Status.
+
+        This is the status based on the stateof the
+        Global Service Indicator.
+        The following values are defined:
+
+            other(1)
+              The agent does not recognize the status.  You may need to
+              upgrade your software.
+
+            ok(2)
+              The storage system is operating normally.  No user
+              action is required.
+
+            degraded(3)
+              The storage system is degraded. You need to refer to the
+              cpqSsBoxGSIMessages content which will contain specific 
+              error conditions. Please refer to User Documentation to
+              find recommended actions for each error code.
+
+            failed(4)
+              The storage system has failed."
+    ::= { cpqSsDrvBoxEntry 30 }
+    
+    cpqSsBoxGSIMessages OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..511))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Drive Box GSI Messages.
+
+            This string will contain any error message from the drive box
+            describing why the Global Service Indicator is set.
+            Please refer to User Documentation for the attached device
+            to find recommended actions. A NULL string indicates there
+            is no trouble with the drive box."
+    ::= { cpqSsDrvBoxEntry 31 } 
+
+    
 -- ****************************************************************************
 --   Storage System Chassis Group
 --   ============================
@@ -574,7 +1072,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis Table."
+        "Storage System Chassis Table."
     ::= { cpqSsBoxExtended 1 }
 
     cpqSsChassisEntry OBJECT-TYPE
@@ -582,7 +1080,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis Entry."
+        "Storage System Chassis Entry."
     INDEX   { cpqSsChassisIndex }
     ::= { cpqSsChassisTable 1 }
 
@@ -611,7 +1109,9 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
               cpqSsChassisFcaTapeDrvCondition      INTEGER,
               cpqSsChassisRsoStatus                INTEGER,
               cpqSsChassisRsoCondition             INTEGER,
-              cpqSsChassisScsiIoModuleType         INTEGER
+              cpqSsChassisScsiIoModuleType         INTEGER,
+              cpqSsChassisPreferredPathMode        INTEGER,
+              cpqSsChassisProductId                DisplayString
         }
 
     cpqSsChassisIndex OBJECT-TYPE
@@ -619,7 +1119,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis Index.
+        "Storage System Chassis Index.
 
         The chassis index uniquely identifies a storage system chassis."
     ::= { cpqSsChassisEntry 1 }
@@ -629,12 +1129,14 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         {
           other(1),
           fibreAttached(2),
-          scsiAttached(3)
+          scsiAttached(3),
+          iScsiAttached(4),
+          sasAttached(5)
         }
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis Connection Type.
+        "Storage System Chassis Connection Type.
 
         The following values are defined:
 
@@ -646,7 +1148,13 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
               This chassis is attached to the server via Fibre Channel.
 
             scsiAttached(3)
-              This chassis is attached to the server via SCSI."
+              This chassis is attached to the server via SCSI.
+
+            iScsiAttached(4)
+              This chassis is attached to the server via iSCSI.
+
+            sasAttached(5)
+              This chassis is attached to the server via SAS."
     ::= { cpqSsChassisEntry 2 }
 
     cpqSsChassisSerialNumber OBJECT-TYPE
@@ -654,7 +1162,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis Serial Number.
+        "Storage System Chassis Serial Number.
 
         This is the storage system chassis's serial number which is normally
         displayed on the front panel.  This can be used for identification
@@ -666,7 +1174,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis Name.
+        "Storage System Chassis Name.
 
         This is a user defined name for this storage system chassis."
     ::= { cpqSsChassisEntry 4 }
@@ -676,7 +1184,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis System Controller Board Serial Number.
+        "Storage System Chassis System Controller Board Serial Number.
 
         This is the system controller board's serial number.  This can be
         used for identification purposes."
@@ -687,7 +1195,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis System Controller Board Revision.
+        "Storage System Chassis System Controller Board Revision.
 
         This is the system controller board revision."
     ::= { cpqSsChassisEntry 6 }
@@ -697,7 +1205,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis Power Backplane Board Serial Number.
+        "Storage System Chassis Power Backplane Board Serial Number.
 
         This is the power backplane board's serial number.  This can be used
         for identification purposes."
@@ -708,7 +1216,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis Power Backplane Board Revision.
+        "Storage System Chassis Power Backplane Board Revision.
 
         This is the power backplane board revision."
     ::= { cpqSsChassisEntry 8 }
@@ -718,7 +1226,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis SCSI Drive Backplane Board Serial
+        "Storage System Chassis SCSI Drive Backplane Board Serial
          Number.
 
         This is the SCSI drive backplane board's serial number.  This can be
@@ -730,7 +1238,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis SCSI Drive Backplane Board Revision.
+        "Storage System Chassis SCSI Drive Backplane Board Revision.
 
         This is the SCSI drive backplane board revision."
     ::= { cpqSsChassisEntry 10 }
@@ -746,7 +1254,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis Overall Condition.
+        "Storage System Chassis Overall Condition.
 
         This is the condition of the storage system chassis and all of its
         components.  The following values are defined:
@@ -764,6 +1272,43 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             failed(4)
               The storage system chassis is failed."
+-- :CPQ,DEV:
+--   This object contains information about the overall condition of a
+--   Storage System Box.
+--
+--   'other'    := { cpqSsChassisPowerSupplyCondition == other(1)
+--                   & cpqSsChassisFanCondition == other(1)
+--                   & cpqSsChassisTemperatureCondition == other(1)
+--                   & cpqSsChassisFcaCntlrCondition == other(1)
+--                   & cpqSsChassisFcaLogicalDriveCondition == other(1)
+--                   & cpqSsChassisFcaPhysDrvCondition == other(1)
+--                   & cpqSsChassisBackplaneCondition == other(1)
+--                   & cpqSsChassisFcaTapeDrvCondition == other(1)
+--                   & cpqSsChassisRsoCondition == other(1) }
+--
+--   'ok'       := { <default value> }
+--
+--   'degraded' := { cpqSsChassisPowerSupplyCondition == degraded(3)
+--                   | cpqSsChassisFanCondition == degraded(3)
+--                   | cpqSsChassisTemperatureCondition == degraded(3)
+--                   | cpqSsChassisFcaCntlrCondition == degraded(3)
+--                   | cpqSsChassisFcaLogicalDriveCondition == degraded(3)
+--                   | cpqSsChassisFcaPhysDrvCondition == degraded(3)
+--                   | cpqSsChassisFcaPhysDrvCondition == failed(4)
+--                   | cpqSsChassisBackplaneCondition == degraded(3)
+--                   | cpqSsChassisFcaTapeDrvCondition == degraded(3)
+--                   | cpqSsChassisRsoCondition == degraded(3)
+--                   | cpqSsChassisRsoCondition == failed(4) }
+--
+--   'failed'   := { cpqSsChassisPowerSupplyCondition == failed(4)
+--                   | cpqSsChassisFanCondition == failed(4)
+--                   | cpqSsChassisTemperatureCondition == failed(4)
+--                   | cpqSsChassisFcaCntlrCondition == failed(4)
+--                   | cpqSsChassisFcaLogicalDriveCondition == failed(4)
+--                   | cpqSsChassisBackplaneCondition == failed(4)
+--                   | cpqSsChassisFcaTapeDrvCondition == failed(4) }
+--
+-- :CPQ,ENDDEV:
     ::= { cpqSsChassisEntry 11 }
 
     cpqSsChassisPowerSupplyCondition OBJECT-TYPE
@@ -777,7 +1322,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Power Supply Condition.
+        "Storage System Power Supply Condition.
 
         This is the aggregate condition of all power supplies in
         the storage system chassis.  The following values are defined:
@@ -794,6 +1339,24 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             failed(4)
               All power supplies are failed."
+-- :CPQ,DEV:
+--   This object contains information about the condition of all
+--   power supplies in a Storage System.
+--
+--   'other'    := { cpqSsPowerSupplyCondition  == other(1)
+--                   for all power supplies in the box }
+--
+--   'ok'       := { <default value> }
+--
+--   'degraded' := { cpqSsPowerSupplyCondition  == degraded(3)
+--                   | cpqSsPowerSupplyCondition  == failed(4)
+--                   for at least 1 power supply in the box }
+--
+--   'failed'   := { cpqSsPowerSupplyCondition  == failed(4)
+--                   for all power supplies in the box.
+--                   This should not really be possible. }
+--
+-- :CPQ,ENDDEV:
     ::= { cpqSsChassisEntry 12 }
 
     cpqSsChassisFanCondition OBJECT-TYPE
@@ -807,7 +1370,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fan Condition.
+        "Storage System Fan Condition.
 
         This is the aggregate condition of all fan modules in the
         storage system chassis.  The following values are defined:
@@ -824,6 +1387,22 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             failed(4)
               At least one fan module is failed."
+-- :CPQ,DEV:
+--   This object contains information about the condition of all
+--   fan modules in a Storage System.
+--
+--   'other'    := { cpqSsFanModuleCondition  == other(1)
+--                   for all fan modules in the box }
+--
+--   'ok'       := { <default value> }
+--
+--   'degraded' := { cpqSsFanModuleCondition == degraded(3)
+--                   for at least 1 fan module in the box }
+--
+--   'failed'   := { cpqSsFanModuleCondition == failed(4)
+--                   for at least 1 fan module in the box }
+--
+-- :CPQ,ENDDEV:
     ::= { cpqSsChassisEntry 13 }
 
     cpqSsChassisTemperatureCondition OBJECT-TYPE
@@ -837,7 +1416,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Temperature Condition.
+        "Storage System Temperature Condition.
 
         This is the aggregate condition of all the temperatur sensors
         in the storage system chassis.  The following values are defined:
@@ -854,6 +1433,22 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             failed(4)
               At least one temperature sensor is reading failed."
+-- :CPQ,DEV:
+--   This object contains information about the condition of all
+--   temperature sensors in a Storage System.
+--
+--   'other'    := { cpqSsTempSensorCondition == other(1)
+--                   for all temp sensors in the box }
+--
+--   'ok'       := { <default value> }
+--
+--   'degraded' := { cpqSsTempSensorCondition == degraded(3)
+--                   for at least 1 temp sensor in the box }
+--
+--   'failed'   := { cpqSsTempSensorCondition == failed(4)
+--                   for at least 1 temp sensor in the box }
+--
+-- :CPQ,ENDDEV:
     ::= { cpqSsChassisEntry 14 }
 
     cpqSsChassisFcaCntlrCondition OBJECT-TYPE
@@ -867,7 +1462,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fibre Channel Array Controller Condition.
+        "Storage System Fibre Channel Array Controller Condition.
 
         This is the aggregate condition of all Fibre Channel Array controllers
         in the storage system chassis.  The following values are defined:
@@ -885,6 +1480,24 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             failed(4)
               All Fibre Channel Array Controllers are failed."
+-- :CPQ,DEV:
+--   This object contains information about the condition of all
+--   array controllers in a Storage System.
+--
+--   'other'    := { cpqFcaCntlrCondition == other(1)
+--                   for all array controllers in the box }
+--
+--   'ok'       := { <default value> }
+--
+--   'degraded' := { cpqFcaCntlrCondition == degraded(3)
+--                   | cpqFcaCntlrCondition == failed(4)
+--                   for at least 1 array controller in the box }
+--
+--   'failed'   := { cpqFcaCntlrCondition == failed(4)
+--                   for all array controllers in the box.
+--                   This should not really be possible. }
+--
+-- :CPQ,ENDDEV:
     ::= { cpqSsChassisEntry 15 }
 
     cpqSsChassisFcaLogicalDriveCondition OBJECT-TYPE
@@ -898,7 +1511,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fibre Channel Array Logical Drive Condition.
+        "Storage System Fibre Channel Array Logical Drive Condition.
 
         This is the aggregate condition of all Fibre Channel Array Logical
         Drives in this storage system chassis.
@@ -919,6 +1532,22 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
             failed(4)
               At least one Fibre Channel Array Controller Logical Drive
               is failed."
+-- :CPQ,DEV:
+--   This object contains information about the condition of all
+--   logical drives in a Storage System.
+--
+--   'other'    := { cpqFcaLogDrvCondition == other(1)
+--                   for all logical drives in the box }
+--
+--   'ok'       := { <default value> }
+--
+--   'degraded' := { cpqFcaLogDrvCondition == degraded(3)
+--                   for at least 1 logical drive in the box }
+--
+--   'failed'   := { cpqFcaLogDrvCondition == failed(4)
+--                   for at least 1 logical drive in the box }
+--
+-- :CPQ,ENDDEV:
     ::= { cpqSsChassisEntry 16 }
 
     cpqSsChassisFcaPhysDrvCondition OBJECT-TYPE
@@ -932,7 +1561,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fibre Channel Array Physical Drive Condition.
+        "Storage System Fibre Channel Array Physical Drive Condition.
 
         This is the aggregate condition of all Fibre Channel Array Physical
         Drives in this storage system chassis.
@@ -953,6 +1582,22 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
             failed(4)
               At least one Fibre Channel Array Controller Physical Drive
               is failed."
+-- :CPQ,DEV:
+--   This object contains information about the condition of all
+--   physical drives in a Storage System.
+--
+--   'other'    := { cpqFcaPhysDrvCondition == other(1)
+--                   for all physical drives in the box }
+--
+--   'ok'       := { <default value> }
+--
+--   'degraded' := { cpqFcaPhyDrvCondition == degraded(3)
+--                   for at least 1 physical drive in the box }
+--
+--   'failed'   := { cpqFcaPhyDrvCondition == failed(4)
+--                   for at least 1 physical drive in the box }
+--
+-- :CPQ,ENDDEV:
     ::= { cpqSsChassisEntry 17 }
 
     cpqSsChassisTime OBJECT-TYPE
@@ -960,7 +1605,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis Time.
+        "Storage System Chassis Time.
 
         This is the storage system chassis's time in tenths of seconds.
         If the chassis time is not supported, the agent will return 0."
@@ -974,12 +1619,16 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
           msa1000(3),
           smartArrayClusterStorage(4),
           enterpriseModularArray(5),
-          enterpriseVirtualArray(6)
+          enterpriseVirtualArray(6),
+          msa500G2(7),
+          msa20(8),
+          msa1500cs(9),
+          msa1510i(10)          
         }
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis Model.
+        "Storage System Chassis Model.
 
         The following values are defined:
 
@@ -990,16 +1639,33 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
               Compaq StorageWorks RAID Array 4000/4100.
 
             msa1000(3)
-              Compaq StorageWorks Modular SAN Array 1000.
+              Compaq StorageWorks Modular Smart Array 1000.
 
             smartArrayClusterStorage(4)
-              Compaq Smart Array Cluster Storage.
+              HP StorageWorks Modular Smart Array 500
+              (Formerly Smart Array Cluster Storage).
 
             enterpriseModularArray(5)
               Compaq StorageWorks Enterprise/Modular RAID Array.
 
             enterpriseVirtualArray(6)
-              Compaq StorageWorks Enterprise Virtual Array."
+              Compaq StorageWorks Enterprise Virtual Array.
+
+            msa500G2(7)
+              HP StorageWorks Modular Smart Array 500 G2.
+
+            msa20(8)
+              HP StorageWorks Modular Smart Array 20.
+
+            msa1500cs(9)
+              HP StorageWorks Modular Smart Array 1500 CS.
+
+            msa1510i(10)
+              HP StorageWorks Modular Smart Array 1510i.
+
+            Reserved(11)
+              
+            Reserved(12)"
     ::= { cpqSsChassisEntry 19 }
 
     cpqSsChassisBackplaneCondition OBJECT-TYPE
@@ -1013,7 +1679,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Backplane Condition.
+        "Storage System Backplane Condition.
 
         This is the aggregate condition of all the backplanes for the
         storage system chassis.  The following values are defined:
@@ -1030,6 +1696,22 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             failed(4)
               At least one storage system is failed."
+-- :CPQ,DEV:
+--   This object contains information about the condition of all backplanes
+--   for a Storage System.
+--
+--   'other'    := { cpqSsBackplaneCondition == other(1)
+--                   for all backplanes in the box }
+--
+--   'ok'       := { <default value> }
+--
+--   'degraded' := { cpqSsBackplaneCondition == degraded(3)
+--                   for at least 1 backplane in the box }
+--
+--   'failed'   := { cpqSsBackplaneCondition == failed(4)
+--                   for at least 1 backplane in the box }
+--
+-- :CPQ,ENDDEV:
     ::= { cpqSsChassisEntry 20 }
 
     cpqSsChassisFcaTapeDrvCondition OBJECT-TYPE
@@ -1043,7 +1725,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Array Tape Drive Condition.
+        "Storage System Array Tape Drive Condition.
 
         This is the aggregate condition of all tape drives in this storage
         system chassis.
@@ -1061,6 +1743,22 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             failed(4)
               At least one tape drive is failed."
+-- :CPQ,DEV:
+--   This object contains information about the condition of all tape drives
+--   in a Storage System.
+--
+--   'other'    := { cpqFcTapeDriveCondition == other(1)
+--                   for all tape drives in the box }
+--
+--   'ok'       := { <default value> }
+--
+--   'degraded' := { cpqFcTapeDriveCondition == degraded(3)
+--                   for at least 1 tape drive in the box }
+--
+--   'failed'   := { cpqFcTapeDriveCondition == failed(4)
+--                   for at least 1 tape drive in the box }
+--
+-- :CPQ,ENDDEV:
     ::= { cpqSsChassisEntry 21 }
 
     cpqSsChassisRsoStatus OBJECT-TYPE
@@ -1084,7 +1782,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis Recovery Server Option Status.
+        "Storage System Chassis Recovery Server Option Status.
 
         The following values are defined:
 
@@ -1158,7 +1856,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis Recovery Server Option Condition.
+        "Storage System Chassis Recovery Server Option Condition.
 
         This is the condition of the recovery server option.  The
         following values are defined:
@@ -1176,6 +1874,30 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             failed(4)
               The recovery server option is failed."
+-- :CPQ,DEV:
+--   This object contains information about the condition of the recovery
+--   server option.
+--
+--   'other'    := { cpqSsChassisRsoStatus == other(1)
+--                   | cpqSsChassisRsoStatus == notSupported(2)
+--                   | cpqSsChassisRsoStatus == notConfigured(3)
+--                   | cpqSsChassisRsoStatus == disabled(4)
+--                   | cpqSsChassisRsoStatus == daemonDownDisabled(5) }
+--
+--   'ok'       := { cpqSsChassisRsoStatus == ok(6) }
+--
+--   'degraded' := {  }
+--
+--   'failed'   := { cpqSsChassisRsoStatus == daemonDownActive(7)
+--                   | cpqSsChassisRsoStatus == noSecondary(8)
+--                   | cpqSsChassisRsoStatus == daemonDownNoSecondary(9)
+--                   | cpqSsChassisRsoStatus == linkDown(10)
+--                   | cpqSsChassisRsoStatus == daemonDownLinkDown(11)
+--                   | cpqSsChassisRsoStatus == secondaryRunningAuto(12)
+--                   | cpqSsChassisRsoStatus == secondaryRunningUser(13)
+--                   | cpqSsChassisRsoStatus == evTimeoutError(14) }
+--
+-- :CPQ,ENDDEV:
     ::= { cpqSsChassisEntry 23 }
 
     cpqSsChassisScsiIoModuleType OBJECT-TYPE
@@ -1184,12 +1906,15 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
           other(1),
           io2port(2),
           io4portUpgradeFirmware(3),
-          io4port(4)
+          io4port(4),
+          io2port320(5),
+          io4port320(6),
+          io1port320(7)
         }
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Chassis SCSI I/O Module Type.
+        "Storage System Chassis SCSI I/O Module Type.
 
         The following values are defined:
 
@@ -1207,8 +1932,61 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             io4port(4)
               A 4-Port Shared Storage Module for Smart Array Cluster Storage
-              is installed."
+              is installed.
+
+            io2port320(5)
+              A 2-Port Ultra320 SCSI I/O Module is installed.
+
+            io4port320(6)
+              A 4-Port Ultra320 SCSI I/O Module is installed.
+
+            io1port320(7)
+              A 1-Port Ultra320 SCSI I/O Module is installed."
     ::= { cpqSsChassisEntry 24 }
+
+     cpqSsChassisPreferredPathMode OBJECT-TYPE
+        SYNTAX  INTEGER
+        {
+            other(1),
+            notActiveActive(2),
+            automatic(3),
+            manual(4)
+        }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Array Controller Preferred Path Mode.
+
+            This is the storage system active/active preferred path mode.
+            The following values are valid:
+
+            other (1)
+              Indicates that the agent does not recognize the preferred path
+              mode of the storage system.  You may need to upgrade the agent.
+
+            notActiveActive (2)
+              The storage system is not configured as active/active.
+
+            automatic (3)
+              The storage system automatically selects the preferred path
+              for each logical drive based on host I/O patterns.
+
+            manual (4)
+              The preferred path for each logical drive is manually
+              configured by the storage system administrator."
+        ::= { cpqSsChassisEntry 25 }
+
+    cpqSsChassisProductId OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..32))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+        "Storage System Chassis Product Identifier.
+
+        This is the storage system chassis's product identifier.  This can
+        be used for identification purposes.  If the product identifier can
+        not be determined, the agent will return a NULL string."
+    ::= { cpqSsChassisEntry 26 }
 
 
 -- ****************************************************************************
@@ -1228,7 +2006,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System I/O Slot Table."
+        "Storage System I/O Slot Table."
     ::= { cpqSsBoxExtended 2 }
 
     cpqSsIoSlotEntry OBJECT-TYPE
@@ -1236,7 +2014,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System I/O Slot Entry."
+        "Storage System I/O Slot Entry."
     INDEX   { cpqSsIoSlotChassisIndex, cpqSsIoSlotIndex }
     ::= { cpqSsIoSlotTable 1 }
 
@@ -1252,7 +2030,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System I/O Slot Chassis Index.
+        "Storage System I/O Slot Chassis Index.
 
         The chassis index uniquely identifies a storage system chassis."
     ::= { cpqSsIoSlotEntry 1 }
@@ -1262,7 +2040,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System I/O Slot Index.
+        "Storage System I/O Slot Index.
 
         This index uniquely identifies a storage system I/O Slot."
     ::= { cpqSsIoSlotEntry 2 }
@@ -1274,12 +2052,15 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
           notInstalled(2),
           unknownBoard(3),
           fibreArray(4),
-          scsiArray(5)
+          scsiArray(5),
+          noSlot(6),
+          iScsiArray(7),
+          sasArray(8)
         }
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System I/O Slot Controller Type.
+        "Storage System I/O Slot Controller Type.
 
          The following values are defined:
 
@@ -1295,12 +2076,23 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
               I/O slot.
 
             fibreArray(4)
-              A Compaq Fibre Channel Array controller is installed in
-              this storage system I/O slot.
+              A Fibre Channel Array controller is installed in this storage
+              system I/O slot.
 
             scsiArray(5)
-              A Compaq SCSI Array controller is installed in this storage
-              system I/O slot."
+              A SCSI Array controller is installed in this storage system
+              I/O slot.
+
+            noSlot(6)
+              The slot does not exist on this chassis.
+
+            iScsiArray(7)
+              An  iSCSI Array controller is installed in this storage system
+              I/O slot.
+
+            sasArray(8)
+              A SAS Array controller is installed in this storage system
+              I/O slot."
     ::= { cpqSsIoSlotEntry 3 }
 
 
@@ -1321,7 +2113,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Power Supply Table."
+        "Storage System Power Supply Table."
     ::= { cpqSsBoxExtended 3 }
 
     cpqSsPowerSupplyEntry OBJECT-TYPE
@@ -1329,7 +2121,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Power Supply Entry."
+        "Storage System Power Supply Entry."
     INDEX   { cpqSsPowerSupplyChassisIndex, cpqSsPowerSupplyIndex }
     ::= { cpqSsPowerSupplyTable 1 }
 
@@ -1351,7 +2143,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Power Supply Chassis Index.
+        "Storage System Power Supply Chassis Index.
 
         The chassis index uniquely identifies a storage system chassis."
     ::= { cpqSsPowerSupplyEntry 1 }
@@ -1361,7 +2153,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Power Supply Bay.
+        "Storage System Power Supply Bay.
 
         This index uniquely identifies a power supply bay."
     ::= { cpqSsPowerSupplyEntry 2 }
@@ -1371,12 +2163,13 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         {
           other(1),
           powerBay1(2),
-          powerBay2(3)
+          powerBay2(3),
+          composite(4)
         }
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Power Supply Bay.
+        "Storage System Power Supply Bay.
 
         The following values are defined:
 
@@ -1388,7 +2181,11 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
               The power supply is installed in the first power supply bay.
 
             powerBay2(3)
-              The power supply is installed in the second power supply bay."
+              The power supply is installed in the second power supply bay.
+
+            composite(4)
+              The power supply information is a composite of all power
+              supplies in the storage system."
     ::= { cpqSsPowerSupplyEntry 3 }
 
     cpqSsPowerSupplyStatus OBJECT-TYPE
@@ -1397,12 +2194,13 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
           other(1),
           notInstalled(2),
           ok(3),
-          failed(4)
+          failed(4),
+          degraded(5)
         }
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Power Supply Status.
+        "Storage System Power Supply Status.
 
          The following values are defined:
 
@@ -1418,7 +2216,11 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             failed(4)
               A power supply is installed and is no longer operating.
-              Replace the power supply."
+              Replace the power supply.
+
+            degraded(5)
+              For composite power supplies, this indicates that at least one
+              power supply has failed or lost power."
     ::= { cpqSsPowerSupplyEntry 4 }
 
     cpqSsPowerSupplyUpsStatus OBJECT-TYPE
@@ -1433,8 +2235,8 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Power Supply Uninterruptible Power Supply
-         (UPS) Status.
+        "Storage System Power Supply Uninterruptible Power Supply (UPS)
+        Status.
 
          The following values are defined:
 
@@ -1469,7 +2271,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Power Supply Condition.
+        "Storage System Power Supply Condition.
 
         This is the condition of the storage system chassis and all of
         its components.  The following values are defined:
@@ -1495,7 +2297,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Power Supply Serial Number.
+        "Storage System Power Supply Serial Number.
 
         This is the power supply's serial number.  This can be used
         for identification purposes.  If the serial number is not supported,
@@ -1507,7 +2309,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Power Supply Board Revision.
+        "Storage System Power Supply Board Revision.
 
         This is the power supply board revision.  If the board revision is
         not supported, the agent will return a NULL string."
@@ -1518,7 +2320,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Power Supply Firmware Revision.
+        "Storage System Power Supply Firmware Revision.
 
         This is the power supply firmware revision.  If the firmware revision
         is not supported, the agent will return a NULL string."
@@ -1542,7 +2344,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fan Module Table."
+        "Storage System Fan Module Table."
     ::= { cpqSsBoxExtended 4 }
 
     cpqSsFanModuleEntry OBJECT-TYPE
@@ -1550,7 +2352,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fan Module Entry."
+        "Storage System Fan Module Entry."
     INDEX   { cpqSsFanModuleChassisIndex, cpqSsFanModuleIndex }
     ::= { cpqSsFanModuleTable 1 }
 
@@ -1570,7 +2372,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fan Module Chassis Index.
+        "Storage System Fan Module Chassis Index.
 
         The chassis index uniquely identifies a storage system chassis."
     ::= { cpqSsFanModuleEntry 1 }
@@ -1580,7 +2382,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fan Module Index.
+        "Storage System Fan Module Index.
 
         This index uniquely identifies a storage system fan module."
     ::= { cpqSsFanModuleEntry 2 }
@@ -1597,7 +2399,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fan Module Status.
+        "Storage System Fan Module Status.
 
          The following values are defined:
 
@@ -1629,7 +2431,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fan Module Condition.
+        "Storage System Fan Module Condition.
 
         This is the condition of the storage system fan module.
         The following values are defined:
@@ -1654,12 +2456,14 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         SYNTAX  INTEGER
         {
           other(1),
-          fanBay(2)
+          fanBay(2),
+          composite(3),
+          fanBay2(4)
         }
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fan Module Location.
+        "Storage System Fan Module Location.
 
          The following values are defined:
 
@@ -1668,7 +2472,14 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
               system fan module.
 
             fanBay(2)
-              This fan module is installed in the fan bay."
+              This fan module is installed in the first fan bay.
+
+            composite(3)
+              The fan information is a composite of all fans in the storage
+              system.
+
+            fanBay2(4)
+              This fan module is installed in the second fan bay."
     ::= { cpqSsFanModuleEntry 5 }
 
     cpqSsFanModuleSerialNumber OBJECT-TYPE
@@ -1676,7 +2487,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fan Module Serial Number.
+        "Storage System Fan Module Serial Number.
 
         This is the fan module's serial number.  This can be used
         for identification purposes."
@@ -1687,7 +2498,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fan Module Board Revision.
+        "Storage System Fan Module Board Revision.
 
         This is the fan module board revision."
     ::= { cpqSsFanModuleEntry 7 }
@@ -1710,7 +2521,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Temperature Sensor Table."
+        "Storage System Temperature Sensor Table."
     ::= { cpqSsBoxExtended 5 }
 
     cpqSsTempSensorEntry OBJECT-TYPE
@@ -1718,7 +2529,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Temperature Sensor Entry."
+        "Storage System Temperature Sensor Entry."
     INDEX   { cpqSsTempSensorChassisIndex, cpqSsTempSensorIndex }
     ::= { cpqSsTempSensorTable 1 }
 
@@ -1739,7 +2550,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Temperature Sensor Chassis Index.
+        "Storage System Temperature Sensor Chassis Index.
 
         The chassis index uniquely identifies a storage system chassis."
     ::= { cpqSsTempSensorEntry 1 }
@@ -1749,7 +2560,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Temperature Sensor Index.
+        "Storage System Temperature Sensor Index.
 
         This index uniquely identifies a temperature sensor."
     ::= { cpqSsTempSensorEntry 2 }
@@ -1765,7 +2576,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Temperature Sensor Status.
+        "Storage System Temperature Sensor Status.
 
          The following values are defined:
 
@@ -1794,7 +2605,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fan Module Condition.
+        "Storage System Fan Module Condition.
 
         This is the condition of the storage system temperature sensor.
         The following values are defined:
@@ -1826,7 +2637,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fan Module Location.
+        "Storage System Fan Module Location.
 
          The following values are defined:
 
@@ -1847,7 +2658,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Temperature Sensor Current Value.
+        "Storage System Temperature Sensor Current Value.
 
         The current value of the temperature sensor in degrees Celsius."
     ::= { cpqSsTempSensorEntry 6 }
@@ -1857,7 +2668,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Temperature Sensor Limit Value.
+        "Storage System Temperature Sensor Limit Value.
 
         The limit value of the temperature sensor in degrees Celsius."
     ::= { cpqSsTempSensorEntry 7 }
@@ -1867,7 +2678,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Temperature Sensor Hysteresis Value.
+        "Storage System Temperature Sensor Hysteresis Value.
 
         The hysteresis value of the temperature sensor in degrees Celsius."
     ::= { cpqSsTempSensorEntry 8 }
@@ -1890,7 +2701,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System SCSI Backplane Table."
+        "Storage System SCSI Backplane Table."
     ::= { cpqSsBoxExtended 6 }
 
     cpqSsBackplaneEntry OBJECT-TYPE
@@ -1898,7 +2709,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System SCSI Backplane Entry."
+        "Storage System SCSI Backplane Entry."
     INDEX   { cpqSsBackplaneChassisIndex, cpqSsBackplaneIndex }
     ::= { cpqSsBackplaneTable 1 }
 
@@ -1918,7 +2729,12 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
               cpqSsBackplaneFtpsStatus         INTEGER,
               cpqSsBackplaneSerialNumber       DisplayString,
               cpqSsBackplanePlacement          INTEGER,
-              cpqSsBackplaneBoardRevision      INTEGER
+              cpqSsBackplaneBoardRevision      INTEGER,
+              cpqSsBackplaneSpeed              INTEGER,
+              cpqSsBackplaneConnectionType     INTEGER,
+              cpqSsBackplaneConnector          DisplayString,
+              cpqSsBackplaneOnConnector        INTEGER,
+              cpqSsBackplaneLocationString     DisplayString
         }
 
     cpqSsBackplaneChassisIndex OBJECT-TYPE
@@ -1926,7 +2742,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Backplane Chassis Index.
+        "Storage System Backplane Chassis Index.
 
         The chassis index uniquely identifies a storage system chassis."
     ::= { cpqSsBackplaneEntry 1 }
@@ -1936,7 +2752,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Backplane Index.
+        "Storage System Backplane Index.
 
         This index uniquely identifies a storage system backplane."
     ::= { cpqSsBackplaneEntry 2 }
@@ -1946,7 +2762,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Backplane Firmware Revision.
+        "Storage System Backplane Firmware Revision.
 
         This is the revision level of storage system backplane."
     ::= { cpqSsBackplaneEntry 3 }
@@ -1956,7 +2772,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Backplane Drive Bays.
+        "Storage System Backplane Drive Bays.
 
         This is the number of bays on this storage system backplane."
     ::= { cpqSsBackplaneEntry 4 }
@@ -1972,7 +2788,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Backplane Duplex Option.
+        "Storage System Backplane Duplex Option.
 
         The following values are defined:
 
@@ -2001,7 +2817,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Backplane Condition.
+        "Storage System Backplane Condition.
 
         This is the overall condition of the backplane.
         The following values are defined:
@@ -2021,6 +2837,26 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             failed(4)
               The storage system has failed."
+--:CPQ,DEV:
+--
+--  Storage system Condition (Developer Comments)
+--      This object contains information about the condition of a
+--      SCSI Drive Box.
+--
+--   'other'    := { BackplaneFanStatus == other(1) |
+--                   BackplaneTempStatus == other(1) |
+--                   BackplaneFtpsStatus == other(1) }
+--
+--   'ok'       := { <default value> }
+--
+--   'degraded' := { BackplaneFanStatus == degraded(4) |
+--                   BackplaneTempStatus == degraded(4) |
+--                   BackplaneFtpsStatus == degraded(4)
+--
+--   'failed' := { BackplaneFanStatus == failed(5) |
+--                 BackplaneTempStatus == failed(5) }
+--
+--:CPQ,ENDDEV:
     ::= { cpqSsBackplaneEntry 6 }
 
     cpqSsBackplaneVersion OBJECT-TYPE
@@ -2028,9 +2864,31 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Backplane Version.
+        "Storage System Backplane Version.
 
         This is the version of the drive box back plane."
+-- :CPQ,DEV:
+--      This value is derived from the inquiry data product id field.
+--      The storage system product id field is of the following form:
+--
+--             PROLIANT <version>-<bays><placement> [<duplexed>]
+--      Offset 012345678    9    10 11       12    13   14-15
+--
+--      <version>   Back plane version of the storage system (offset 9).
+--                  Currently '1', '2', '3' or '4'.
+--      <bays>      Total bays in the storage system (offset 11).
+--                  Currently '2', '3', '4', '5' or '7'.
+--      <placement> Placement of the storage system (offset 12).
+--                  Currently 'I' for internal or 'E' for external.
+--      <duplexed>  Duplex option for this storage system (offset 14 and 15).
+--                  Currently 'DB' for duplex bottom, 'DT' for duplex top or
+--                  blank for not duplexed.
+--
+--      Example:    "PROLIANT 2-4E DB" is a 4 bay, bottom portion of a
+--                  duplexed Proliant2 storage system located external
+--                  to the system.
+--
+-- :CPQ,ENDDEV:
     ::= { cpqSsBackplaneEntry 7 }
 
     cpqSsBackplaneVendor OBJECT-TYPE
@@ -2038,7 +2896,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Backplane Vendor
+        "Storage System Backplane Vendor
 
         This is the storage box's vendor name.
         This can be used for identification purposes."
@@ -2049,7 +2907,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Backplane Model.
+        "Storage System Backplane Model.
 
         This is a description of the storage system's model.
         This can be used for identification purposes."
@@ -2063,12 +2921,14 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
           ok(3),
           degraded(4),
           failed(5),
-          notSupported(6)
+          notSupported(6),
+          degraded-Fan1Failed(7),
+          degraded-Fan2Failed(8)
         }
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Backplane Fan Status.
+        "Storage System Backplane Fan Status.
 
          This is the current status of the fans in the storage system.
          This value will be one of the following:
@@ -2095,7 +2955,43 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
             notSupported(6)
               The storage system does not support reporting fan status
               through this backplane.  The fan status is reported through the
-              first backplane on this storage system."
+              first backplane on this storage system.
+
+            degraded-Fan1Failed(7)
+              Fan 1 has failed, but there is still sufficient cooling
+              capacity to allow the system to continue. The fan should be
+              replaced.
+
+            degraded-Fan2Failed(8)
+              Fan 2 has failed, but there is still sufficient cooling
+              capacity to allow the system to continue. The fan should be
+              replaced."
+
+-- :CPQ,DEV:
+--  Storage System Fan Status (Developer Comments)
+--      This object contains information about the status of a
+--      fan module.  The following values are defined:
+--
+--   'other'    := The Alarm Page cannot be retrieved (i.e., no conclusion
+--                 can be made about the fan status). }
+--
+--   'notInstalled' := If the Alarm Page 'fan valid bit' (FanV) is set to 0.
+--
+--   'ok'       := <default value>
+--                 If the Alarm Page 'fan valid bit' (FanV) is set to 1
+--                 and the Alarm Page 'fan bit alarm' (Fan) is set to 0
+--                 and the Alarm Page 'fan degraded bit' (Fan0) is set to 0.
+--
+--   'degraded' := If the Alarm Page 'fan valid bit' (FanV) is set to 1
+--                 and the Alarm Page 'fan bit alarm' (Fan) is set to 0
+--                 and the Alarm Page 'fan degraded bit' (Fan0) is set to 1.
+--
+--   'failed'   := If the Alarm Page 'fan valid bit' (FanV) is set to 1
+--                 and the Alarm Page 'fan bit alarm' (Fan) is set to 1.
+--
+--   'notSupported' := If this is bus 2 of a Voyager storage box.
+--
+-- :CPQ,ENDDEV:
     ::= { cpqSsBackplaneEntry 10 }
 
     cpqSsBackplaneTempStatus OBJECT-TYPE
@@ -2111,7 +3007,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Backplane Fan Status.
+        "Storage System Backplane Fan Status.
 
          This value will be one of the following:
 
@@ -2145,13 +3041,14 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
           ok(3),
           degraded(4),
           failed(5),
-          notSupported(6)
+          notSupported(6),
+          noFltTolPower-Bay1Missing(7),
+          noFltTolPower-Bay2Missing(8)
         }
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Backplane Fault Tolerant Power Supply
-         Status.
+        "Storage System Backplane Fault Tolerant Power Supply Status.
 
             This value specifies the overall status of the redundant power
             supply in a drive box.  This value will be one of the following:
@@ -2177,7 +3074,38 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
               The storage system does not support reporting fault tolerant
               power supply status through this backplane.  The fault tolerant
               power supply status is reported through the first backplane on
-              this storage system."
+              this storage system.
+
+            noFltTolPower-Bay1Missing(7),
+              This unit does not have a redundant supply.  The power supply
+              in bay 1 is missing.
+
+            noFltTolPower-Bay2Missing(8)
+              This unit does not have a redundant supply.  The power supply
+              in bay 2 is missing."
+-- :CPQ,DEV:
+--  Drive Box Fault Tolerance Power Supply Status (Developer Comments)
+--      This object contains information about the status of a
+--      power supply.  The following values are defined:
+--
+--   'other'    := { The Alarm Page cannot be retrieved (i.e., no conclusion
+--                   can be made about power supply status). }
+--
+--   'noFltTolPower' := { If the Alarm Page 'power valid bit' (PwrV)
+--                        is set to 0. }
+--
+--   'ok'       := { <default value>
+--                   If the Alarm Page 'power valid bit' (PwrV) is set to 1
+--                   and the Alarm Page 'power bit alarm' (Pwr) is set to 0.
+--
+--   'degraded' := { If the Alarm Page 'power valid bit' (PwrV) is set to 1
+--                   and the Alarm Page 'power bit alarm' (Pwr) is set to 1.
+--
+--   'failed'    := { Can never happen. }
+--
+--   'notSupported' := If this is bus 2 of a Voyager storage box.
+--
+-- :CPQ,ENDDEV:
     ::= { cpqSsBackplaneEntry 12 }
 
     cpqSsBackplaneSerialNumber OBJECT-TYPE
@@ -2185,7 +3113,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Backplane Serial Number.
+        "Storage System Backplane Serial Number.
 
         This is the storage system backplane serial number which is normally
         displayed on the front bezel.  This can be used for identification
@@ -2202,7 +3130,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-           "Compaq Storage System Backplane Placement.
+           "Storage System Backplane Placement.
 
             The following values are defined:
 
@@ -2223,10 +3151,101 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-           "Compaq Storage system Backplane Board Revision.
+           "Storage System Backplane Board Revision.
 
             This is the board revision of this storage system backplane."
     ::= { cpqSsBackplaneEntry 15 }
+
+    cpqSsBackplaneSpeed OBJECT-TYPE
+        SYNTAX  INTEGER
+        {
+           other(1),
+           ultra3(2),
+           ultra320(3),
+           sata(4)
+        }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Storage System Backplane Speed.
+
+            The following values are defined:
+
+            other(1)
+              The agent is unable to determine the backplane speed for this
+              storage system.
+
+            ultra3(2)
+              This storage system is capable of Ultra3 speeds.
+
+            ultra320(3)
+              This storage system is capable of Ultra320 speeds.
+
+            sata(4)
+              This storage system is capable of SATA speeds."
+    ::= { cpqSsBackplaneEntry 16 }
+
+
+    cpqSsBackplaneConnectionType OBJECT-TYPE
+        SYNTAX  INTEGER
+        {
+           other(1),
+           scsiAttached(2),
+           sasAttached(3)
+        }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Backlane Box Connection Type.
+
+            The following values are defined:
+
+            other(1)
+              The agent is unable to determine the type of connection to
+              this backplane.
+
+            scsiAttached(2)
+              This backplane is attached to the host via SCSI.
+
+            sasAttached(3)
+              This backplane is attached to the host via SAS."
+    ::= { cpqSsBackplaneEntry 17 }
+
+    cpqSsBackplaneConnector OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..4))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Backplane Connector.
+
+            This is the connector to which the backplane is attached.
+            If the backplane connector cannot be determined, the agent will
+            return a NULL string."
+    ::= { cpqSsBackplaneEntry 18 }
+
+    cpqSsBackplaneOnConnector OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Backplane on Connector.
+
+            The backplane on connector indicates to which backplane instance
+            this table entry belongs.  The instances start at one and
+            increment for each backplane attached to a connector."
+    ::= { cpqSsBackplaneEntry 19 }
+
+    cpqSsBackplaneLocationString OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..255))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Backplane Location String.
+
+            This string describes the location of the backplane in relation
+            to the controller to which it is attached.  If the location
+            string cannot be determined, the agent will return a NULL string."
+    ::= { cpqSsBackplaneEntry 20 }
 
 
 -- ****************************************************************************
@@ -2251,7 +3270,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fibre Attachment Table."
+        "Storage System Fibre Attachment Table."
     ::= { cpqSsBoxExtended 7 }
 
     cpqSsFibreAttachmentEntry OBJECT-TYPE
@@ -2259,7 +3278,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fibre Attachment Entry."
+        "Storage System Fibre Attachment Entry."
     INDEX   { cpqSsFibreAttachmentIndex }
     ::= { cpqSsFibreAttachmentTable 1 }
 
@@ -2278,7 +3297,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fibre Attachment Index.
+        "Storage System Fibre Attachment Index.
 
         The index uniquely identifies a Fibre Attachment association entry."
     ::= { cpqSsFibreAttachmentEntry 1 }
@@ -2288,7 +3307,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fibre Attachment Host Controller Index.
+        "Storage System Fibre Attachment Host Controller Index.
 
         The host controller index indicates which host controller is
         associated with this entry.  This is equal to cpqFcaHostCntlrIndex,
@@ -2300,7 +3319,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fibre Attachment Host Controller Port.
+        "Storage System Fibre Attachment Host Controller Port.
 
         This is the Fibre port number of the host controller.  For each host
         controller, the port number starts at 1 and increments for each port.
@@ -2318,7 +3337,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fibre Attachment Device Type.
+        "Storage System Fibre Attachment Device Type.
 
         This is the type of device associated with this entry.
         The following values are defined:
@@ -2341,7 +3360,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fibre Attachment Device Index.
+        "Storage System Fibre Attachment Device Index.
 
         The is the index for the Fibre attached device.  For a Fibre
         attached storage system, this is equal to cpqSsChassisIndex from the
@@ -2356,7 +3375,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System Fibre Attachment Device Port.
+        "Storage System Fibre Attachment Device Port.
 
         This is the Fibre port on a device.  For a Fibre attached storage
         system, this is equal to cpqFcaCntlrBoxIoSlot from the Fibre Channel
@@ -2388,7 +3407,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System SCSI Attachment Table."
+        "Storage System SCSI Attachment Table."
     ::= { cpqSsBoxExtended 8 }
 
     cpqSsScsiAttachmentEntry OBJECT-TYPE
@@ -2396,7 +3415,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System SCSI Attachment Entry."
+        "Storage System SCSI Attachment Entry."
     INDEX   { cpqSsScsiAttachmentIndex }
     ::= { cpqSsScsiAttachmentTable 1 }
 
@@ -2418,7 +3437,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System SCSI Attachment Index.
+        "Storage System SCSI Attachment Index.
 
         The index uniquely identifies a SCSI Attachment association entry."
     ::= { cpqSsScsiAttachmentEntry 1 }
@@ -2428,7 +3447,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System SCSI Attachment Controller Index.
+        "Storage System SCSI Attachment Controller Index.
 
         The controller index indicates which internal array controller is
         associated with this entry.  This is equal to cpqDaCntlrIndex,
@@ -2440,7 +3459,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System SCSI Attachment Controller Port.
+        "Storage System SCSI Attachment Controller Port.
 
         The controller port indicates which SCSI port of an internal
         controller is associated with this entry."
@@ -2451,7 +3470,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System SCSI Attachment Controller Target.
+        "Storage System SCSI Attachment Controller Target.
 
         The controller target indicates which SCSI target is associated with
         this entry."
@@ -2462,7 +3481,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System SCSI Attachment Controller Lun.
+        "Storage System SCSI Attachment Controller Lun.
 
         The controller Lun indicates which SCSI Lun is associated with this
         entry."
@@ -2473,7 +3492,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System SCSI Attachment Chassis Index.
+        "Storage System SCSI Attachment Chassis Index.
 
         The is the index for the SCSI attached storage system.  This is equal
         to cpqSsChassisIndex from the Storage System Chassis Table."
@@ -2484,7 +3503,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq Storage System SCSI Attachment Chassis I/O Slot.
+        "Storage System SCSI Attachment Chassis I/O Slot.
 
         This is the I/O slot in the SCSI attached storage system.  This is
         equal to cpqFcaCntlrBoxIoSlot from the Fibre Channel Array Controller
@@ -2531,7 +3550,189 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         "Storage System SCSI Attachment Path Condition.
 
         This is the condition of this path to the chassis."
+--:CPQ,DEV:
+--
+--  Storage System SCSI Attachment Path Condition (Developer Comments)
+--      This object contains information about the condition of a path
+--      to an external array controller.
+--
+--   'other'    := cpqSsScsiAttachmentPathStatus == other(1)
+--
+--   'ok'       := cpqSsScsiAttachmentPathStatus == ok(2)
+--
+--   'degraded' := <not possible>
+--
+--   'failed'   := cpqSsScsiAttachmentPathStatus == offline(3)
+--
+--:CPQ,ENDDEV:
     ::= { cpqSsScsiAttachmentEntry 9 }
+
+-- ****************************************************************************
+--   Storage System Drive Box Access Path Group
+--   ==========================================
+--
+-- The compaq enterprise               (1.3.6.1.4.1.232)
+--      cpqSsStorageSys Group          (1.3.6.1.4.1.232.8)
+--       cpqSsDrvBox Group             (1.3.6.1.4.1.232.8.2)
+--        cpqSsDrvBoxPathTable         (1.3.6.1.4.1.232.8.2.3)
+--
+-- ****************************************************************************
+
+    cpqSsDrvBoxPathTable OBJECT-TYPE
+        SYNTAX  SEQUENCE OF CpqSsDrvBoxPathEntry
+        ACCESS  not-accessible
+        STATUS  mandatory
+        DESCRIPTION
+        "Drive Box Access Path Table."
+    ::= { cpqSsDrvBox 3 }
+
+    cpqSsDrvBoxPathEntry OBJECT-TYPE
+        SYNTAX  CpqSsDrvBoxPathEntry
+        ACCESS  not-accessible
+        STATUS  mandatory
+        DESCRIPTION
+        "Drive Box Access Path Entry."
+    INDEX   { cpqSsDrvBoxPathCntlrIndex, cpqSsDrvBoxPathBoxIndex,
+              cpqSsDrvBoxPathIndex }
+    ::= { cpqSsDrvBoxPathTable 1 }
+
+    CpqSsDrvBoxPathEntry ::= SEQUENCE
+    {
+        cpqSsDrvBoxPathCntlrIndex      INTEGER,
+        cpqSsDrvBoxPathBoxIndex        INTEGER,
+        cpqSsDrvBoxPathIndex           INTEGER,
+        cpqSsDrvBoxPathStatus          INTEGER,
+        cpqSsDrvBoxPathCurrentRole     INTEGER,
+        cpqSsDrvBoxPathHostConnector   DisplayString,
+        cpqSsDrvBoxPathBoxOnConnector  INTEGER,
+        cpqSsDrvBoxPathLocationString  DisplayString
+    }
+
+    cpqSsDrvBoxPathCntlrIndex OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Drive Box Access Path Controller Index.
+
+            The controller index indicates to which adapter card instance
+            this table entry belongs."
+        ::= { cpqSsDrvBoxPathEntry 1 }
+
+    cpqSsDrvBoxPathBoxIndex OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Drive Box Access Path Box Index.
+
+            The box index indicates to which box instance on an adapter card
+            this table entry belongs. The value of this index is the same as
+            cpqSsDrvBoxBusIndex used under the drive box table."
+        ::= { cpqSsDrvBoxPathEntry 2 }
+
+    cpqSsDrvBoxPathIndex OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Drive Box Access Path Index.
+
+            This path index keeps track of multiple instances of access
+            paths from a controller to a storage box. This number, along with
+            the cpqSsDrvBoxPathCntlrIndex and cpqSsDrvBoxPathDrvIndex uniquely
+            identify a specific storage box access path"
+        ::= { cpqSsDrvBoxPathEntry 3 }
+
+     cpqSsDrvBoxPathStatus OBJECT-TYPE
+        SYNTAX  INTEGER
+        {
+            other(1),
+            ok(2),
+            linkDown(3)
+        }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Drive Box Access Path Status.
+
+            This shows the status of the drive box access path.  The
+            following values are valid:
+
+            Other (1)
+              Indicates that the instrument agent can not determine the
+              status of this access path.
+
+            OK (2)
+              Indicates the access path is functioning properly.
+
+            Link Down (3)
+              Indicates that the controller can no longer access the drive box
+              through this path."
+        ::= { cpqSsDrvBoxPathEntry 4 }
+
+     cpqSsDrvBoxPathCurrentRole OBJECT-TYPE
+        SYNTAX  INTEGER
+        {
+            other(1),
+            active(2),
+            alternate(3)
+        }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Drive Box Access Path Current Role.
+
+            This shows the current role of drive box acess path.  The
+            following values are valid:
+
+            Other (1)
+              Indicates that the instrument agent does not recognize the
+              role of this access path.
+
+            Active (2)
+              Indicates that this path is currently the default active
+              I/O path to access the drive box from the controller.
+
+            Alternate (3)
+              Indicates that this path is currently the alternate I/O
+              path to access the physical drive from the controller."
+        ::= { cpqSsDrvBoxPathEntry 5 }
+
+     cpqSsDrvBoxPathHostConnector OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..4))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Drive Box Access Path Host Connector.
+
+            This is the host connector to which the access path is ultimately
+            attached.  If the host connector cannot be determined, the agent
+            will return a NULL string."
+        ::= { cpqSsDrvBoxPathEntry 6 }
+
+     cpqSsDrvBoxPathBoxOnConnector OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Drive Box Access Path Box on Connector.
+
+            The box on connector indicates to which box instance this
+            access path belongs."
+        ::= { cpqSsDrvBoxPathEntry 7 }
+
+     cpqSsDrvBoxPathLocationString OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..255))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "Drive Box Access Path Location String.
+
+            This string describes drive box access path in relation to the
+            controller to which it is attached.  If the location string
+            cannot be determined, the agent will return a NULL string."
+        ::= { cpqSsDrvBoxPathEntry 8 }
 
 
 -- ****************************************************************************
@@ -2675,7 +3876,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq RAID Storage System Table."
+        "RAID Storage System Table."
     ::= { cpqSsRaidSystem 1 }
 
     cpqSsRaidSystemEntry OBJECT-TYPE
@@ -2683,7 +3884,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  not-accessible
         STATUS  mandatory
         DESCRIPTION
-        "Compaq RAID Storage System Entry."
+        "RAID Storage System Entry."
     INDEX   { cpqSsRaidSystemIndex }
     ::= { cpqSsRaidSystemTable 1 }
 
@@ -2702,7 +3903,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq RAID Storage System Index.
+        "RAID Storage System Index.
 
         The RAID Storage System index indicates to which storage system instance
         this table entry belongs."
@@ -2714,7 +3915,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq RAID Storage System Name.
+        "RAID Storage System Name.
 
         This is a description of the RAID Storage System's name.
         This can be used for identification purposes."
@@ -2733,7 +3934,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq RAID Storage System Status.
+        "RAID Storage System Status.
 
          This is the current status of the RAID Storage System.
          This value will be one of the following:
@@ -2770,7 +3971,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "Compaq RAID Storage System Condition.
+        "RAID Storage System Condition.
 
         This is the overall condition of the storage system.
         The following values are defined:
@@ -2789,6 +3990,18 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             failed(4)
               The storage system has failed."
+--:CPQ,DEV:
+--
+--  RAID Subsystem Condition (Developer Comments)
+--
+--      'other'     := {System Status == other }
+--
+--      'ok'        := {System Status == ok }
+--
+--      'degraded'  := {System Status == warning }
+--
+--      'failed'    := {System Status == Communication loss }
+-- :CPQ,ENDDEV:
 
     ::= { cpqSsRaidSystemEntry 4 }
 
@@ -2797,7 +4010,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "COMPAQ RAID Storage System Controller 1 Serial Number.
+        "RAID Storage System Controller 1 Serial Number.
 
         This is the controller number 1's serial number which is normally
         display on the front panel.  This can be used for
@@ -2810,7 +4023,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-        "COMPAQ RAID Storage System Controller 2 Serial Number.
+        "RAID Storage System Controller 2 Serial Number.
 
         This is the controller number 2's serial number which is normally
         display on the front panel.  This can be used for
@@ -2831,6 +4044,12 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 --  agent implementation may support all, some, or none of the traps.
 --  If traps are supported, The user should be provided with the option of
 --  disabling traps.
+-- :CPQ,DEV:
+--      The traps defined below that are assigned the 800x values will
+--      support the new trap format for Insight Manager v2.0 and beyond.
+--      These traps allow for a unique set of traps at the Compaq Enterprise
+--      (1.3.6.1.4.1.232.) across all MIBs.
+-- :CPQ,ENDDEV:
 --
 -- **************************************************************************
 
@@ -2840,11 +4059,11 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
            "Storage System fan status change.
 
-            The agent has detected a change in the Fan Status of a Compaq
-            storage system.  The variable cpqSsBoxFanStatus indicates the
-            current fan status."
+            The agent has detected a change in the Fan Status of a storage
+            system.  The variable cpqSsBoxFanStatus indicates the current
+            fan status."
 
-              --#TYPE "Fan Status Change"
+              --#TYPE "Fan Status Change (1)"
               --#SUMMARY "Storage System fan status changed to %d."
               --#ARGUMENTS {0}
               --#SEVERITY CRITICAL
@@ -2858,11 +4077,11 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
            "Storage System fan status change.
 
-            The agent has detected a change in the Fan Status of a Compaq
-            storage system.  The variable cpqSsBoxFanStatus indicates the
-            current fan status."
+            The agent has detected a change in the Fan Status of a storage
+            system.  The variable cpqSsBoxFanStatus indicates the current
+            fan status."
 
-              --#TYPE "Fan Status Change"
+              --#TYPE "Fan Status Change (8001)"
               --#SUMMARY "Storage System fan status changed to %d."
               --#ARGUMENTS {0}
               --#SEVERITY CRITICAL
@@ -2879,7 +4098,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
             The agent has detected that a temperature status has been set
             to failed.  The storage system will be shutdown."
 
-              --#TYPE "Storage System Temperature Failure"
+              --#TYPE "Storage System Temperature Failure (8002)"
               --#SUMMARY "Storage System will be shutdown."
               --#ARGUMENTS {}
               --#SEVERITY CRITICAL
@@ -2897,8 +4116,11 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
             The agent has detected a temperature status that has been set to
             degraded.  The storage system's temperature is outside of the
             normal operating range."
+-- :CPQ,DEV:
+-- This trap should never be sent with ProLiant-2 (or previous) hardware.
+-- :CPQ,ENDDEV:
 
-              --#TYPE "Storage System Temp Degraded"
+              --#TYPE "Storage System Temp Degraded (8003)"
               --#SUMMARY "Temp is outside of normal range."
               --#ARGUMENTS {}
               --#SEVERITY MAJOR
@@ -2917,7 +4139,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
             system's temperature has returned to normal operating range.
             It may be reactivated by the administrator."
 
-              --#TYPE "Compaq Storage System"
+              --#TYPE "Storage System Temp OK (8004)"
               --#SUMMARY "Storage System temperature ok."
               --#ARGUMENTS {}
               --#SEVERITY INFORMATIONAL
@@ -2935,7 +4157,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
             The side panel status has been set to in place.  The storage
             system's side panel has returned to a properly installed state."
 
-              --#TYPE "Storage System side panel is in place."
+              --#TYPE "Storage System side panel is in place (8005)"
               --#SUMMARY "Side panel is re-installed on unit."
               --#ARGUMENTS {}
               --#SEVERITY INFORMATIONAL
@@ -2957,7 +4179,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
             storage system due to air flow changes caused by the missing
             side panel."
 
-              --#TYPE "Storage System side panel is removed"
+              --#TYPE "Storage System side panel is removed (8006)"
               --#SUMMARY "Side panel is removed from unit."
               --#ARGUMENTS {}
               --#SEVERITY MAJOR
@@ -2971,7 +4193,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "A storage system power supply status has been set to degraded."
 
-        --#TYPE "Power Supply Degraded"
+        --#TYPE "Power Supply Degraded (8007)"
         --#SUMMARY "A storage system power supply unit has become degraded"
         --#ARGUMENTS {}
         --#SEVERITY CRITICAL
@@ -2980,21 +4202,30 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
         ::= 8007
 
+-- :CPQ,DEV:
+-- The above trap definitions are deprecated in release 2.60.  Traps in
+-- version 2.60 and greater have the system name and trap flags variables
+-- bound to all traps.
+-- :CPQ,ENDDEV:
 
+-- :CPQ,DEV:
+-- The following trap (cpqSs3FanStatusChange) is deprecated in
+-- release 6.40.  It is replaced by cpqSs5FanStatusChange.
+-- :CPQ,ENDDEV:
     cpqSs3FanStatusChange TRAP-TYPE
         ENTERPRISE compaq
         VARIABLES  { sysName, cpqHoTrapFlags, cpqSsBoxFanStatus }
         DESCRIPTION
            "Storage System fan status change.
 
-            The agent has detected a change in the Fan Status of a Compaq
-            storage system.  The variable cpqSsBoxFanStatus indicates the
-            current fan status.
+            The agent has detected a change in the Fan Status of a storage
+            system.  The variable cpqSsBoxFanStatus indicates the current
+            fan status.
 
             User Action: If the fan status is degraded or failed, replace
             any failed fans."
 
-              --#TYPE "Fan Status Change"
+              --#TYPE "Fan Status Change (8008)"
               --#SUMMARY "Storage System fan status changed to %d."
               --#ARGUMENTS {2}
               --#SEVERITY CRITICAL
@@ -3002,6 +4233,10 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
         ::= 8008
 
+-- :CPQ,DEV:
+-- The following trap (cpqSs3TempFailed) is deprecated in
+-- release 6.40.  It is replaced by cpqSs5TempStatusChange.
+-- :CPQ,ENDDEV:
     cpqSs3TempFailed TRAP-TYPE
         ENTERPRISE compaq
         VARIABLES  { sysName, cpqHoTrapFlags, cpqSsBoxTempStatus }
@@ -3015,7 +4250,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
             Insure that the storage system environment is being cooled
             properly and that no components are overheated."
 
-              --#TYPE "Storage System Temperature Failure"
+              --#TYPE "Storage System Temperature Failure (8009)"
               --#SUMMARY "Storage System will be shutdown."
               --#ARGUMENTS {}
               --#SEVERITY CRITICAL
@@ -3024,6 +4259,10 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
         ::= 8009
 
+-- :CPQ,DEV:
+-- The following trap (cpqSs3TempDegraded) is deprecated in
+-- release 6.40.  It is replaced by cpqSs5TempStatusChange.
+-- :CPQ,ENDDEV:
     cpqSs3TempDegraded TRAP-TYPE
         ENTERPRISE compaq
         VARIABLES  { sysName, cpqHoTrapFlags, cpqSsBoxTempStatus }
@@ -3037,8 +4276,11 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
             User Action: Shutdown the storage system as soon as possible.
             Insure that the storage system environment is being cooled
             properly and that no components are overheated."
+-- :CPQ,DEV:
+-- This trap should never be sent with ProLiant-2 (or previous) hardware.
+-- :CPQ,ENDDEV:
 
-              --#TYPE "Storage System Temp Degraded"
+              --#TYPE "Storage System Temp Degraded (8010)"
               --#SUMMARY "Temp is outside of normal range."
               --#ARGUMENTS {}
               --#SEVERITY MAJOR
@@ -3047,6 +4289,10 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
         ::= 8010
 
+-- :CPQ,DEV:
+-- The following trap (cpqSs3TempOk) is deprecated in
+-- release 6.40.  It is replaced by cpqSs5TempStatusChange.
+-- :CPQ,ENDDEV:
     cpqSs3TempOk TRAP-TYPE
         ENTERPRISE compaq
         VARIABLES  { sysName, cpqHoTrapFlags, cpqSsBoxTempStatus }
@@ -3059,7 +4305,7 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             User Action: None."
 
-              --#TYPE "Compaq Storage System"
+              --#TYPE "Storage System Temp OK (8011)"
               --#SUMMARY "Storage System temperature ok."
               --#ARGUMENTS {}
               --#SEVERITY INFORMATIONAL
@@ -3079,13 +4325,15 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             User Action: None."
 
-              --#TYPE "Storage System side panel is in place."
-              --#SUMMARY "Side panel is re-installed on unit."
+              --#TYPE "Storage System side panel is in place (8012)"
+              --#SUMMARY "Storage system side panel is re-installed on unit."
               --#ARGUMENTS {}
               --#SEVERITY INFORMATIONAL
               --#TIMEINDEX 99
               --#STATE OPERATIONAL
-
+              --#SIMPLE_SEVERITY OK
+              --#HWSTATUS_CATEGORY STORAGE
+              
         ::= 8012
 
 
@@ -3103,13 +4351,16 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
             User Action: Replace the storage system side panel."
 
-              --#TYPE "Storage System side panel is removed"
-              --#SUMMARY "Side panel is removed from unit."
+              --#TYPE "Storage System side panel is removed (8013)"
+              --#SUMMARY "Storage system side panel is removed from unit."
               --#ARGUMENTS {}
               --#SEVERITY MAJOR
               --#TIMEINDEX 99
               --#STATE DEGRADED
-
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY STORAGE
+              --#ACTION "Replace the storage system side panel."
+              
         ::= 8013
 
     cpqSs3PwrSupplyDegraded TRAP-TYPE
@@ -3118,12 +4369,16 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "A storage system power supply status has been set to degraded."
 
-        --#TYPE "Power Supply Degraded"
+        --#TYPE "Power Supply Degraded (8014)"
         --#SUMMARY "A storage system power supply unit has become degraded"
         --#ARGUMENTS {}
         --#SEVERITY CRITICAL
         --#TIMEINDEX 99
         --#STATE   DEGRADED
+-- :CPQ,DEV:
+-- This trap definition is deprecated in release 3.20.  Agents will now send
+-- cpqSs4PwrSupplyDegraded instead.
+-- :CPQ,ENDDEV:
         ::= 8014
 
     cpqSs4PwrSupplyDegraded TRAP-TYPE
@@ -3135,16 +4390,28 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
             User Action: Take action to restore power or replace any failed
             storage system power supply."
 
-        --#TYPE "Power Supply Degraded"
-        --#SUMMARY "A storage system power supply unit has become degraded"
+        --#TYPE "Power Supply Degraded (8015)"
+        --#SUMMARY "A storage system power supply unit has become degraded."
         --#ARGUMENTS {}
         --#SEVERITY CRITICAL
         --#TIMEINDEX 99
         --#STATE   DEGRADED
-
+        --#SIMPLE_SEVERITY CRITICAL
+        --#HWSTATUS_CATEGORY POWER
+        --#ACTION "Check the power source and replace any failed power supplies."
+        
         ::= 8015
 
+-- :CPQ,DEV:
+-- The following traps added to support the new format storage boxes
+-- (ssBoxExtended group).  Boxes that show up in the new tables only, or
+-- in both, will use the new traps.  Old boxes will still use the old traps.
+-- :CPQ,ENDDEV:
 
+-- :CPQ,DEV:
+-- The following trap (cpqSsExFanStatusChange) is deprecated in
+-- release 4.80.  It is replaced by cpqSsEx2FanStatusChange.
+-- :CPQ,ENDDEV:
     cpqSsExFanStatusChange TRAP-TYPE
         ENTERPRISE compaq
         VARIABLES  { sysName, cpqHoTrapFlags, cpqSsChassisName,
@@ -3154,13 +4421,13 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
            "Storage system fan status change.
 
             The agent has detected a change in the Fan Module Status of a
-            Compaq storage system.  The variable cpqSsFanModuleStatus
-            indicates the current fan status.
+            storage system.  The variable cpqSsFanModuleStatus indicates the
+            current fan status.
 
             User Action: If the fan status is degraded or failed, replace
             any failed fans."
 
-              --#TYPE "Fan Status Change"
+              --#TYPE "Fan Status Change (8016)"
               --#SUMMARY "Storage system fan status changed to %d."
               --#ARGUMENTS {5}
               --#SEVERITY CRITICAL
@@ -3168,6 +4435,10 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
 
         ::= 8016
 
+-- :CPQ,DEV:
+-- The following trap (cpqSsExPowerSupplyStatusChange) is deprecated in
+-- release 4.80.  It is replaced by cpqSsEx2PowerSupplyStatusChange.
+-- :CPQ,ENDDEV:
     cpqSsExPowerSupplyStatusChange TRAP-TYPE
         ENTERPRISE compaq
         VARIABLES  { sysName, cpqHoTrapFlags, cpqSsChassisName,
@@ -3177,13 +4448,13 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
            "Storage system power supply status change.
 
             The agent has detected a change in the power supply status of a
-            Compaq storage system.  The variable cpqSsPowerSupplyStatus
-            indicates the current status.
+            storage system.  The variable cpqSsPowerSupplyStatus indicates
+            the current status.
 
             User Action: If the power supply status is failed, take action to
             restore power or replace the failed power supply."
 
-              --#TYPE "Power Supply Status Change"
+              --#TYPE "Power Supply Status Change (8017)"
               --#SUMMARY "Storage system power supply status changed to %d."
               --#ARGUMENTS {5}
               --#SEVERITY CRITICAL
@@ -3200,18 +4471,21 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
            "Storage system power supply UPS status change.
 
             The agent has detected a change status of a UPS attached to a
-            Compaq storage system power supply.  The variable
+            storage system power supply.  The variable
             cpqSsPowerSupplyUpsStatus indicates the current status.
 
-            User Action: If the UPS status is powerFailed(4) or batteryLow(5),
-            take action to restore power to the UPS."
+            User Action: If cpqSsPowerSupplyUpsStatus is 'powerFailed(4)' or
+            'batteryLow(5)', take action to restore power to the UPS."
 
-              --#TYPE "Power Supply UPS Status Change"
-              --#SUMMARY "Storage system power supply UPS status changed to %d."
-              --#ARGUMENTS {5}
+              --#TYPE "Power Supply UPS Status Change (8018)"
+              --#SUMMARY "Storage system power supply UPS status changed to %d (Bay: %d, Name: %s)."
+              --#ARGUMENTS {5, 4, 2}
               --#SEVERITY CRITICAL
               --#TIMEINDEX 99
-
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY POWER
+              --#ACTION "If the UPS status is 'powerFailed(4)' or 'batteryLow(5)', take action to restore power to the UPS."
+              
         ::= 8018
 
     cpqSsExTempSensorStatusChange TRAP-TYPE
@@ -3222,21 +4496,25 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
            "Storage system temperature sensor status change.
 
-            The agent has detected a change in the status of a Compaq storage
+            The agent has detected a change in the status of a storage
             system temperature sensor.  The variable cpqSsTempSensorStatus
             indicates the current status.
 
-            User Action: If the temperature status is degraded or failed,
-            shutdown the storage system as soon as possible.  Insure that
-            the storage system environment is being cooled properly and that
-            no components are overheated."
+            User Action: If cpqSsTempSensorStatus is 'degraded(3)' or 
+            'failed(4)', shutdown the storage system as soon as possible.  
+            Ensure that the storage system environment is being cooled properly
+            and that no components are overheated."
 
-              --#TYPE "Temperature Sensor Status Change"
-              --#SUMMARY "Storage system temperature sensor status changed to %d."
-              --#ARGUMENTS {5}
+              --#TYPE "Temperature Sensor Status Change (8019)"
+              --#SUMMARY "Storage system temperature sensor status changed to %d (Location: %d, Name: %s)."
+              --#ARGUMENTS {5, 4, 2}
               --#SEVERITY CRITICAL
               --#TIMEINDEX 99
-
+              --#VARBINDSEVERITY 2
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY THERMAL
+              --#ACTION "If the temperature sensor status is 'degraded(3)' or 'failed(4)', shutdown the storage system. Ensure the environment is properly cooled and no components are overheated."               
+              
         ::= 8019
 
     cpqSsEx2FanStatusChange TRAP-TYPE
@@ -3249,18 +4527,22 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
            "Storage system fan status change.
 
             The agent has detected a change in the fan module status of a
-            Compaq storage system.  The variable cpqSsFanModuleStatus
-            indicates the current fan status.
+            storage system.  The variable cpqSsFanModuleStatus indicates the
+            current fan status.
 
-            User Action: If the fan status is degraded or failed, replace
-            any failed fans."
+            User Action: If cpqSsFanModuleStatus is 'degraded(4)' or 
+            'failed(5)', replace any failed fans or fan modules."
 
-              --#TYPE "Fan Status Change"
-              --#SUMMARY "Storage system fan status changed to %d."
-              --#ARGUMENTS {5}
+              --#TYPE "Fan Status Change (8020)"
+              --#SUMMARY "Storage system fan status changed to %d (Location: %d, Name: %s)."
+              --#ARGUMENTS {5, 4, 2}
               --#SEVERITY CRITICAL
               --#TIMEINDEX 99
-
+              --#VARBINDSEVERITY 2
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY FAN
+              --#ACTION "If the fan status is 'degraded(4)' or 'failed(5)', replace any failed fans or fan modules."
+              
         ::= 8020
 
     cpqSsEx2PowerSupplyStatusChange TRAP-TYPE
@@ -3274,18 +4556,22 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
            "Storage system power supply status change.
 
             The agent has detected a change in the power supply status of a
-            Compaq storage system.  The variable cpqSsPowerSupplyStatus
-            indicates the current status.
+            storage system.  The variable cpqSsPowerSupplyStatus indicates
+            the current status.
 
-            User Action: If the power supply status is failed, take action to
-            restore power or replace the failed power supply."
+            User Action: If cpqSsPowerSupplyStatus is 'failed(4)', restore 
+            power or replace the failed power supply."
 
-              --#TYPE "Power Supply Status Change"
-              --#SUMMARY "Storage system power supply status changed to %d."
-              --#ARGUMENTS {5}
+              --#TYPE "Power Supply Status Change (8021)"
+              --#SUMMARY "Storage system power supply status changed to %d (Bay: %d, Name: %s)."
+              --#ARGUMENTS {5, 4, 2}
               --#SEVERITY CRITICAL
               --#TIMEINDEX 99
-
+              --#VARBINDSEVERITY 2
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY POWER
+              --#ACTION "If the power supply status is 'failed(4)', restore power or replace the failed power supply."
+              
         ::= 8021
 
     cpqSsExBackplaneFanStatusChange TRAP-TYPE
@@ -3297,19 +4583,24 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
            "Storage system fan status change.
 
-            The agent has detected a change in the fan status of a Compaq
-            storage system.  The variable cpqSsBackplaneFanStatus indicates
-            the current fan status.
+            The agent has detected a change in the fan status of a storage
+            system.  The variable cpqSsBackplaneFanStatus indicates the
+            current fan status.
 
-            User Action: If the fan status is degraded or failed, replace
-            any failed fans."
+            User Action: If cpqSsBackplaneFanStatus is 'degraded(4)',
+            'degraded-Fan1Failed(7)', 'degraded-Fan2Failed(8)' or 'failed(5)',
+            replace the fan or fan modules."
 
-              --#TYPE "Storage System Fan Status Change"
-              --#SUMMARY "Storage system fan status changed to %d."
-              --#ARGUMENTS {8}
+              --#TYPE "Storage System Fan Status Change (8022)"
+              --#SUMMARY "Storage system fan status changed to %d for chassis %s."
+              --#ARGUMENTS {8, 2}
               --#SEVERITY CRITICAL
               --#TIMEINDEX 99
-
+              --#VARBINDSEVERITY 2
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY FAN
+              --#ACTION "If the fan status is 'degraded(4)', 'degraded-Fan1Failed(7)', 'degraded-Fan2Failed(8)' or 'failed(5)', replace the fan or fan modules."
+                            
         ::= 8022
 
     cpqSsExBackplaneTempStatusChange TRAP-TYPE
@@ -3322,20 +4613,24 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
            "Storage system temperature status change.
 
             The agent has detected a change in the status of the temperature
-            in a Compaq storage system.  The variable
-            cpqSsBackplaneTempStatus indicates the current status.
+            in a storage system.  The variable cpqSsBackplaneTempStatus
+            indicates the current status.
 
-            User Action: If the temperature status is degraded or failed,
-            shutdown the storage system as soon as possible.  Insure that
-            the storage system environment is being cooled properly and that
-            no components are overheated."
+            User Action: If cpqSsBackplaneTempStatus is 'degraded(4)' or
+            'failed(5)', shutdown the storage system as soon as possible.
+            Ensure that the storage system environment is being cooled properly
+            and that no components are overheated."
 
-              --#TYPE "Storage System Temperature Status Change"
-              --#SUMMARY "Storage system temperature status changed to %d."
-              --#ARGUMENTS {8}
+              --#TYPE "Storage System Temperature Status Change (8023)"
+              --#SUMMARY "Storage system temperature status changed to %d for chassis %s."
+              --#ARGUMENTS {8, 2}
               --#SEVERITY CRITICAL
               --#TIMEINDEX 99
-
+              --#VARBINDSEVERITY 2
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY THERMAL
+              --#ACTION "If the temperature status is 'degraded(4)' or 'failed(5)', shutdown the storage system. Ensure the environment is properly cooled and no components are overheated."      
+                            
         ::= 8023
 
     cpqSsExBackplanePowerSupplyStatusChange TRAP-TYPE
@@ -3348,18 +4643,22 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
            "Storage system power supply status change.
 
             The agent has detected a change in the power supply status of a
-            Compaq storage system.  The variable cpqSsBackplaneFtpsStatus
-            indicates the current status.
+            storage system.  The variable cpqSsBackplaneFtpsStatus indicates
+            the current status.
 
-            User Action: If the power supply status is degraded, take action to
-            restore power or replace the failed power supply."
+            User Action: If cpqSsBackplaneFtpsStatus is 'degraded(4)', restore
+            power or replace the failed power supply."
 
-              --#TYPE "Power Supply Status Change"
-              --#SUMMARY "Storage system power supply status changed to %d."
-              --#ARGUMENTS {8}
+              --#TYPE "Power Supply Status Change (8024)"
+              --#SUMMARY "Storage system power supply status changed to %d for chassis %s."
+              --#ARGUMENTS {8, 2}
               --#SEVERITY CRITICAL
               --#TIMEINDEX 99
-
+              --#VARBINDSEVERITY 2
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY POWER
+              --#ACTION "If the power supply status is 'degraded(4)', restore power or replace the failed power supply."
+                            
         ::= 8024
 
     cpqSsExRecoveryServerStatusChange TRAP-TYPE
@@ -3371,21 +4670,254 @@ CPQSTSYS-MIB DEFINITIONS ::= BEGIN
            "Storage system recovery server option status change.
 
             The agent has detected a change in the recovery server option
-            status of a Compaq storage system.  The variable
-            cpqSsChassisRsoStatus indicates the current status.
+            status of a storage system.  The variable cpqSsChassisRsoStatus
+            indicates the current status.
 
-            User Action: If the RSO status is noSecondary(6) or linkDown(7),
-            insure the secondary server is operational and all cables are
-            connected properly.  If the RSO status is secondaryRunningAuto(8)
-            or secondaryRunningUser(9), examine the the primary server for
-            failed components."
+            User Action: If cpqSsChassisRsoStatus is 'noSecondary(8)' or 
+            'linkDown(10)', ensure the secondary server is operational and all
+            cables are  connected properly.  If the RSO status is 
+            'secondaryRunningAuto(12)' or 'secondaryRunningUser(13)', examine 
+            the primary server for failed components."
 
-              --#TYPE "Recovery Server Option Status Change"
-              --#SUMMARY "Storage system recovery server option status changed to %d."
-              --#ARGUMENTS {4}
+              --#TYPE "Recovery Server Option Status Change (8025)"
+              --#SUMMARY "Storage system recovery server option status changed to %d for chassis %s."
+              --#ARGUMENTS {4, 2}
               --#SEVERITY MAJOR
               --#TIMEINDEX 99
-
+              --#VARBINDSEVERITY 2
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY STORAGE
+              --#ACTION "If the RSO status is 'noSecondary(8)' or 'linkDown(10)', ensure the secondary server is operational and all cables are  connected properly.  If the RSO status is 'secondaryRunningAuto(12)' or 'secondaryRunningUser(13)', examine the primary server for failed components."
+              
         ::= 8025
+
+-- :CPQ,DEV:
+-- The following trap (cpqSs5FanStatusChange) is deprecated in
+-- release 7.40.  It is replaced by cpqSs6FanStatusChange.
+-- :CPQ,ENDDEV:
+    cpqSs5FanStatusChange TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName, cpqHoTrapFlags, cpqSsBoxCntlrHwLocation,
+                     cpqSsBoxCntlrIndex, cpqSsBoxBusIndex, cpqSsBoxVendor,
+                     cpqSsBoxModel, cpqSsBoxSerialNumber, cpqSsBoxFanStatus }
+        DESCRIPTION
+           "Storage System fan status change.
+
+            The agent has detected a change in the Fan Status of a storage
+            system.  The variable cpqSsBoxFanStatus indicates the current
+            fan status.
+
+            User Action: If the fan status is degraded or failed, replace
+            any failed fans."
+
+              --#TYPE "Fan Status Change (8026)"
+              --#SUMMARY "Storage System fan status changed to %d."
+              --#ARGUMENTS {8}
+              --#SEVERITY CRITICAL
+              --#TIMEINDEX 99
+
+        ::= 8026
+
+-- :CPQ,DEV:
+-- The following trap (cpqSs5TempStatusChange) is deprecated in
+-- release 7.40.  It is replaced by cpqSs6TempStatusChange.
+-- :CPQ,ENDDEV:
+    cpqSs5TempStatusChange TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName, cpqHoTrapFlags, cpqSsBoxCntlrHwLocation,
+                     cpqSsBoxCntlrIndex, cpqSsBoxBusIndex, cpqSsBoxVendor,
+                     cpqSsBoxModel, cpqSsBoxSerialNumber, cpqSsBoxTempStatus }
+        DESCRIPTION
+           "Storage System temperature status change.
+
+            The agent has detected a change in the temperature status of a
+            storage system.  The variable cpqSsBoxTempStatus indicates the
+            current temperature status.
+
+            User Action: If the temperature status is degraded or failed,
+            shutdown the storage system as soon as possible.  Insure that
+            the storage system environment is being cooled properly and that
+            no components are overheated."
+
+              --#TYPE "Temperature Status Change (8027)"
+              --#SUMMARY "Storage System temperature status changed to %d."
+              --#ARGUMENTS {8}
+              --#SEVERITY CRITICAL
+              --#TIMEINDEX 99
+
+        ::= 8027
+
+-- :CPQ,DEV:
+-- The following trap (cpqSs5PwrSupplyStatusChange) is deprecated in
+-- release 7.40.  It is replaced by cpqSs6PwrSupplyStatusChange.
+-- :CPQ,ENDDEV:
+    cpqSs5PwrSupplyStatusChange TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName, cpqHoTrapFlags, cpqSsBoxCntlrHwLocation,
+                     cpqSsBoxCntlrIndex, cpqSsBoxBusIndex, cpqSsBoxVendor,
+                     cpqSsBoxModel, cpqSsBoxSerialNumber,
+                     cpqSsBoxFltTolPwrSupplyStatus }
+        DESCRIPTION
+            "Storage system power supply status change.
+
+            The agent has detected a change in the power supply status of a
+            storage system.  The variable cpqSsBoxFltTolPwrSupplyStatus
+            indicates the current power supply status.
+
+            User Action: If the power supply status is degraded, take action
+            to restore power or replace the failed power supply."
+
+              --#TYPE "Power Supply Status Change (8028)"
+              --#SUMMARY "Storage system power supply status changed to %d."
+              --#ARGUMENTS {8}
+              --#SEVERITY CRITICAL
+              --#TIMEINDEX 99
+
+        ::= 8028
+
+    cpqSs6FanStatusChange TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName, cpqHoTrapFlags, cpqSsBoxCntlrHwLocation,
+                     cpqSsBoxCntlrIndex, cpqSsBoxBusIndex, cpqSsBoxVendor,
+                     cpqSsBoxModel, cpqSsBoxSerialNumber,
+                     cpqSsBoxFanStatus, cpqSsBoxLocationString }
+        DESCRIPTION
+           "Storage System fan status change.
+
+            The agent has detected a change in the Fan Status of a storage
+            system.  The variable cpqSsBoxFanStatus indicates the current
+            fan status.
+
+            User Action: If cpqSsBoxFanStatus is 'degraded(5)' or 'failed(3)',
+            replace any failed fans or fan modules."
+
+              --#TYPE "Fan Status Change (8029)"
+              --#SUMMARY "Storage system fan status changed to %d for location %s connected to controller %s."
+              --#ARGUMENTS {8, 9, 2}
+              --#SEVERITY CRITICAL
+              --#TIMEINDEX 99
+              --#VARBINDSEVERITY 2
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY FAN
+              --#ACTION "If the fan status is 'degraded(5)' or 'failed(3)', replace any failed fans or fan modules."
+              
+        ::= 8029
+
+    cpqSs6TempStatusChange TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName, cpqHoTrapFlags, cpqSsBoxCntlrHwLocation,
+                     cpqSsBoxCntlrIndex, cpqSsBoxBusIndex, cpqSsBoxVendor,
+                     cpqSsBoxModel, cpqSsBoxSerialNumber,
+                     cpqSsBoxTempStatus, cpqSsBoxLocationString }
+        DESCRIPTION
+           "Storage System temperature status change.
+
+            The agent has detected a change in the temperature status of a
+            storage system.  The variable cpqSsBoxTempStatus indicates the
+            current temperature status.
+
+            User Action: If cpqSsBoxTempStatus is 'degraded(3)' or 'failed(4)',
+            shutdown the storage system as soon as possible.  Ensure that
+            the storage system environment is being cooled properly and that
+            no components are overheated."
+
+              --#TYPE "Temperature Status Change (8030)"
+              --#SUMMARY "Storage system temperature status changed to %d for location %s connected to controller %s."
+              --#ARGUMENTS {8, 9, 2}
+              --#SEVERITY CRITICAL
+              --#TIMEINDEX 99
+              --#VARBINDSEVERITY 2
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY THERMAL
+              --#ACTION "If the temperature status is 'degraded(3)' or 'failed(4)', shutdown the storage system. Ensure the environment is properly cooled and no components are overheated."
+              
+        ::= 8030
+
+    cpqSs6PwrSupplyStatusChange TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName, cpqHoTrapFlags, cpqSsBoxCntlrHwLocation,
+                     cpqSsBoxCntlrIndex, cpqSsBoxBusIndex, cpqSsBoxVendor,
+                     cpqSsBoxModel, cpqSsBoxSerialNumber,
+                     cpqSsBoxFltTolPwrSupplyStatus, cpqSsBoxLocationString }
+        DESCRIPTION
+            "Storage system power supply status change.
+
+            The agent has detected a change in the power supply status of a
+            storage system.  The variable cpqSsBoxFltTolPwrSupplyStatus
+            indicates the current power supply status.
+
+            User Action: If cpqSsBoxFltTolPwrSupplyStatus is 'degraded(3)',
+            restore power or replace the failed power supply."
+
+              --#TYPE "Power Supply Status Change (8031)"
+              --#SUMMARY "Storage system power supply status changed to %d for location %s connected to controller %s."
+              --#ARGUMENTS {8, 9, 2}
+              --#SEVERITY CRITICAL
+              --#TIMEINDEX 99
+              --#VARBINDSEVERITY 2
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY POWER
+              --#ACTION "If the power supply status is 'degraded(3)', restore power or replace the failed power supply."
+              
+        ::= 8031
+        
+    cpqSsConnectionStatusChange TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName, cpqHoTrapFlags, cpqSsBoxCntlrHwLocation,
+                     cpqSsBoxCntlrIndex, cpqSsBoxBusIndex, cpqSsBoxVendor,
+                     cpqSsBoxModel, cpqSsBoxSerialNumber, 
+                     cpqSsBoxConnectionStatus, cpqSsBoxLocationString, 
+                     cpqSsBoxTargetSasAddress, cpqSsBoxLocalManageIpAddress}
+        DESCRIPTION
+            "Storage system connection status change.
+
+            The agent has detected a change in the connection status of a storage
+            system.  The variable cpqSSboxConnectionStatus indicates the current 
+            connection status.
+
+            User Action: If cpqSsBoxConnectionStatus is 'notConnected(4)', 
+            restore the connection between the HBA and the storage system"
+
+              --#TYPE "Connection Status Change (8032)"
+              --#SUMMARY "Storage system connection status changed to %d for location %s connected to controller %s."
+              --#ARGUMENTS {8, 9, 2}
+              --#SEVERITY CRITICAL
+              --#TIMEINDEX 99
+              --#VARBINDSEVERITY 2
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY STORAGE
+              --#ACTION "If the connection status is 'notConnected(4)', restore the connection between the HBA and the storage system."
+              
+        ::= 8032
+
+    cpqSsGSIStatusChange TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES  { sysName, cpqHoTrapFlags, cpqSsBoxCntlrHwLocation,
+                     cpqSsBoxCntlrIndex, cpqSsBoxBusIndex, cpqSsBoxVendor,
+                     cpqSsBoxModel, cpqSsBoxSerialNumber,
+                     cpqSsBoxGSIStatus, cpqSsBoxGSIMessages,
+                     cpqSsBoxLocationString }
+        DESCRIPTION
+            "Storage system Global Service Indicator Status Change.
+
+            The agent has detected a change in the Global Service Indicator
+            status of a storage system.  The variable cpqSsBoxGSIStatus
+            indicates the current GSI supply status. The variable 
+            cpqSsBoxGSIMessages contains the error messages sent from 
+            the storage enclosure.
+
+            User Action: Refer to the User Documentation for the storage 
+            enclosure to find recommended actions for specified messages."
+
+              --#TYPE "Global Service Indicator Status Change (8033)"
+              --#SUMMARY "Storage system Global Service Indicator status changed to %d for location %s connected to controller %s."
+              --#ARGUMENTS {8, 10, 2}
+              --#SEVERITY CRITICAL
+              --#TIMEINDEX 99
+              --#VARBINDSEVERITY 2
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY STORAGE
+              
+        ::= 8033
 
 END

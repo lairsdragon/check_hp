@@ -1,29 +1,38 @@
 -- ****************************************************************************
+-- :CPQ,DEV:
+--
+-- * HOST OS RELATED INFORMATION SNMP MIB DEFINITIONS
+--
+-- * $Date: 2014/04/21 11:34:54Z $
+-- * $Revision: 1.40 $
+--
+-- Hewlett-Packard Company
+-- Confidential - Need To Know
+-- ****************************************************************************
+-- :CPQ,ENDDEV:
 --
 --                  Host Operating System Information
 --         Management Information Base for SNMP Network Management
 --
 --
---      Copyright 2002 Compaq Information Technologies Group, L.P.
+--      Copyright 1993,2008 Hewlett-Packard Development Company, L.P.
 --
---      Compaq and the Compaq logo are trademarks of Compaq Information
---      Technologies Group, L.P. in the U.S. and/or other countries.  All
---      other product names mentioned herein may be trademarks of their
---      respective companies.
+--      Hewlett-Packard Company shall not be liable for technical or
+--      editorial errors or omissions contained herein. The information in
+--      this document is provided "as is" without warranty of any kind and
+--      is subject to change without notice. The warranties for HP products
+--      are set forth in the express limited warranty statements
+--      accompanying such products. Nothing herein should be construed as
+--      constituting an additional warranty.
 --
---      Compaq shall not be liable for technical or editorial errors or
---      omissions contained herein. The information in this document is
---      provided "as is" without warranty of any kind and is subject to
---      change without notice.  The warranties for Compaq products are set
---      forth in the express limited warranty statements accompanying such
---      products. Nothing herein should be construed as constituting an
---      additional warranty.
+--      Confidential computer software. Valid license from HP required for
+--      possession, use or copying. Consistent with FAR 12.211 and 12.212,
+--      Commercial Computer Software, Computer Software Documentation, and
+--      Technical Data for Commercial Items are licensed to the U.S.
+--      Government under vendor's standard commercial license.
 --
 --      Refer to the READMIB.RDM file for more information about the
 --      organization of the information in the Compaq Enterprise.
---
---      The Host OS MIB provides operating system information, such as
---      name, version, file system information, software running, and more.
 --
 --      The Compaq Enterprise number is 232.
 --      The ASN.1 prefix to, and including the Compaq Enterprise is:
@@ -36,7 +45,6 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
 
     IMPORTS
         enterprises             FROM RFC1155-SMI
-        Counter                 FROM RFC1155-SMI
         IpAddress               FROM RFC1155-SMI
         DisplayString           FROM RFC1213-MIB
         OBJECT-TYPE             FROM RFC-1212
@@ -63,6 +71,14 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
     cpqHoClients        OBJECT IDENTIFIER ::= { cpqHoComponent 12 }
     cpqHoMemory         OBJECT IDENTIFIER ::= { cpqHoComponent 13 }
     cpqHoFwVer          OBJECT IDENTIFIER ::= { cpqHoComponent 14 }
+-- :CPQ,DEV:
+-- Added by HP Brasil to return platform type (cellular or non cellular)
+-- :CPQ,ENDDEV:
+    cpqHoHWInfo         OBJECT IDENTIFIER ::= { cpqHoComponent 15 }
+    cpqPwrThreshold     OBJECT IDENTIFIER ::= { cpqHoComponent 16 }
+-- :CPQ,DEV:
+-- End Add
+-- :CPQ,ENDDEV:
 
     cpqHoOsCommon       OBJECT IDENTIFIER ::= { cpqHoInterface 4 }
 
@@ -75,11 +91,135 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
 --       cpqHoMibRev Group             (1.3.6.1.4.1.232.11.1)
 --
 --      Implementation of the cpqHoMibRev group is mandatory for all agents
---      supporting the Compaq Host OS MIB.
+--      supporting the Host OS MIB.
 --
---      A Compaq Management Agent conforming to this document will return a
---      cpqHoMibRevMajor of one (1) and a cpqHoMibRevMinor of eighteen (18).
+--      A Management Agent conforming to this document will return a
+--      cpqHoMibRevMajor of one (1) and a cpqHoMibRevMinor of forty (40).
 --
+-- :CPQ,DEV:
+--      MIB Rev of 1.0 is for AUGUSTA time frame
+--      MIB Rev of 1.1 is for JIFFYLUBE time frame (3Q 1994)
+--      MIB Rev of 1.2 is for release 2.40 time frame (1Q 1995)
+--      MIB Rev of 1.3 is for release 2.60 time frame (2Q 1995) and indicates
+--        support for the following groups:
+--          cpqHoClient Group         (1.3.6.1.4.1.232.11.2.12)
+--          cpqHoTrapInfo Group       (1.3.6.1.4.1.232.11.2.11)
+--          cpqHoSystemStatus Group   (1.3.6.1.4.1.232.11.2.10)
+--      MIB Rev of 1.4 is for release 3.00 time frame (1Q 1996) and includes
+--        support for Wiley.
+--      MIB Rev of 1.5 is for release 3.10(3.20) time frame (4Q 1996) and
+--        includes support for Hacksaw (multi-port nics).
+--      MIB Rev of 1.6 is for release 3.20 and indicates support for the
+--        integration server bit in the MIB status array.
+--      MIB Rev of 1.7 is for release 3.50 and indicates support for the
+--        cpqHoIfPhysMapCondition variable.
+--      MIB Rev of 1.8 is for release 3.70/4.01 and indicates support for the
+--        cpqHoWebMgmtPort variable and web mgmt available bit in the
+--        cpqHoMibStatusArray.
+--      MIB Rev of 1.9 is for release 4.20 and indicates support for the
+--        Process monitoring additions to the software running table and
+--        the cpqHoProcessEventTrap.
+--        Deprecated cpqHoIfPhysMap and the NIC status traps.
+--      MIB Rev of 1.10 is for release 4.23.  Deprecates the
+--        cpqHoOsCommonModuleTable.
+--      MIB Rev of 1.11 is for release 4.30 and indicates support for the
+--        physical memory details.
+--      MIB Rev of 1.12 is for release 4.50 and indicates support for the
+--        new enumerations for the cpqHoOsType.
+--      MIB Rev of 1.13 is for release 4.70 and indicates support for the
+--        new enumeration of 'windows2000(15)' for cpqHoOsType.
+--      MIB Rev of 1.14 is for release 4.91 and indicates support for the
+--        new enumeration of 'tru64UNIX(16)' for cpqHoOsType.
+--      MIB Rev of 1.15 is for release 5.00 and indicates support for the
+--        optional location table elements for partitioned systems.
+--      MIB Rev of 1.16 is for release 5.10 and indicates support for the
+--        adds new cpqHoFwVer table.
+--      MIB Rev of 1.17 is for release 5.20 and indicates support for the
+--        updated cpqHoSwVerTable table.  Also added whistler os enumerations.
+--      MIB Rev of 1.18 is for release 5.40 and indicates support for the
+--        cpqHoSystemRole and cpqHoSystemRoleDetail.
+--      MIB Rev of 1.19 is for release 6.30 and indicates support for the
+--        software running process count mib items and traps.
+--      MIB Rev of 1.20 is for release 7.00 and indicates support for
+--        adding trap condition bits to cpqHoTrapFlags.
+--        also added cpqHoHWInfoPlatform for cellular based systems
+--      MIB Rev of 1.21 is for release 7.10 and indicates support for
+--        added cpqHoSwVerAgentsVer
+--      MIB Rev of 1.21B is for release 7.10B and indicates support for
+--        add trap number to trap #TYPE fields.
+--      MIB Rev of 1.22 is for release 7.20 and indicates support for
+--        added keyfile enumeration for cpqHoSwVerType.
+--      MIB Rev 1.23 is for release 7.50
+--        OID cpqHoCrashDumpState - added
+--        OID cpqHoCrashDumpCondition - added
+--        OID cpqHoBootPagingFileSize - added
+--        OID cpqHoBootPagingFileMinimumSize - added
+--        TRAP cpqHoCrashDumpNotEnabledTrap - added
+--        TRAP cpqHoBootPagingFileTooSmallTrap - added
+--        Added "solaris" enumeration for cpqHoOsType
+--      MIB Rev 1.24 is for release 7.60
+--        Changed description for cpqHoGUID
+--        Added "virtualMachine" value in cpqHoHWInfoPlatform enumeration
+--      MIB Rev 1.25 is for release 7.70
+--        Added "none" value in cpqHoCrashDumpState enumeration
+--        Changed the enumeration of cpqHoCrashDumpCondition OID
+--      MIB Rev 1.26 is for release 7.70
+--        cpqHoCrashDumpCondition - updated condition for "other" value
+--        cpqHoCrashDumpMonitoring - added OID
+--        cpqHoCrashDumpNotEnabledTrap - changed description
+--        cpqHoBootPagingFileTooSmallTrap - changed description
+--      MIB Rev 1.27 is for release 7.80
+--        Added "serverBlade" value in cpqHoHWInfoPlatform enumeration
+--        cpqHoFwVerXmlString - changed description
+--      MIB Rev 1.28 is for release 7.90
+--        Added additional fields "cpqHoSWRunningStatus", "cpqHoSWRunningConfigStatus",
+--        "cpqHoSWRunningIdentifier", "cpqHoSWRunningRedundancyMode" to the
+--        "cqpHoSWRunningEntry", and trap "cpqHoSWRunningStatusChangeTrap".
+--      MIB Rev 1.29 is for release 7.90
+--        Modify cpqHoOsType for windows 2008 and itanium based operating system.
+--      MIB Rev 1.30 is for release 8.10
+--        cpqHoMaxLogicalCPUSupported - Added OID.
+--        cpqHoGUID - modified description
+--      MIB Rev 1.31 is for release 8.15
+--      cpqPwrThreshold - Added to support iLO2 feature 'SNMP Alert on power threshold breach'
+--      Added additional fields "cpqPwrWarnType", "cpqPwrWarnThreshold", "cpqPwrWarnDuration", "cpqSerialNum", "cpqServerUUID"
+--      Added additional trap "cpqHo2PowerThresholdtrap"
+--      MIB Rev 1.32 is for release 8.20
+--        modified cpqHoFileSysEntry - Added Status
+--        cpqHoGUIDCanonical - Added to have same form of logial entries
+--        cpqHoFileSysCondition - Added for overall filsystem condition
+--      MIB Rev 1.33 is for release 8.20
+--        TRAP cpqHoBootPagingFileTooSmallTrap - deprecated
+--        TRAP cpqHoBootPagingFileOrFreeSpaceTooSmallTrap - added
+--        cpqHoBootPagingFileVolumeFreeSpace - Added OID
+--        Added defines for cpqHoMibStatusArray for the following type of devices
+--            Power Distribution Rack    = 19  (PDR)
+--            Storage Device             = 20
+--      MIB Rev 1.34 is for release 8.25
+--        Added cpqHoSystemName to display full computer name (since the
+--        NETBIOS would limit the system name to 15 characters)
+--      MIB Rev 1.35 is for release 8.40
+--        Added cpqHoFileSysShortDesc to display short description of FilseSystem
+--            Entry just drive name and label.
+--        Forgot to add entry into the table done now.
+--      MIB Rev 1.36 is for release 9.00
+--        Add ESX and ESXi  to  have defined values when used for cpqHoOsType.
+--        There were few Linux compatibility issue
+--        Added cpqHoMibHealthStatusArray to reflect the detailed status.
+--        Modify  cpqHoMibHealthStatusArray to have new requirement
+--        Added trap cpqHoMibHealthStatusArrayChangeTrap fro change in status of
+--              cpqHoMibHealthStatusArray
+--        Added cpqHosysDescr as optional element to cpqHoInfo to provide mibII
+--              sysDescr when using AMS
+--      MIB Rev 1.37 is for release 9.4 pass 4
+--        Need to change trap cpqHoMibHealthStatusArrayChangeTrap's HWSTATUS_CATEGORY to NONE
+--      MIB Rev 1.38 is for release 9.4 pass 8
+--        Updated cpqHoOsType with more values (windows7 till apple osx)
+--      MIB Rev 1.39 is for release 9.5
+--        Added a new octet to cpqHoMibHealthStatusArray to reflect HW/BIOS
+--      MIB Rev of 1.40 is for 10.0 release time frame
+--        Added a new octet to cpqHoMibHealthStatusArray to reflect Battery 
+-- :CPQ,ENDDEV:
 -- ****************************************************************************
 
     cpqHoMibRevMajor OBJECT-TYPE
@@ -123,6 +263,12 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
 
              This object represents the overall status of the server's host
              system represented by this MIB."
+-- :CPQ,DEV:
+--     cpqHoMibCondition = aggregate of all cpqHoIfPhysMapCondition's
+--
+--     Before any additional conditions are bundled in here, you must
+--     understand how Insight is using this variable.
+-- :CPQ,ENDDEV:
         ::= { cpqHoMibRev 3 }
 
 -- ****************************************************************************
@@ -137,7 +283,7 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
 --
 --
 --  Implementation of the cpqHoOsCommon group is mandatory for all
---  agents that support the Compaq Host OS MIB.
+--  agents that support the Host OS MIB.
 --
 -- ****************************************************************************
 
@@ -252,7 +398,7 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             This field will be set to year = 0 if the agent cannot provide
             the module date.  The hour, minute, and second field will be set
             to zero (0) if they are not relevant.  The year field is set
-            with the most significant octect first."
+            with the most significant octet first."
         ::= { cpqHoOsCommonModuleEntry 4 }
 
     cpqHoOsCommonModulePurpose OBJECT-TYPE
@@ -277,7 +423,7 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
 --      host OS.
 --
 --      Implementation of the cpqHoInfo group is mandatory for all
---      agents supporting the Compaq Host OS MIB.
+--      agents supporting the Host OS MIB.
 --
 -- ****************************************************************************
 
@@ -311,8 +457,8 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             other(1),
             netware(2),                -- Novell NetWare
             windowsnt(3),              -- Microsoft Windows NT
-            sco-unix(4),               -- SCO UNIX
-            unixware(5),               -- Novell UnixWare
+            sco-unix(4),               -- SCO OpenServer
+            unixware(5),               -- SCO UnixWare
             os-2(6),                   -- IBM OS/2
             ms-dos(7),                 -- Microsoft DOS
             dos-windows(8),            -- Microsoft DOS + Microsoft Windows
@@ -324,13 +470,53 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             linux(14),                 -- Linux
             windows2000(15),           -- Microsoft Windows 2000
             tru64UNIX(16),             -- Tru64 UNIX
-            windowsdotNet(17),         -- Microsoft Windows .NET
-            windowsdotNet-64-bit(18)   -- Microsoft Windows .NET 64-bit Edition
+            windows2003(17),           -- Microsoft Windows Server 2003
+            windows2003-x64(18),       -- Microsoft Windows Server 2003 x64 Edition
+            solaris(19),               -- Sun Solaris
+            windows2003-ia64(20),      -- Microsoft Windows Server 2003 for Itanium-based Systems
+            windows2008(21),           -- Microsoft Windows Server 2008
+            windows2008-x64(22),       -- Microsoft Windows Server 2008 x64 Edition
+            windows2008-ia64(23),      -- Microsoft Windows Server 2008 for Itanium-based Systems
+            vmware-esx(24),            -- VMware ESX Classic
+            vmware-esxi(25),           -- VMware ESXi
+            windows2012(26),           -- Microsoft Windows 2012 Server
+            windows7(27),              -- Microsoft Windows 7
+            windows7-x64(28),          -- Microsoft Windows 7 64-bit
+            windows8(29),              -- Microsoft Windows 8
+            windows8-x64(30),          -- Microsoft Windows 8 64-bit
+            windows81(31),             -- Microsoft Windows 8.1
+            windows81-x64(32),         -- Microsoft Windows 8.1 64-bit
+            windowsxp(33),             -- Microsoft Windows XP
+            windowsxp-x64(34),         -- Microsoft Windows XP 64-Bit
+            windowsvista(35),          -- Microsoft Windows Vista
+            windowsvista-x64(36),      -- Microsoft Windows Vista 64-Bit
+            windows2008-r2(37),        -- Microsoft Windows Server 2008 R2
+            windows2012-r2(38),        -- Microsoft Windows Server 2012 R2
+            rhel(39),                  -- RedHat Enterprise Linux
+            rhel-64(40),               -- RedHat Enterprise Linux 64-Bit
+            solaris-64(41),            -- Solaris 64-Bit
+            sles(42),                  -- SUSE Linux Enterprise Server
+            sles-64(43),               -- SUSE Linux Enterprise Server 64-Bit
+            ubuntu(44),                -- Ubuntu
+            ubuntu-64(45),             -- Ubuntu 64-Bit
+            debian(46),                -- Debian
+            debian-64(47),             -- Debian 64-Bit
+            linux-64-bit(48),          -- Linux 64-Bit
+            other-64-bit(49),          -- Other 64-Bit
+            centos-32bit(50),          -- CentOS 32-bit
+            centos-64bit(51),          -- CentOS 64-bit
+            oracle-linux32(52),        -- Oracle Linux 32-bit
+            oracle-linux64(53),        -- Oracle Linux 64-bit
+            apple-osx(54)              -- Apple OS X
             }
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
             "Host Operating system enumeration."
+-- :CPQ,DEV:
+-- Older versions of agents may return windows95 even though windows98 may
+-- be running.
+-- :CPQ,ENDDEV:
          ::= { cpqHoInfo 4 }
 
     cpqHoTelnet OBJECT-TYPE
@@ -371,6 +557,79 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             by a remote console describing the system function in detail."
         ::= { cpqHoInfo 7 }
 
+    cpqHoCrashDumpState OBJECT-TYPE
+        SYNTAX INTEGER {
+            completememorydump(1),
+            kernelmemorydump(2),
+            smallmemorydump(3),
+            none(4)
+            }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Crash dump state.
+             Value of 'Unknown (-1)' is returned when crash dump state could
+             not be determined."
+        ::= { cpqHoInfo 8 }
+
+    cpqHoCrashDumpCondition OBJECT-TYPE
+        SYNTAX INTEGER {
+            other(1),           -- (Crash Dump settings unknown) or (Crash dump monitoring is disabled)
+            ok(2),      -- (Crash dump settings OK) and (paging file size >= minimum) and (free disk space >= minimum)
+            degraded(3),    -- (Crash dump settings none) or (paging file size < minimum) or (free disk space < minimum)
+            failed(4)       -- N/A
+        }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "The condition of the Crash dump configuration."
+        ::= { cpqHoInfo 9 }
+
+    cpqHoCrashDumpMonitoring OBJECT-TYPE
+        SYNTAX INTEGER {
+            enabled(1),         -- Enable crash dump monitoring.
+            disabled(2)         -- Disable crash dump monitoring.
+        }
+        ACCESS  read-write
+        STATUS  optional
+        DESCRIPTION
+            "Enable/disable crash dump monitoring.
+             If crash dump monitoring is enabled both crash dump TRAP's
+             are generated and crash dump condition is updated.
+             If crash dump monitoring is disabled, no crash dump TRAP
+             is generated and the crash dump condition is set to
+             other"
+        ::= { cpqHoInfo 10 }
+
+    cpqHoMaxLogicalCPUSupported OBJECT-TYPE
+        SYNTAX INTEGER (0..65535)
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+            "Maximum number of logical CPUs supported by Operating System."
+        ::= { cpqHoInfo 11 }
+
+     cpqHoSystemName OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..255))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "Full computer name of the host"
+        ::= { cpqHoInfo 12 }
+
+     cpqHosysDescr OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..255))
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+            "The value that would be returned in the RFC-1213
+            sysDescr MIB element. It should include the full
+            name and version identification of the system's
+            hardware type, software operating-system, and
+            networking software.  It is mandatory that this only
+            contain printable ASCII characters."
+       ::= { cpqHoInfo 13}
+
 -- ****************************************************************************
 --   Host OS CPU Utilization Table
 --   =============================
@@ -385,10 +644,19 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
 --  The cpqHoUtil group contains measures of system utilization.
 --
 --  Implementation of the cpqHoUtil group is mandatory for all agents
---  that support the Compaq Host OS MIB.
+--  that support the Host OS MIB.
 --
 -- ****************************************************************************
 
+-- :CPQ,DEV:
+--   The entries in the cpqHoCpuUtilTable must always directly correspond
+--   to the entries in the CPU table, cpqSeCpuTable, in the standard
+--   equipment MIB, CPQSTDEQ.MIB.  For each entry in cpqSeCpuTable,
+--   there must be a corresponding entry in the cpqHoCpuUtilTable with
+--   the same index.  If the utilization of a particular processor can
+--   not be determined, the value returned should be -1.
+--
+-- :CPQ,ENDDEV:
 
 
     cpqHoCpuUtilTable OBJECT-TYPE
@@ -527,7 +795,9 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
         cpqHoFileSysSpaceUsed          INTEGER,
         cpqHoFileSysPercentSpaceUsed   INTEGER,
         cpqHoFileSysAllocUnitsTotal    INTEGER,
-        cpqHoFileSysAllocUnitsUsed     INTEGER
+        cpqHoFileSysAllocUnitsUsed     INTEGER,
+        cpqHoFileSysStatus             INTEGER,
+        cpqHoFileSysShortDesc          DisplayString
     }
 
     cpqHoFileSysIndex OBJECT-TYPE
@@ -543,7 +813,7 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
         ACCESS  read-only
         STATUS  mandatory
         DESCRIPTION
-            "A description of the file system."
+            "A description of the file system include the GUID."
         ::= { cpqHoFileSysEntry 2 }
 
     cpqHoFileSysSpaceTotal OBJECT-TYPE
@@ -577,6 +847,10 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             "The percent of file system space currently in use.
              This item will be set to -1 if this information is not
              available."
+-- :CPQ,DEV:
+--   This value should be equal to (FileSysSpaceUsed*100) / FileSysSpaceTotal.
+
+-- :CPQ,ENDDEV:
 
         ::= { cpqHoFileSysEntry 5 }
 
@@ -601,6 +875,63 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             information."
         ::= { cpqHoFileSysEntry 7 }
 
+    cpqHoFileSysStatus OBJECT-TYPE
+        SYNTAX  INTEGER {
+            unknown(1),
+            ok(2),              -- default state
+            degraded(3),
+            failed(4)
+            }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "The Threshold Status.
+
+            This object represent the status of the Filesystem threshold."
+        ::= { cpqHoFileSysEntry 8 }
+
+    cpqHoFileSysShortDesc OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..255))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "A description of the file system."
+        ::= { cpqHoFileSysEntry 9 }
+
+-- ****************************************************************************
+--   Host OS File System Table
+--   =========================
+--
+-- The compaq enterprise               (1.3.6.1.4.1.232)
+--      cpqHostOs Group                (1.3.6.1.4.1.232.11)
+--       cpqHoComponent Group          (1.3.6.1.4.1.232.11.2)
+--        cpqHoFileSys Group           (1.3.6.1.4.1.232.11.2.4)
+--         cpqHoFileSysCondition       (1.3.6.1.4.1.232.11.2.4.2)
+--
+--  The cpqHoFileSys group contains overall condition of Filesystem Threshold
+--
+-- ****************************************************************************
+    cpqHoFileSysCondition OBJECT-TYPE
+        SYNTAX  INTEGER {
+            unknown(1),
+            ok(2),              -- default state
+            degraded(3),
+            failed(4)
+            }
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "The overall condition of File System Threshold.
+
+             This object represents the overall status of the server's
+             File System Threshold."
+-- :CPQ,DEV:
+--     cpqHoMibCondition = aggregate of all cpqHoFileSysEntry
+--
+--     Before any additional conditions are bundled in here, you must
+--     understand how Insight is using this variable.
+-- :CPQ,ENDDEV:
+        ::= { cpqHoFileSys 2 }
 
 -- ****************************************************************************
 --   Host OS Interface Physical Map Table
@@ -618,7 +949,7 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
 --  implement the interface.
 --
 --  Implementation of the cpqHoIfPhysMap group is mandatory for all agents
---  that support the Compaq Host OS MIB.
+--  that support the Host OS MIB.
 --
 -- ****************************************************************************
 
@@ -721,6 +1052,13 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             "The port number of the interface for multi-port NICs.
             A port number of -1 indicates that the port could not
             be determined."
+-- :CPQ,DEV:
+--   This value is intended to match the labeling of the ports on the
+--   physical connectors.  I hope this will be a consistent 1-based
+--   scheme but it is defined in a way to handle 0-based as well.
+--
+--   Single port NICs should return a 1.
+-- :CPQ,ENDDEV:
         ::= { cpqHoIfPhysMapEntry 7 }
 
     cpqHoIfPhysMapDuplexState OBJECT-TYPE
@@ -734,6 +1072,10 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "This variable describes the configured duplex state of the NIC."
 
+-- :CPQ,DEV:
+-- Agents should return Other(1) for NIC types that they do not support
+-- the ability to get status from.
+-- :CPQ,ENDDEV:
         ::= { cpqHoIfPhysMapEntry 8 }
 
     cpqHoIfPhysMapCondition OBJECT-TYPE
@@ -748,6 +1090,10 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
         STATUS  deprecated
         DESCRIPTION
             "The condition of this interface."
+-- :CPQ,DEV:
+-- Agents should return Other(1) for NIC types that do not support
+-- the ability to the NIC condition.
+-- :CPQ,ENDDEV:
         ::= { cpqHoIfPhysMapEntry 9 }
 
     cpqHoIfPhysMapOverallCondition OBJECT-TYPE
@@ -780,7 +1126,7 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
 --  about the software running on the host OS.
 --
 --  Implementation of the cpqHoSWRunning group is optional for agents
---  that support the Compaq Host OS MIB.
+--  that support the Host OS MIB.
 --
 -- ****************************************************************************
 
@@ -808,7 +1154,15 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
         cpqHoSWRunningVersion            DisplayString,
         cpqHoSWRunningDate               OCTET STRING,
         cpqHoSWRunningMonitor            INTEGER,
-        cpqHoSWRunningState              INTEGER
+        cpqHoSWRunningState              INTEGER,
+        cpqHoSWRunningCount              INTEGER,
+        cpqHoSWRunningCountMin           INTEGER,
+        cpqHoSWRunningCountMax           INTEGER,
+        cpqHoSWRunningEventTime          OCTET STRING,
+        cpqHoSWRunningStatus             INTEGER,
+        cpqHoSWRunningConfigStatus       INTEGER,
+        cpqHoSWRunningIdentifier         DisplayString,
+        cpqHoSWRunningRedundancyMode     INTEGER
     }
 
     cpqHoSWRunningIndex OBJECT-TYPE
@@ -875,7 +1229,11 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             other(1),    -- default
             start(2),
             stop(3),
-            startAndStop(4)
+            startAndStop(4),
+            count(5),
+            startAndCount(6),
+            countAndStop(7),
+            startCountAndStop(8)
         }
         ACCESS  read-only
         STATUS  mandatory
@@ -896,6 +1254,105 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             "The current state of monitored process."
         ::= { cpqHoSWRunningEntry 7 }
 
+    cpqHoSWRunningCount OBJECT-TYPE
+        SYNTAX  INTEGER (0..65535)
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+            "For each process name, the number of instances of the process running on the system is
+            kept count of, in this variable."
+        ::= { cpqHoSWRunningEntry 8 }
+
+    cpqHoSWRunningCountMin OBJECT-TYPE
+        SYNTAX  INTEGER (0..65535)
+        ACCESS  read-write
+        STATUS  optional
+        DESCRIPTION
+            "This is the lower threshold on cpqHoSWRunningCount to be set by the user."
+        ::= { cpqHoSWRunningEntry 9 }
+
+    cpqHoSWRunningCountMax OBJECT-TYPE
+        SYNTAX  INTEGER (0..65535)
+        ACCESS  read-write
+        STATUS  optional
+        DESCRIPTION
+            "This is the upper threshold on cpqHoSWRunningCount to be set by the user."
+        ::= { cpqHoSWRunningEntry 10 }
+
+    cpqHoSWRunningEventTime OBJECT-TYPE
+        SYNTAX  OCTET STRING (SIZE (7))
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+            "The system time at which the monitored event, as per cpqHoSWRunningMonitor, last occurred.
+
+             field  octets  contents                  range
+             =====  ======  ========                  =====
+               1      1-2   year                      0..65536
+               2       3    month                     1..12
+               3       4    day                       1..31
+               4       5    hour                      0..23
+               5       6    minute                    0..59
+               6       7    second                    0..60
+                            (use 60 for leap-second)
+
+            The hour, minute, and second field will be set to zero (0) if they are not relevant."
+        ::= { cpqHoSWRunningEntry 11 }
+
+   cpqHoSWRunningStatus OBJECT-TYPE
+        SYNTAX  INTEGER
+        {
+            unknown(1),
+            normal(2),
+            warning(3),
+            minor(4),
+            major(5),
+            critical(6),
+            disabled(7)
+        }
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+            "The overall alarm state of the resources managed by the software, or the software itself."
+        ::= { cpqHoSWRunningEntry 12 }
+
+   cpqHoSWRunningConfigStatus OBJECT-TYPE
+        SYNTAX  INTEGER
+        {
+            unknown(1),
+            starting(2),
+            initialized(3),
+            configured(4),
+            operational(5)
+        }
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+            "The configuration state of the software.  The level of initialization the software has performed."
+        ::= { cpqHoSWRunningEntry 13 }
+
+   cpqHoSWRunningIdentifier OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..255))
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+            "The unique identifier of the sofware.  This identifier should be unique for all instances of the sofware running in the environment."
+        ::= { cpqHoSWRunningEntry 14 }
+
+   cpqHoSWRunningRedundancyMode OBJECT-TYPE
+        SYNTAX  INTEGER
+        {
+            unknown(1),
+            master(2),
+            backup(3),
+            slave(4)
+        }
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+            "When the software is running in a high availability mode, the failover mode of this instance of the software."
+        ::= { cpqHoSWRunningEntry 15 }
+
     cpqHoSwRunningTrapDesc OBJECT-TYPE
         SYNTAX  DisplayString (SIZE (0..255))
         ACCESS  read-only
@@ -914,11 +1371,12 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
 --       cpqHoComponent Group         (1.3.6.1.4.1.232.11.2)
 --        cpqHoSwVer Group            (1.3.6.1.4.1.232.11.2.7)
 --        cpqHoSwVerTable             (1.3.6.1.4.1.232.11.2.7.2)
+--        cpqHoSwVerAgentsVer         (1.3.6.1.4.1.232.11.2.7.3)
 --
 --  The cpqSwVer group describes the software version table.
 --
 --  Implementation of the cpqSwVer group is mandatory for all
---  agents that support the Compaq Host MIB.
+--  agents that support the Host MIB.
 --
 --  The read-write elements of this table should be saved from instance to
 --  instance of the agent.
@@ -1006,12 +1464,24 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             driver(2),          -- (default)
             agent(3),
             sysutil(4),
-            application(5)
+            application(5),
+            keyfile(6)
             }
         ACCESS  read-write
         STATUS  mandatory
         DESCRIPTION
                 "Type of software item."
+-- :CPQ,DEV:
+--
+--      Enumerations are:
+--              other   - undefined
+--              driver  - an NPFC, NTSSD, OS/2 SSD, or UNIX EFS driver
+--              agent   - Insight Agent subsystem
+--              sysutil - utility on the system partition, cf. cpqHoSwVerName
+--          application - CIM, on-line blazer, SSMU, etc.
+--              keyfile - a Smart Component package keyfile
+--
+-- :CPQ,ENDDEV:
         ::= { cpqHoSwVerEntry 3 }
 
     cpqHoSwVerName OBJECT-TYPE
@@ -1026,6 +1496,21 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
 --
 --      Writing to this entry with a NULL name deletes the current row.
 --
+-- :CPQ,DEV:
+--
+--      For cpqHoSwVerType DRIVER:
+--      For cpqHoSwVerType AGENT:
+--              <string>        - filename of driver
+--      For cpqHoSwVerType SYSUTIL:
+--              CONFIG          - System Config (from EV CQHUV)
+--              SYSTEMROMPAQ    - System ROMPaq (from EV CQHUV)
+--              DIAGS           - Diagnostics (from EV CQHUV)
+--              DISKDR          - DiskDoctor (from EV CQHUV)
+--              OPTIONROMPAQ    - Option ROMPaq (from EV CQHUV)
+--
+--      Writing to this entry can cause the entire row to be updated.
+--
+-- :CPQ,ENDDEV:
         ::= { cpqHoSwVerEntry 4 }
 
     cpqHoSwVerDescription OBJECT-TYPE
@@ -1059,7 +1544,7 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
                6       7    second                    0..60
                             (use 60 for leap-second)
 
-            The year field is set with the most significant octect first.
+            The year field is set with the most significant octet first.
 
             An entry of zero (0) means that there is no date associated with
             this software item.  Zero is the default."
@@ -1071,6 +1556,20 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
         STATUS  mandatory
         DESCRIPTION
                 "The location of this software item on the server."
+-- :CPQ,DEV:
+--
+--      Should be:
+--              <pathname> for drivers and agents
+--              "System Partition" for system utilities
+--
+--      A length of 0 indicates that the location of this item is
+--      not available (the default.)
+--
+--      Writing to this location can cause the updating of the entire
+--      entry.  The agents may use this variable as a hint to finding
+--      the item.
+--
+-- :CPQ,ENDDEV:
         ::= { cpqHoSwVerEntry 7 }
 
     cpqHoSwVerVersion OBJECT-TYPE
@@ -1079,6 +1578,21 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
         STATUS mandatory
         DESCRIPTION
               "An string that specifies the version of this item."
+-- :CPQ,DEV:
+--
+--      For HP software, this variable should be of the form
+--      XX.XX[.XX]aa with major and first minor revisions separated
+--      by a period (.).  The second minor revision is optional.
+--
+--      X - any integer 0-9
+--      a - any letter a-z (case is unimportant)
+--
+--      0.0 is the default
+--
+--
+--      For 3rd Party software, this variable has no predefined form.
+--
+-- :CPQ,ENDDEV:
          ::= { cpqHoSwVerEntry 8 }
 
     cpqHoSwVerVersionBinary OBJECT-TYPE
@@ -1088,7 +1602,43 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
               "An string that specifies the version of this item based on
               the binary version resource."
+-- :CPQ,DEV:
+--
+--      For HP software, this variable should be of the form
+--      X.X[.X[.X]] with major and first minor revisions separated by
+--      a period (.).  The third and forth revision numbers are optional.
+--
+--      X - any non-negative decimal integer without leading zeros
+--
+--      0.0.0.0 is the default
+--
+--
+-- :CPQ,ENDDEV:
          ::= { cpqHoSwVerEntry 9 }
+
+--
+-- New for release 7.10: cpqHoSwVerAgentsVer
+--
+    cpqHoSwVerAgentsVer OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..50))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "A string that specifies the version of the Insight
+             Management Agents running on the system."
+-- :CPQ,DEV:
+--
+--      For the Management Agents, this variable should be of the form
+--      X.X[.X[.X]] with major and first minor revisions separated by
+--      a period (.).  The third and forth revision numbers are optional.
+--
+--      X - any non-negative decimal integer without leading zeros
+--
+--      0.0.0.0 is the default
+--
+-- :CPQ,ENDDEV:
+        ::= { cpqHoSwVer 3 }
+
 
 -- ****************************************************************************
 -- The cpqHoGeneric group holds only the generic trap
@@ -1114,6 +1664,20 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
 -- the newly written data.
 --
          ::= { cpqHoGeneric 1 }
+
+    cpqHoCriticalSoftwareUpdateData OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..512))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+        "Data for the Critical Software Update trap."
+--
+-- This is the data variable that is sent with the Critical Software
+-- update Notification Trap below.
+-- Writing to this variable will cause the Critical Software update Notification Trap
+-- to be sent with the newly written data.
+--
+         ::= { cpqHoGeneric 2 }
 
 -- ****************************************************************************
 --   Software Performance Group
@@ -1202,7 +1766,7 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
              4-7        Reserved (reserved Bits should be zero)
 
             Detailed Type (octet 3)
-            Bits 0-4    Detailed Type, only used if bit 0 in octect 2 is 1.
+            Bits 0-4    Detailed Type, only used if bit 0 in octet 2 is 1.
             Bits 5-7    Reserved for expansion. note, use these last in case we
                         need more then 32 types someday.
 
@@ -1226,7 +1790,8 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             UPS                        = 16
             Power Distribution Unit    = 17
             Environmental Monitor      = 18  (eg CMC)
-
+            Power Distribution Rack    = 19  (PDR)
+            Storage Device             = 20
 
             For all other blocks, they are defined as:
             Status         This is a collection of flags.  Each bit has the
@@ -1246,11 +1811,29 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
                            3 - Degraded
                            4 - Failed
 
-            Major Revison  0..255, where 0 is not available
+            Major Revision 0..255, where 0 is not available
             Minor Revision 0..255, where 0 is not available"
 
 
 
+-- :CPQ,DEV:
+--      Array element 0 is the global status for all Compaq MIBs
+--      (.1.3.6.1.4.1.232)
+--         Status    MIB is available (0x01) is the default.  When the MIB
+--                   is being provided by a FLINT board in the offline state,
+--                   this value is MIB is available and from offline data
+--                   (0x03).
+--         MajorRev  is 0
+--         MinorRev  is 0
+--         Condition is the combination of all the conditions of MIBs 1..n
+--      Array element n, for n > 0, is the status of the nth Compaq MIB
+--      (.1.3.6.1.4.1.232.n)
+--         Presence  is available(1) if .1.3.6.1.4.1.232.n exists, otherwise
+--                   it is not available(0).
+--         MajorRev  is from .1.3.6.1.4.1.232.n.1.1
+--         MinorRev  is from .1.3.6.1.4.1.232.n.1.2
+--         Condition is from .1.3.6.1.4.1.232.n.1.3
+-- :CPQ,ENDDEV:
         ::= { cpqHoSystemStatus 1 }
 
     cpqHoConfigChangedDate OBJECT-TYPE
@@ -1273,19 +1856,28 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
 
             This field will be set to year = 0 if the agent cannot provide
             the date/time.  The year field is set with the most significant
-            octect first."
+            octet first."
+-- :CPQ,DEV:
+--      This variable was added in the v3.00 timeframe.  This initial
+--      release of the agents will modify this variable when the agents
+--      are initially loaded.  Future development may provide enhancements
+--      so that this variable changes significant hardware configurations
+--      occur (i.e., hot plugged drives, etc).
+-- :CPQ,ENDDEV:
         ::= { cpqHoSystemStatus 2 }
 
     cpqHoGUID OBJECT-TYPE
-        SYNTAX  OCTET STRING (SIZE (16))
+        SYNTAX  OCTET STRING (SIZE (16..17))
         ACCESS  read-write
         STATUS  mandatory
         DESCRIPTION
-            "The globally unique identifier of this server.
+            "The globally unique identifier of this physical server.
              If the OS cannot determine a unique ID, it will default the
              variable to contain all 0's.  The management station can then
-             perform a SET to this variable to provide the unique ID."
-        ::= { cpqHoSystemStatus 3 }
+             perform a SET to this variable to provide the unique ID.
+             When the system is cellular, it will have its partition number
+             appended at the end."
+       ::= { cpqHoSystemStatus 3 }
 
     cpqHoCodeServer OBJECT-TYPE
         SYNTAX    INTEGER
@@ -1306,6 +1898,64 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             If the port cannot be determined or the Web Management agent
             is not enabled, this value will be -1."
         ::= { cpqHoSystemStatus 5 }
+
+    cpqHoGUIDCanonical OBJECT-TYPE
+        SYNTAX  OCTET STRING (SIZE (32..36))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+            "The globally unique identifier in canonical format of this
+             physical server. If the OS cannot determine a unique ID, it will
+             default the variable to blank."
+       ::= { cpqHoSystemStatus 6 }
+
+    cpqHoMibHealthStatusArray OBJECT-TYPE
+        SYNTAX  OCTET STRING (SIZE (1..256))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+           "The MIB Health Status Array is an array of status values representing an
+              overall status in element 0 follwed by server and storage status values as follows:
+
+             Octet   Element   Field
+            ======== ======= =========
+               0        0    Aggregated Status of array elements
+               1        1    Status of element 1
+               2        2    Status of element 2
+               .
+               .
+               .
+               n        n    Status of element n
+
+
+            Status         0 - Not available
+                           1 - Other
+                           2 - OK
+                           3 - Degraded
+                           4 - Failed
+               .
+               .
+      Mibs are assigned an array element as follows.  New items are added at the end.
+           0 -  System Health Status (overall status as reported by who is reporting (agents or iLO))
+           1 -  Total Aggregate (Includes IML Status)
+           2 -  Processors    (TBD 232.1.2.2.4:cpqSeCpuCondition)
+           3 -  Memory        (232.6.2.14.4:cpqHeResilientMemCondition)
+           4 -  Cooling       (232.6.2.6.4:cpqHeThermalSystemFanStatus)
+           5 -  Sensors       (232.6.2.6.3:cpqHeThermalTempStatus)
+           6 -  Power         (232.6.2.9.1:cpqHeFltTolPwrSupplyCondition)
+           7 -  ProLiant Logs (232.6.2.11.2:cpqHeEventLogCondition)
+           8 -  ASR           (232.6.2.5.17:cpqHeAsrCondition)
+           9 -  Drive Array   (232.3.1.3:cpqDaMibCondition)
+           10 - SCSI          (232.5.1.3:cpqScsiMibCondition)
+           11 - Storage Enclosures (232.8.1.3:cpqSsMibCondition)
+           12 - IDE           (232.14.1.3:cpqIdeMibCondition)
+           13 - FC            (232.16.1.3:cpqFcaMibCondition)
+           14 - Networks      (232.18.1.3:cpqNicMibCondition)
+           15 - MP            (232.9.1.3:cpqSm2MibCondition)
+           16 - HW/BIOS       (232.6.2.16.1:cpqHeHWBiosCondition)
+           17 - Battery       (232.6.2.17.1:cpqHeSysBackupBatteryCondition)"
+
+  ::= { cpqHoSystemStatus 7 }
 
 -- ****************************************************************************
 --   Trap Info Group
@@ -1331,7 +1981,14 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             This is a collection of flags used during trap delivery.
             Each bit has the following meaning:
 
-                Bit 2-31: RESERVED: Always 0.
+                Bit 5-31: RESERVED: Always 0.
+                Bit 2-4: Trap Condition
+                             0 = Not used (for backward compatibility)
+                             1 = Condition unknown or N/A
+                             2 = Condition ok
+                             3 = Condition degraded
+                             4 = Condition failed
+                             5-7 = reserved
                 Bit 1:    Client IP address type
                              0 = static entry
                              1 = DHCP entry
@@ -1342,25 +1999,14 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             NOTE:   bit 31 is the most significant bit, bit 0 is the least
                     significant."
 
+-- :CPQ,DEV:
+--    The variable is only valid when bound in a trap.
+--    The trap condition bits are used to specify the condition of a device
+--    at the time the trap was sent.  This is useful for status change
+--    traps, where the same trap is used for both good and bad events.  The
+--    condition bits can be used to determine the severity of the trap.
+-- :CPQ,ENDDEV:
         ::= { cpqHoTrapInfo 1 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 -- ****************************************************************************
@@ -1404,7 +2050,12 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             The year field will be set to 0xFFFF if the agent does not support
             the client table.
 
-            The year field is set with the most significant octect first."
+            The year field is set with the most significant octet first."
+-- :CPQ,DEV:
+-- This variable must be supported by agents that support the Host MIB.
+-- The table below is optional.  If an agent does not support the table,
+-- the LastModified year value will be 0xFFFF.
+-- :CPQ,ENDDEV:
         ::= { cpqHoClients 1 }
 
     cpqHoClientDelete OBJECT-TYPE
@@ -1566,10 +2217,42 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             A -1 will be returned if this value could not be determined."
         ::= { cpqHoMemory 4 }
 
+    cpqHoBootPagingFileSize OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+            "The paging file size of the boot volume in the format xxxMB or
+            xxxGB, where xxx is the paging file size in that unit shown right
+            after it.
+
+            NULL value will be returned if this value could not be determined."
+        ::= { cpqHoMemory 5 }
+
+    cpqHoBootPagingFileMinimumSize OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..10))
+        ACCESS  read-only
+        STATUS  mandatory
+        DESCRIPTION
+        "Minimum paging file size of the boot volume required to save the
+            memory dump in the event of a system crash. The format is xxxMB or
+            xxxGB, where xxx is the minimum paging file size in that unit shown
+            right after it."
+        ::= { cpqHoMemory 6 }
+
+    cpqHoBootPagingFileVolumeFreeSpace OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..10))
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+        "Free space of the boot volume required to save the memory dump in the
+            event of a system crash. The format is xxxMB or xxxGB, where xxx is
+            the minimum paging file size in that unit shown right after it."
+        ::= { cpqHoMemory 7 }
 
 -- ****************************************************************************
---   Config Firmware Version Instrumentation Group
---  ==============================================
+--  Firmware Version Instrumentation Group
+--  ======================================
 --
 -- The compaq enterprise              (1.3.6.1.4.1.232)
 --      cpqHostOs Group               (1.3.6.1.4.1.232.11)
@@ -1580,7 +2263,7 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
 --  The cpqHoFwVer group describes the firmware version table.
 --
 --  Implementation of the cpqHoFwVer group is mandatory for all
---  agents that support the Compaq Host MIB.
+--  agents that support the Host MIB.
 --
 -- ****************************************************************************
 
@@ -1670,6 +2353,104 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
         STATUS  mandatory
         DESCRIPTION
             "Firmware Version Device Type."
+-- :CPQ,DEV:
+-- other(1)
+--    Device type cannot be determined
+-- internalArrayController(2)
+--    PCI based internal array controller
+--    Key string is the board Id for the controller.
+--    ("Compaq Smart Array 5300", "40700E11")
+-- fibreArrayController(3)
+--    External array controller
+--    Key string is the board Id for the controller.
+--    ("Compaq StorageWorks RAID Array 4000 Controller", "E0010E11")
+-- scsiController(4)
+--    PCI based SCSI controller
+--    Key string is the board Id for the controller.
+--    ("Compaq 64-Bit/66MHz Wide Ultra3 SCSI Adapter", "E2A00E11")
+-- fibreChannelTapeController(5)
+--    Fibre channel to SCSI bridge controller
+--    ("Fibre Channel Tape Controller", "")
+-- modularDataRouter(6)
+--    Second generation, Fibre channel to SCSI bridge controller
+--    ("Compaq Modular Data Router", "")
+-- ideCdRomDrive(7)
+--    IDE CD-ROM
+--    Key string is the drive model.
+--    ("Compaq CD-224E", "Compaq CD-224E")
+-- ideDiskDrive(8)
+--    IDE disk drive
+--    Key string is the drive model.
+--    ("ST310216A", "ST310216A")
+-- scsiCdRom-ScsiAttached(9)
+--    SCSI CD-ROM drive attached to a SCSI controller
+--    Key string is the drive model.
+--    ("COMPAQ CRD-254V", "COMPAQ CRD-254V")
+-- scsiDiskDrive-ScsiAttached(10),
+--    SCSI disk drive attached to a SCSI controller
+--    Key string is the drive model.
+--    ("Compaq BD00911934", "Compaq BD00911934")
+-- scsiTapeDrive-ScsiAttached(11),
+--    SCSI tape drive attached to a SCSI controller
+--    Key string is the drive model and sub-type.
+--    ("COMPAQ AIT 50", "COMPAQ AIT 50 - 1")
+-- scsiTapeLibrary-ScsiAttached(12),
+--    SCSI tape library attached to a SCSI controller
+--    Key string is the drive model.
+--    ("COMPAQ TL891", "COMPAQ TL891")
+-- scsiDiskDrive-ArrayAttached(13),
+--    SCSI disk drive attached to an array controller
+--    Key string is the drive model.
+--    ("Compaq BD00911934", "Compaq BD00911934")
+-- scsiTapeDrive-ArrayAttached(14),
+--    SCSI tape drive attached to an array controller
+--    Key string is the drive model and sub-type.
+--    ("COMPAQ AIT 50", "COMPAQ AIT 50 - 1")
+-- scsiTapeLibrary-ArrayAttached(15),
+--    SCSI tape library attached to an array controller
+--    Key string is the drive model.
+--    ("COMPAQ TL891", "COMPAQ TL891")
+-- scsiDiskDrive-FibreAttached(16),
+--    SCSI disk drive attached to a fibre array controller
+--    Key string is the drive model.
+--    ("Compaq BD00911934", "Compaq BD00911934")
+-- scsiTapeDrive-FibreAttached(17),
+--    SCSI tape drive attached to a fibre controller
+--    Key string is the drive model and sub-type.
+--    ("COMPAQ AIT 50", "COMPAQ AIT 50 - 1")
+-- scsiTapeLibrary-FibreAttached(18),
+--    SCSI tape library attached to a fibre controller
+--    Key string is the drive model.
+--    ("COMPAQ TL891", "COMPAQ TL891")
+-- scsiEnclosureBackplane-ScsiAttached(19),
+--    SCSI enclosure backplane attached to a SCSI controller
+--    Key string is the model.
+--    ("Compaq PROLIANT 4U6E DB", "Compaq PROLIANT 4U6E DB")
+-- scsiEnclosureBackplane-ArrayAttached(20),
+--    SCSI enclosure backplane attached to an array controller
+--    Key string is the model.
+--    ("Compaq PROLIANT 4U6E DB", "Compaq PROLIANT 4U6E DB")
+-- scsiEnclosureBackplane-FibreAttached(21),
+--    SCSI enclosure backplane attached to a fibre array controller
+--    Key string is the model.
+--    ("Compaq PROLIANT 4U6E DB", "Compaq PROLIANT 4U6E DB")
+-- scsiEnclosureBackplane-ra4x00(22)
+--    SCSI enclosure backplane in a StorageWorks RAID Array 4000/4100
+--    Key string is the model.
+--    ("Compaq PROLIANT 5-6E DT", "Compaq PROLIANT 5-6E DT")
+-- systemRom(23),
+--    System ROM
+--    Key string is the ROM family code.
+--    ("Compaq System ROM", "P21")
+-- networkInterfaceController(24),
+--    Network Interface Controller
+--    Key string is ???.
+--    ("", "")
+-- remoteInsightBoard(25)
+--    Remote Insight Board
+--    Key string is ???.
+--    ("", "")
+-- :CPQ,ENDDEV:
         ::= { cpqHoFwVerEntry 3 }
 
     cpqHoFwVerDisplayName OBJECT-TYPE
@@ -1711,7 +2492,9 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             "Firmware Version Xml String.
 
             This is an XML string that specifies the location of the device
-            that contains the firmware."
+            that contains the firmware.
+            This will be NULL string (size 0) if this information could not
+            be provided."
         ::= { cpqHoFwVerEntry 7 }
 
     cpqHoFwVerKeyString OBJECT-TYPE
@@ -1738,6 +2521,102 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             "Firmware Version update method."
         ::= { cpqHoFwVerEntry 9 }
 
+-- :CPQ,DEV:
+-- Added by HP Brasil to return platform type (cellular or non cellular)
+-- :CPQ,ENDDEV:
+
+-- ****************************************************************************
+--  Hardware Information Group
+--  ======================================
+--
+-- The compaq enterprise              (1.3.6.1.4.1.232)
+--      cpqHostOs Group               (1.3.6.1.4.1.232.11)
+--       cpqHoComponent Group         (1.3.6.1.4.1.232.11.2)
+--        cpqHoHWInfo Group           (1.3.6.1.4.1.232.11.2.15)
+--        cpqHoHWInfoPlatform         (1.3.6.1.4.1.232.11.2.15.1)
+--
+--  The cpqHoHWInfo group describes some hw information necessary to other agents.
+--
+--  Implementation of the cpqHoHWInfo group is optional for
+--  agents that support the Host MIB.
+--
+-- ****************************************************************************
+    cpqHoHWInfoPlatform OBJECT-TYPE
+        SYNTAX  INTEGER {
+            unknown(1),
+            cellular(2),
+            foundation(3),
+            virtualMachine(4),
+            serverBlade(5)
+            }
+        ACCESS  read-only
+        STATUS  optional
+        DESCRIPTION
+            "Hardware platform type.
+
+             This object represents the platform type of the server's host
+             system represented by this MIB."
+        ::= { cpqHoHWInfo 1 }
+
+-- ****************************************************************************
+-- The cpqPwrThreshold group holds data for the
+--
+-- The compaq enterprise              (1.3.6.1.4.1.232)
+--      cpqHostOS Group               (1.3.6.1.4.1.232.11)
+--       cpqHoComponent Group         (1.3.6.1.4.1.232.11.2)
+--        cpqPwrThreshold Group       (1.3.6.1.4.1.232.11.2.16)
+--
+-- Implementation of this group is mandatory.
+--
+-- ****************************************************************************
+    cpqPwrWarnType OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..254))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+        "Type of power reading on which the warning is based."
+
+         ::= { cpqPwrThreshold 1 }
+
+    cpqPwrWarnThreshold OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+        "The threshold the power usage must exceed (in Watts)."
+
+         ::= { cpqPwrThreshold 2 }
+
+    cpqPwrWarnDuration OBJECT-TYPE
+        SYNTAX  INTEGER
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+        "Duration that power usage must be exceeded before warning (in minutes)."
+
+         ::= { cpqPwrThreshold 3 }
+
+    cpqSerialNum OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..254))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+        "Serial number of the server."
+
+         ::= { cpqPwrThreshold 4 }
+
+    cpqServerUUID OBJECT-TYPE
+        SYNTAX  DisplayString (SIZE (0..254))
+        ACCESS  read-write
+        STATUS  mandatory
+        DESCRIPTION
+        "Server UUID"
+
+         ::= { cpqPwrThreshold 5 }
+
+-- :CPQ,DEV:
+-- End Add
+-- :CPQ,ENDDEV:
 
 -- ****************************************************************************
 --  Host MIB Trap Definitions
@@ -1762,11 +2641,27 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
         --  This trap is a generic trap, and left undefined.
             "Generic trap."
 
-              --#TYPE "Generic trap"
+              --#TYPE "Generic trap (11001)"
               --#SUMMARY "%s"
               --#ARGUMENTS {0}
               --#SEVERITY MAJOR
               --#TIMEINDEX 99
+-- :CPQ,DEV:
+--
+--      This is for the agents to expose an API for 3rd parties to be
+--      able to easily generate a trap.
+--
+--      It is recommended that the agents support the API:
+--
+--      int CpqGenericTrap(char *string)
+--
+--
+--
+--
+--
+--
+--
+-- :CPQ,ENDDEV:
 
         ::= 11001
 
@@ -1778,7 +2673,7 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
              error information is contained in the variable
              cpqHoSwPerfAppErrorDesc."
 
-              --#TYPE "Application Error Trap"
+              --#TYPE "Application Error Trap (11002)"
               --#SUMMARY "%s"
               --#ARGUMENTS {0}
               --#SEVERITY MAJOR
@@ -1786,6 +2681,11 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
 
         ::= 11002
 
+-- :CPQ,DEV:
+-- The above trap definitions are deprecated in release 2.60.  Traps in
+-- version 2.60 and greater have the system name and trap flags variables
+-- bound to all traps.
+-- :CPQ,ENDDEV:
 
     cpqHo2GenericTrap TRAP-TYPE
         ENTERPRISE compaq
@@ -1794,11 +2694,29 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
         --  This trap is a generic trap, and left undefined.
             "Generic trap."
 
-              --#TYPE "Generic trap"
+              --#TYPE "Generic trap (11003)"
               --#SUMMARY "%s"
               --#ARGUMENTS {2}
               --#SEVERITY MAJOR
               --#TIMEINDEX 99
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY NONE
+-- :CPQ,DEV:
+--
+--      This is for the agents to expose an API for 3rd parties to be
+--      able to easily generate a trap.
+--
+--      It is recommended that the agents support the API:
+--
+--      int CpqGenericTrap(char *string)
+--
+--
+--
+--
+--
+--
+--
+-- :CPQ,ENDDEV:
 
         ::= 11003
 
@@ -1810,11 +2728,13 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
              error information is contained in the variable
              cpqHoSwPerfAppErrorDesc."
 
-              --#TYPE "Application Error Trap"
+              --#TYPE "Application Error Trap (11004)"
               --#SUMMARY "%s"
               --#ARGUMENTS {2}
               --#SEVERITY MAJOR
               --#TIMEINDEX 99
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY NONE
 
         ::= 11004
 
@@ -1825,7 +2745,7 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             "This trap will be sent any time the status of a NIC changes to
             the OK condition."
 
-             --#TYPE "Status Trap"
+             --#TYPE "Status Trap (11005)"
              --#SUMMARY "NIC Status is OK for slot %s."
              --#ARGUMENTS {2}
              --#SEVERITY MAJOR
@@ -1839,7 +2759,7 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             "This trap will be sent any time the status of a NIC changes to
             the Failed condition."
 
-             --#TYPE "Status Trap"
+             --#TYPE "Status Trap (11006)"
              --#SUMMARY "NIC Status is Failed for slot %s."
              --#ARGUMENTS {2}
              --#SEVERITY MAJOR
@@ -1853,13 +2773,21 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             "This trap will be sent any time the configured redundant NIC
             becomes the active NIC."
 
-             --#TYPE "Status Trap"
+             --#TYPE "Status Trap (11007)"
              --#SUMMARY "NIC switchover to slot %s from slot %s."
              --#ARGUMENTS {2, 3}
              --#SEVERITY MAJOR
              --#TIMEINDEX 99
+-- :CPQ,DEV:
+-- The first instance of cpqHoIfPhysMapSlot is the new primary
+-- NIC.  The second instance of cpqHoIfPhysMapSlot is the old
+-- primary NIC.
+-- :CPQ,ENDDEV:
         ::= 11007
 
+-- :CPQ,DEV:
+-- The NIC trap definitions below were deprecated in release 4.20.
+-- :CPQ,ENDDEV:
 
     cpqHo2NicStatusOk2 TRAP-TYPE
         ENTERPRISE compaq
@@ -1869,11 +2797,14 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             "This trap will be sent any time the status of a NIC changes to
             the OK condition."
 
-             --#TYPE "Status Trap"
-             --#SUMMARY "NIC Status is OK for slot %s, port %s."
+             --#TYPE "Status Trap (11008)"
+             --#SUMMARY "NIC status is ok for slot %s, port %s."
              --#ARGUMENTS {2, 3}
              --#SEVERITY MAJOR
              --#TIMEINDEX 99
+             --#SIMPLE_SEVERITY OK
+             --#HWSTATUS_CATEGORY NETWORK
+
         ::= 11008
 
     cpqHo2NicStatusFailed2 TRAP-TYPE
@@ -1884,11 +2815,15 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             "This trap will be sent any time the status of a NIC changes to
             the Failed condition."
 
-             --#TYPE "Status Trap"
-             --#SUMMARY "NIC Status is Failed for slot %s, port %s."
+             --#TYPE "Status Trap (11009)"
+             --#SUMMARY "NIC status is failed for slot %s, port %s."
              --#ARGUMENTS {2, 3}
              --#SEVERITY MAJOR
              --#TIMEINDEX 99
+             --#SIMPLE_SEVERITY MAJOR
+             --#HWSTATUS_CATEGORY NETWORK
+             --#ACTION "Check the network cables. Replace the failed NIC."
+
         ::= 11009
 
     cpqHo2NicSwitchoverOccurred2 TRAP-TYPE
@@ -1900,11 +2835,19 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
             "This trap will be sent any time the configured redundant NIC
             becomes the active NIC."
 
-             --#TYPE "Status Trap"
+             --#TYPE "Status Trap (11010)"
              --#SUMMARY "NIC switchover to slot %s, port %s from slot %s, port %s."
              --#ARGUMENTS {2, 3, 4, 5}
              --#SEVERITY MAJOR
              --#TIMEINDEX 99
+             --#SIMPLE_SEVERITY MAJOR
+             --#HWSTATUS_CATEGORY NETWORK
+             --#ACTION "Examine the network connections and check for a NIC failure."
+-- :CPQ,DEV:
+-- The first instance of cpqHoIfPhysMapSlot/Port is the new primary
+-- NIC.  The second instance of cpqHoIfPhysMapSlot/Port is the old
+-- primary NIC.
+-- :CPQ,ENDDEV:
         ::= 11010
 
     cpqHoProcessEventTrap TRAP-TYPE
@@ -1913,17 +2856,171 @@ CPQHOST-MIB DEFINITIONS ::= BEGIN
         DESCRIPTION
             "A monitored process has either started or stopped running."
 
-              --#TYPE "Process Monitor Event Trap"
+              --#TYPE "Process Monitor Event Trap (11011)"
               --#SUMMARY "%s"
               --#ARGUMENTS {2}
               --#SEVERITY MAJOR
               --#TIMEINDEX 99
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY NONE
 
         ::= 11011
 
+    cpqHoProcessCountWarning TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES { sysName, cpqHoTrapFlags, cpqHoSWRunningName, cpqHoSWRunningCount,
+                    cpqHoSWRunningCountMin, cpqHoSWRunningCountMax,
+                    cpqHoSWRunningEventTime }
+        DESCRIPTION
+            "A monitored process count has violated the thresholds set on cpqHoSWRunningCount"
+
+              --#TYPE "Process Count Event Trap (11012)"
+              --#SUMMARY "Process %s has count %s which violates the thresholds %s to %s."
+              --#ARGUMENTS {2, 3, 4, 5}
+              --#SEVERITY MAJOR
+              --#TIMEINDEX 99
+              --#STATE DEGRADED
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY NONE
+
+        ::= 11012
+
+    cpqHoProcessCountNormal TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES { sysName, cpqHoTrapFlags, cpqHoSWRunningName, cpqHoSWRunningCount,
+                    cpqHoSWRunningCountMin, cpqHoSWRunningCountMax,
+                    cpqHoSWRunningEventTime }
+        DESCRIPTION
+            "A monitored process count has returned back to normal."
+
+              --#TYPE "Process Monitor Event Trap (11013)"
+              --#SUMMARY "Process %s has count %s which respects the thresholds %s to %s."
+              --#ARGUMENTS {2, 3, 4, 5}
+              --#SEVERITY INFORMATIONAL
+              --#TIMEINDEX 99
+              --#STATE OPERATIONAL
+              --#SIMPLE_SEVERITY OK
+              --#HWSTATUS_CATEGORY NONE
+
+        ::= 11013
+
+   cpqHoCriticalSoftwareUpdateTrap TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES { sysName, cpqHoTrapFlags, cpqHoCriticalSoftwareUpdateData }
+        DESCRIPTION
+            "This trap is a send to the user to notify him of a Critical Software Update."
+
+              --#TYPE "Critical Software update Notification Trap (11014)"
+              --#SUMMARY "%s"
+              --#ARGUMENTS {2}
+              --#SEVERITY CRITICAL
+              --#TIMEINDEX 99
+              --#SIMPLE_SEVERITY CRITICAL
+              --#HWSTATUS_CATEGORY NONE
+              --#ACTION "Install the required software updates."
+
+        ::= 11014
+
+   cpqHoCrashDumpNotEnabledTrap TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES { sysName, cpqHoTrapFlags, cpqHoCrashDumpState }
+        DESCRIPTION
+            "This trap is sent to the user to notify him that the Crash Dump is not enabled.
+             This trap is not sent if cpqHoCrashDumpMonitoring is disabled."
+
+              --#TYPE "Crash Dump not enabled Notification Trap (11015)"
+              --#SUMMARY "Crash dump is not enabled."
+              --#ARGUMENTS {}
+              --#SEVERITY WARNING
+              --#TIMEINDEX 99
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY NONE
+
+        ::= 11015
+
+-- :CPQ,DEV:
+-- The trap below were deprecated in release 8.20.
+-- Use cpqHoBootPagingFileOrFreeSpaceTooSmallTrap instead.
+-- :CPQ,ENDDEV:
+
+   cpqHoBootPagingFileTooSmallTrap TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES { sysName, cpqHoTrapFlags, cpqHoCrashDumpState, cpqHoBootPagingFileSize, cpqHoBootPagingFileMinimumSize }
+        DESCRIPTION
+            "This trap is sent when the paging file size of the boot volume or the target volume of the memory dump file is too small to hold a crash dump.
+             This trap is not sent if cpqHoCrashDumpMonitoring is disabled."
+
+              --#TYPE "Boot Paging File Or Memory Dump Target Volume Too Small Notification Trap (11016)"
+              --#SUMMARY "The paging file size of the boot volume (%s) or the target volume of the memory dump file is not large enough to hold a crash dump in the event of a system crash (%s)."
+              --#ARGUMENTS {3, 4}
+              --#SEVERITY WARNING
+              --#TIMEINDEX 99
+
+        ::= 11016
+
+  cpqHoSWRunningStatusChangeTrap TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES { sysName, cpqHoTrapFlags, cpqHoSWRunningName, cpqHoSWRunningDesc,cpqHoSwRunningTrapDesc, cpqHoSWRunningVersion,cpqHoSWRunningStatus, cpqHoSWRunningConfigStatus, cpqHoSWRunningIdentifier, cpqHoSWRunningRedundancyMode }
+        DESCRIPTION
+            "This trap notifies the user that the running software has changed status, configuration status, or redundancy mode."
+
+              --#TYPE "Software status change Notification Trap (11017)"
+              --#SUMMARY "Software status change for %s, description = %s, id = %s"
+              --#ARGUMENTS {2, 4, 8}
+              --#SEVERITY WARNING
+              --#TIMEINDEX 99
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY NONE
+
+        ::= 11017
+
+  cpqHo2PowerThresholdTrap TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES { sysName, cpqHoTrapFlags, cpqPwrWarnType, cpqPwrWarnThreshold, cpqPwrWarnDuration, cpqSerialNum, cpqServerUUID }
+        DESCRIPTION
+        --  This trap notifies user of a power threshold breach.
+            "Power threshold exceeded."
+
+              --#TYPE "Power Threshold Exceeded (11018)"
+              --#SUMMARY "Power threshold has been exceeded (Warning Type: %s, Threshold: %d watts, Duration: %d minutes)"
+              --#ARGUMENTS {2, 3, 4}
+              --#SEVERITY MINOR
+              --#TIMEINDEX 99
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY POWER
+
+        ::= 11018
+
+  cpqHoBootPagingFileOrFreeSpaceTooSmallTrap TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES { sysName, cpqHoTrapFlags, cpqHoCrashDumpState, cpqHoBootPagingFileSize, cpqHoBootPagingFileVolumeFreeSpace, cpqHoBootPagingFileMinimumSize }
+        DESCRIPTION
+            "This trap is sent when the paging file size of the boot volume or the free space of memory dump target volume is too small to hold a crash dump."
+              --#TYPE "Boot Paging File Or Memory Dump Target Volume Too Small Notification Trap (11016)"
+              --#SUMMARY "The paging file size of the boot volume (%s) or the free space of the memory dump target volume (%s) is not large enough to hold a crash dump in the event of a system crash (%s)."
+              --#ARGUMENTS {3, 4, 5}
+              --#SEVERITY WARNING
+              --#TIMEINDEX 99
+              --#SIMPLE_SEVERITY MAJOR
+              --#HWSTATUS_CATEGORY NONE
+
+        ::= 11019
+
+  cpqHoMibHealthStatusArrayChangeTrap TRAP-TYPE
+        ENTERPRISE compaq
+        VARIABLES { sysName, cpqHoTrapFlags, cpqHoMibHealthStatusArray }
+        DESCRIPTION
+        "A change in the cpqHoMibHealthStatusArray has occurred."
+              --#TYPE "Health Status Array Change occurred (11020)"
+              --#SUMMARY "A change in the health status of the server has occurred, the status is now %s"
+              --#ARGUMENTS {2}
+              --#SEVERITY INFORMATIONAL
+              --#TIMEINDEX 99
+              --#SIMPLE_SEVERITY OK
+              --#HWSTATUS_CATEGORY NONE
+
+        ::= 11020
 
 
-
-
-END
+  END
 
