@@ -1,3 +1,14 @@
+Version 2.20
+============
+Quick progress these days... as of Andrew Gray's inquiry I added support for
+retrieving Smart Array CPU information. This is not active by default and may
+be used to check and/or gather performance data.
+
+As usual I cleaned some code parts. This time there are some improvements to
+the output of '--help' and more important to the output of the debug switch
+('-d|--debug'). Enjoy!
+
+
 Version 2.19
 ============
 The plugin now displays some product information like model, serial number,

@@ -22,16 +22,16 @@
 #
 # Report bugs to:  guenther.mair@hoslo.ch
 #
-# $Id: check_hp 70 2015-02-06 17:37:00Z gunny $
+# $Id: check_hp 73 2015-02-11 15:50:46Z gunny $
 #
 
-my $nagioslibexec;
+my $libexec;
 
 BEGIN {
   my @lib_folders = qw(/usr/local/nagios/libexec/ /usr/lib/nagios/plugins/ /usr/lib64/nagios/plugins/);
   foreach my $lib (@lib_folders) {
     if (-d $lib)  {
-      $nagioslibexec = $lib;
+      $libexec = $lib;
       last;
     }
   }
@@ -40,24 +40,26 @@ BEGIN {
 use POSIX;
 use strict;
 
-use lib $nagioslibexec;
+use lib $libexec;
 use utils qw($TIMEOUT %ERRORS &print_revision &support);
 
 use Net::SNMP;
 use Getopt::Long;
 &Getopt::Long::config('bundling');
 
+
 ## function prototypes
 
-sub print_help ();
-sub usage ();
-sub process_arguments ();
-sub in_array ($@);
+sub in_array($@);
+sub print_help();
+sub usage();
+sub process_arguments();
+
 
 ## module-specific variables
 
 my $PROGNAME = "check_hp";
-my $REVISION = '$Rev: 70 $';
+my $REVISION = '$Rev: 73 $';
 my $debug;
 my $exclude = '';
 my $warnings = '';
@@ -68,14 +70,20 @@ my @all_required;
 my $countComponents = 0;
 my $state = 'OK';
 my $answer = "";
-my $tmp = "";
 my $result;
+my $maxcpu = undef;
+my $maxcommands = undef;
+my $maxlatency = undef;
+my $collect_perfdata = undef;
+my $perfdata = "";
+
 
 ## variables for argument handling
 
 my $opt_h;
 my $opt_V;
 my $status;
+
 
 ## snmp specific variables
 
@@ -86,7 +94,7 @@ my $error;
 my $response;
 my $key;
 my $community = "public";
-my $snmp_version = 1;
+my $snmpversion = 1;
 my $maxmsgsize = 1472; # Net::SNMP default is 1472
 my ($seclevel, $authproto, $secname, $authpass, $privpass, $auth, $priv);
 my $context = "";
@@ -102,6 +110,15 @@ my $cpqSiProductName = '1.3.6.1.4.1.232.2.2.4.2.0';
 my $cpqSiFormFactor = '1.3.6.1.4.1.232.2.2.2.2.0';
 my $cpqSiSysSerialNum = '1.3.6.1.4.1.232.2.2.2.1.0';
 my $cpqSiAssetTag = '1.3.6.1.4.1.232.2.2.2.3.0';
+
+
+## Compaq/HP drive array - controller performance data
+
+my $cpqDaCntlrPerfEntry = '1.3.6.1.4.1.232.3.2.7.1.1';
+
+my $cpqDaCntlrPerfCpuPercentBusy = '1.3.6.1.4.1.232.3.2.7.1.1.5';
+my $cpqDaCntlrPerfCommandCount = '1.3.6.1.4.1.232.3.2.7.1.1.6';
+my $cpqDaCntlrPerfAvgLatency = '1.3.6.1.4.1.232.3.2.7.1.1.7';
 
 
 ## Compaq/HP system states
@@ -353,12 +370,11 @@ alarm($timeout);
 
 
 ## main function
-print "Compaq/HP Agent Check:";
-print "\n" if (defined $debug);
+print "Compaq/HP Agent Check: " if ( ! defined $debug);
 
 ## fetch and print system information
 if (in_array('cpqSystemInfo', @all_exclude)) {
-  print " excluding 'cpqSystemInfo' from being displayed\n" if (defined $debug);
+  print "\ncpqSystemInfo will not be checked.\n" if (defined $debug);
 } else {
   print_system_information();
 }
@@ -378,21 +394,88 @@ for my $component (keys %cpqComponents) {
   }
 }
 
-## print status information
+## verify smart array controller performance
+if ($maxcpu || $maxcommands || $maxlatency || $collect_perfdata) {
+  $perfdata = verify_performance_data();
+}
+
+## set status information
 if ($countComponents == 0) {
   $state = "UNKNOWN";
-  print " no cpq/hp component found\n";
+  $answer = " no cpq/hp component found";
 } elsif ( ! defined $debug && $state eq 'OK') {
-  print " overall system state OK\n";
-} else {
-  print "\n";
+  $answer = " overall system state OK";
 }
 
 ## terminate with exit code
+printf("%s%s\n", $answer, $perfdata);
 exit $ERRORS{$state};
 
 
 ## subroutines
+
+sub ltrim { my $s = shift; $s =~ s/^\s+//;       return $s };
+sub rtrim { my $s = shift; $s =~ s/\s+$//;       return $s };
+sub  trim { my $s = shift; $s =~ s/^\s+|\s+$//g; return $s };
+
+sub in_array($@) {
+   my $needle = shift(@_);
+   my %items = map {$_ => 1} @_;
+   return (exists($items{$needle})) ? 1 : 0;
+}
+
+sub verify_performance_data {
+  my $key;
+  my $value;
+
+  my $cpu = 0;
+  my $commands = 0;
+  my $latency = 0;
+
+  print "\nNow checking performance data:\n" if (defined $debug);
+
+  if ( ! defined ($response = $session->get_table($cpqDaCntlrPerfEntry))) {
+    printf(" - %-35s - OID-tree %s not found\n", "cpqDaCntlrPerfEntry", $cpqDaCntlrPerfEntry) if (defined $debug);
+  } else {
+    while (($key, $value) = each %{$response}) {
+      printf(" * %-35s = %s\n", $key, $value) if (defined $debug);
+
+      if    ($key =~ /^${cpqDaCntlrPerfCpuPercentBusy}/) { $cpu      = int $value; }
+      elsif ($key =~ /^${cpqDaCntlrPerfCommandCount}/)   { $commands = int $value; }
+      elsif ($key =~ /^${cpqDaCntlrPerfAvgLatency}/)     { $latency  = int $value; }
+    }
+  }
+
+  # verify CPU information
+  $cpu = 'unknown' if ($cpu == -1);
+  printf(" * %-35s = %s", "cpqDaCntlrPerfCpuPercentBusy", $cpu) if (defined $debug);
+  if (defined $maxcpu && $maxcpu < $cpu) {
+    printf(" CPU too busy (%s%%/%s%%)", $maxcpu, $cpu);
+    $state = 'WARNING' if ($state ne 'CRITICAL');
+  }
+  printf("\n") if (defined $debug);
+
+  # verify command count
+  printf(" * %-35s = %s", "cpqDaCntlrPerfCommandCount", $commands) if (defined $debug);
+  if (defined $maxcommands && $maxcommands < $commands) {
+    printf(" too many commands counted (%s%%/%s%%)", $maxcommands, $commands);
+    $state = 'WARNING' if ($state ne 'CRITICAL');
+  }
+  printf("\n") if (defined $debug);
+
+  # verify average latency
+  printf(" * %-35s = %s", "cpqDaCntlrPerfAvgLatency", $latency) if (defined $debug);
+  if (defined $maxlatency && $maxlatency < $latency) {
+    printf(" average latency too high (%s%%/%s%%)", $maxlatency, $latency);
+    $state = 'WARNING' if ($state ne 'CRITICAL');
+  }
+
+  if (defined $debug) {
+    return "\n";
+  } else {
+    return sprintf("|cpqDaCpu=%s cpqDaCmdCount=%s cpqDaAvgLatency=%s", $cpu, $commands, $latency);
+  }
+}
 
 sub print_system_information {
   my $key;
@@ -404,29 +487,28 @@ sub print_system_information {
   my $sn = ""; # cpqSiSysSerialNum
   my $at = ""; # cpqSiAssetTag
 
+  printf("cpqSystemInfo OID-tree (key-value pairs):\n") if (defined $debug);
   if ( ! defined ($response = $session->get_table($cpqSystemInfo))) {
-    printf(" cpqSystemInfo - %s (OID-tree not found, ignoring)\n", $_[0]) if (defined $debug);
+    printf(" - %-35s - OID-tree %s not found\n", "cpqSystemInfo", $cpqSystemInfo) if (defined $debug);
   } else {
     while (($key, $value) = each %{$response}) {
-      printf(" key '%s' = value '%s'\n", $key, $value) if (defined $debug);
+      printf(" * %-35s = %s\n", $key, $value) if (defined $debug);
       if    ($key =~ /^${cpqSiProductName}/)  { $pn = rtrim($value); }
       elsif ($key =~ /^${cpqSiFormFactor}/)   { $ff = int $value;    }
       elsif ($key =~ /^${cpqSiSysSerialNum}/) { $sn = rtrim($value); }
       elsif ($key =~ /^${cpqSiAssetTag}/)     { $at = rtrim($value); }
     }
 
-    $si = ' ' . (($pn eq "") ? 'unknown model' : $pn);
+    $si = ($pn eq "") ? 'unknown model' : $pn;
     if ($ff > 0)   { $si .= ' (' . $cpqFormFactors{$ff} . ')'; }
     if ($sn ne "") { $si .= ' S/N ' . $sn; }
     if ($at ne "") { $si .= ' AssetTag ' . $at; }
+
+    print "\n" if (defined $debug);
     print $si;
     print "\n" if (defined $debug);
   }
 }
-
-sub ltrim { my $s = shift; $s =~ s/^\s+//;       return $s };
-sub rtrim { my $s = shift; $s =~ s/\s+$//;       return $s };
-sub  trim { my $s = shift; $s =~ s/^\s+|\s+$//g; return $s };
 
 #
 # $_[0] component OID
@@ -438,12 +520,12 @@ sub fetch_status {
 
   if ($_[1] eq "cpqHeEventLogCondition") {
     if ( ! defined ($response = $session->get_request($_[0]))) {
-      printf(" %-35s %s - %s (OID not found, ignoring)\n", $_[3], $_[1], $_[0]) if (defined $debug);
+      printf(" - %-35s - %s (OID %s not found, ignoring)\n", $_[3], $_[1], $_[0]) if (defined $debug);
       # tree not found, ignore!
       return -1;
     }
   } elsif ( ! defined ($response = $session->get_table($_[0]))) {
-    printf(" %-35s %s - %s (OID-tree not found, ignoring)\n", $_[3], $_[1], $_[0]) if (defined $debug);
+    printf(" - %-35s - %s (OID-tree %s not found, ignoring)\n", $_[3], $_[1], $_[0]) if (defined $debug);
     # tree not found, ignore!
     return -1;
   }
@@ -465,26 +547,19 @@ sub fetch_status {
       }
     }
     if (defined $debug || $value > 2) {
-      printf(" %-35s = %s ",  $component_unit, $value) if (defined $debug);
-      print " " . $_[1] . " (";
-      if (defined $key && (length($key) > (length($_[0])+2))) {
-        print substr($key, length($_[0])+1) . ":";
-      }
       # eval to something like '$cpqGenericStates{$value}'
-      $tmp = eval("\$" . $_[2] . "{" . $value . "}");
-      print $tmp if ($tmp ne "");
-      print ")\n";
+      my $stateValue = eval("\$" . $_[2] . "{" . $value . "}");
+      my $keyInfo = (defined $key && (length($key) > (length($_[0])+2))) ? (substr($key, length($_[0])+1) . ": ") : "";
+
+      if (defined $debug) {
+        printf(" * %-35s = %s [%s (%s%s)]\n", $component_unit, $value, $_[1], $keyInfo, $stateValue);
+      } else {
+        printf(" %s (%s%s)", $_[1], $keyInfo, $stateValue);
+      }
     }
     $countComponents++;
-    print "\n" if (defined $debug);
   }
   return 0;
-}
-
-sub in_array($@) {
-   my $needle = shift(@_);
-   my %items = map {$_ => 1} @_;
-   return (exists($items{$needle})) ? 1 : 0;
 }
 
 sub usage() {
@@ -498,36 +573,52 @@ sub usage() {
 }
 
 sub print_help() {
-  printf("%s plugin for Nagios\n", $PROGNAME);
-  printf("\nModule specific parameters:\n");
-  printf("   -d (--debug)      debug / verbose mode (print checked details)\n");
-  printf("   -x (--exclude)    exclude components from check (separate by commas, may also contain the special value 'cpqSystemInfo')\n");
-  printf("   -w (--warnings)   use warnings instead of criticals for these components (separate by commas)\n");
-  printf("                     specific values to be selected may be specified as in '-w cpqNicIfLogMapStatus=6'\n");
-  printf("   -r (--required)   report critical if any of these components is not found (separate by commas)\n");
-  printf("\nCurrently the module supports the following components:\n" . join(",\n ", keys %cpqComponents) . "\n");
-  printf("\nSNMP parameters:\n");
-  printf("   -H (--hostname)   hostname to query (required)\n");
-  printf("   -C (--community)  SNMP read community (defaults to public,\n");
-  printf("                     used with SNMP v1 and v2c\n");
-  printf("   -v (--snmp_version)  1 for SNMP v1 (default)\n");
-  printf("                        2 for SNMP v2c\n");
-  printf("                        SNMP v2c will use get_bulk for less overhead\n");
-  printf("   -L (--seclevel)   choice of \"noAuthNoPriv\", \"authNoPriv\", or \"authPriv\"\n");
-  printf("   -U (--secname)    username for SNMPv3 context\n");
-  printf("   -A (--authpass)   authentication password (cleartext ascii or localized key\n");
-  printf("                     in hex with 0x prefix generated by using \"snmpkey\" utility\n");
-  printf("                     auth password and authEngineID\n");
-  printf("   -a (--authproto)  authentication protocol (MD5 or SHA1)\n");
-  printf("   -X (--privpass)   privacy password (cleartext ascii or localized key\n");
-  printf("                     in hex with 0x prefix generated by using \"snmpkey\" utility\n");
-  printf("                     privacy password and authEngineID\n");
-  printf("   -p (--port)       SNMP port (default 161)\n");
-  printf("   -M (--maxmsgsize) max message size - usefull only for v1 or v2c\n");
-  printf("   -t (--timeout)    seconds before the plugin times out (default=%s)\n", $TIMEOUT);
-  printf("   -V (--version)    plugin version\n");
-  printf("   -h (--help)       show this usage screen\n\n");
-  print_revision($PROGNAME, '$Revision: 70 $');
+  printf("%s plugin\n", $PROGNAME);
+  printf("\n+---------+---------+---------+---------+---------+---------+---------+---------\n\n");
+  printf("Module specific parameters\n\n");
+  printf("  -d (--debug)        debug / verbose mode (print checked details)\n");
+  printf("  -x (--exclude)      exclude components from check (separate by commas, may\n");
+  printf("                      also contain the special value 'cpqSystemInfo')\n");
+  printf("  -w (--warnings)     use warnings instead of criticals for these components\n");
+  printf("                      (separate by commas) specific values to be selected may\n");
+  printf("                      be specified as in '-w cpqNicIfLogMapStatus=6'\n");
+  printf("  -r (--required)     report critical if any of these components is not found\n");
+  printf("                      (separate by commas)\n");
+  printf("\n+---------+---------+---------+---------+---------+---------+---------+---------\n\n");
+  printf("Currently the module supports the following components\n\n  * " . join(",\n  * ", keys %cpqComponents) . "\n");
+  printf("\n+---------+---------+---------+---------+---------+---------+---------+---------\n\n");
+  printf("Smarty Array specific parameters (not verified by default)\n\n");
+  printf("  -c (--maxcpu)       maximum cpu busy value the array controller (percent)\n");
+  printf("  --maxcommands       maximum number of read/write commands per second\n");
+  printf("  --maxlatency        maximum average command latency in 1/100000 second units\n");
+  printf("  --perfdata          gather performance data only (you will also get performance\n");
+  printf("                      data output if using any of the commands above):\n\n");
+  printf("                      (a) cpqDaCpu (cpqDaCntlrPerfCpuPercentBusy)\n");
+  printf("                      (b) cpqDaCmdCount (cpqDaCntlrPerfCommandCount)\n");
+  printf("                      (c) cpqDaAvgLatency (cpqDaCntlrPerfAvgLatency)\n");
+  printf("\n+---------+---------+---------+---------+---------+---------+---------+---------\n\n");
+  printf("SNMP parameters\n\n");
+  printf("  -H (--hostname)     hostname to query (required)\n");
+  printf("  -C (--community)    SNMP read community (defaults to public, used with SNMP\n");
+  printf("                      v1 and v2c)\n");
+  printf("  -v (--snmpversion)  1 for SNMP v1 (default)\n");
+  printf("                      2 for SNMP v2c\n");
+  printf("                      SNMP v2c will use get_bulk for less overhead\n");
+  printf("  -L (--seclevel)     choice of 'noAuthNoPriv', 'authNoPriv', or 'authPriv'\n");
+  printf("  -U (--secname)      username for SNMPv3 context\n");
+  printf("  -a (--authproto)    authentication protocol (MD5 or SHA1)\n");
+  printf("  -A (--authpass)     authentication password (cleartext ASCII or localized key\n");
+  printf("                      in hex with 0x prefix generated by using 'snmpkey'\n");
+  printf("                      utility auth password and authEngineID)\n");
+  printf("  -X (--privpass)     privacy password (cleartext ASCII or localized key\n");
+  printf("                      in hex with 0x prefix generated by using 'snmpkey'\n");
+  printf("                      utility privacy password and authEngineID)\n");
+  printf("  -p (--port)         SNMP port (default 161)\n");
+  printf("  -M (--maxmsgsize)   max message size - usefull only for v1 or v2c\n");
+  printf("  -t (--timeout)      seconds before the plugin times out (default=%s)\n", $TIMEOUT);
+  printf("  -V (--version)      plugin version\n");
+  printf("  -h (--help)         show this usage screen\n\n");
+  print_revision($PROGNAME, '$Revision: 73 $');
 }
 
 sub process_arguments() {
@@ -535,10 +626,14 @@ sub process_arguments() {
     "V"   => \$opt_V,        "version"        => \$opt_V,
     "h"   => \$opt_h,        "help"           => \$opt_h,
     "d"   => \$debug,        "debug"          => \$debug,
+    "c=i" => \$maxcpu,       "maxcpu=i"       => \$maxcpu,
+                             "maxcommands=i"  => \$maxcommands,
+                             "maxlatency=i"   => \$maxlatency,
+                             "perfdata"       => \$collect_perfdata,
     "x=s" => \$exclude,      "exclude=s"      => \$exclude,
     "w=s" => \$warnings,     "warnings=s"     => \$warnings,
     "r=s" => \$required,     "required=s"     => \$required,
-    "v=i" => \$snmp_version, "snmp_version=i" => \$snmp_version,
+    "v=i" => \$snmpversion,  "snmpversion=i"  => \$snmpversion,
     "C=s" => \$community,    "community=s"    => \$community,
     "L=s" => \$seclevel,     "seclevel=s"     => \$seclevel,
     "a=s" => \$authproto,    "authproto=s"    => \$authproto,
@@ -561,7 +656,7 @@ sub process_arguments() {
   }
 
   if ($opt_V) {
-    print_revision($PROGNAME,'$Revision: 70 $');
+    print_revision($PROGNAME,'$Revision: 73 $');
     exit $ERRORS{'OK'};
   }
 
@@ -577,7 +672,7 @@ sub process_arguments() {
 
   $timeout = $TIMEOUT unless (defined $timeout);
 
-  if ($snmp_version =~ /3/) {
+  if ($snmpversion =~ /3/) {
     # Must define a security level even though default is noAuthNoPriv
     # v3 requires a security username
     if (defined $seclevel && defined $secname) {
@@ -619,12 +714,12 @@ sub process_arguments() {
   } # end snmpv3
 
   # start snmpv1 / snmpv2
-  if ($snmp_version =~ /[12]/) {
+  if ($snmpversion =~ /[12]/) {
     ($session, $error) = Net::SNMP->session(
       -hostname   => $hostname,
       -community  => $community,
       -port       => $port,
-      -version    => $snmp_version,
+      -version    => $snmpversion,
       -maxmsgsize => $maxmsgsize
     );
 
@@ -634,19 +729,19 @@ sub process_arguments() {
       printf("%s: %s\n", $state, $answer);
       exit $ERRORS{$state};
     }
-  } elsif ($snmp_version =~ /3/) {
+  } elsif ($snmpversion =~ /3/) {
     if ($seclevel eq 'noAuthNoPriv') {
       ($session, $error) = Net::SNMP->session(
         -hostname => $hostname,
         -port     => $port,
-        -version  => $snmp_version,
+        -version  => $snmpversion,
         -username => $secname
       );
     } elsif ($seclevel eq 'authNoPriv') {
       ($session, $error) = Net::SNMP->session(
         -hostname     => $hostname,
         -port         => $port,
-        -version      => $snmp_version,
+        -version      => $snmpversion,
         -username     => $secname,
         $auth,
         -authprotocol => $authproto
@@ -655,7 +750,7 @@ sub process_arguments() {
       ($session, $error) = Net::SNMP->session(
         -hostname     => $hostname,
         -port         => $port,
-        -version      => $snmp_version,
+        -version      => $snmpversion,
         -username     => $secname,
         $auth,
         -authprotocol => $authproto,
@@ -672,7 +767,7 @@ sub process_arguments() {
 
   } else {
     $state = 'UNKNOWN';
-    printf("%s: No support for SNMP v%s yet\n", $state, $snmp_version);
+    printf("%s: No support for SNMP v%s yet\n", $state, $snmpversion);
     exit $ERRORS{$state};
   }
 }
