@@ -215,7 +215,7 @@ my %cpqHeResilientMemStates = (
   '14', 'lockStep',
   '15', 'lockStepWithFaults');
 
-my %cpqFcaHostCntlrStatus = (
+my %cpqFcaHostCntlrStates = (
   '1', 'unknown',
   '2', 'ok',
   '3', 'failed',
