@@ -22,7 +22,7 @@
 #
 # Report bugs to:  guenther.mair@hoslo.ch
 #
-# $Id: check_hp 73 2015-02-11 15:50:46Z gunny $
+# $Id: check_hp 74 2017-11-06 14:54:46Z gunny $
 #
 
 my $libexec;
@@ -59,7 +59,7 @@ sub process_arguments();
 ## module-specific variables
 
 my $PROGNAME = "check_hp";
-my $REVISION = '$Rev: 73 $';
+my $REVISION = '$Rev: 74 $';
 my $debug;
 my $exclude = '';
 my $warnings = '';
@@ -215,7 +215,7 @@ my %cpqHeResilientMemStates = (
   '14', 'lockStep',
   '15', 'lockStepWithFaults');
 
-my %cpqFcaHostCntlrStatus = (
+my %cpqFcaHostCntlrStates = (
   '1', 'unknown',
   '2', 'ok',
   '3', 'failed',
@@ -512,13 +512,14 @@ sub print_system_information {
 
 #
 # $_[0] component OID
-# $_[1] component name
+# $_[1] component description
 # $_[2] component type
+# $_[3] name
 #
 sub fetch_status {
   my $value;
 
-  if ($_[1] eq "cpqHeEventLogCondition") {
+  if ($_[3] eq "cpqHeEventLogCondition") {
     if ( ! defined ($response = $session->get_request($_[0]))) {
       printf(" - %-35s - %s (OID %s not found, ignoring)\n", $_[3], $_[1], $_[0]) if (defined $debug);
       # tree not found, ignore!
@@ -531,7 +532,8 @@ sub fetch_status {
   }
 
   while (($key, $value) = each %{$response}) {
-    my $component_unit = $_[3] . '.' . substr($key, length($_[0])+1);
+    my $component_unit = $_[3] . '.' . substr($key, length($_[0])+1) if ($_[3] ne "cpqHeEventLogCondition");
+    $component_unit = $_[3] . '.' . substr($key, length($_[0])-1) if ($_[3] eq "cpqHeEventLogCondition");
     my $component_value = $_[3] . '=' . $value;
     if ($value > 2) {
       # 1 = other/unknow  => assume OK
@@ -618,7 +620,7 @@ sub print_help() {
   printf("  -t (--timeout)      seconds before the plugin times out (default=%s)\n", $TIMEOUT);
   printf("  -V (--version)      plugin version\n");
   printf("  -h (--help)         show this usage screen\n\n");
-  print_revision($PROGNAME, '$Revision: 73 $');
+  print_revision($PROGNAME, '$Revision: 74 $');
 }
 
 sub process_arguments() {
@@ -656,7 +658,7 @@ sub process_arguments() {
   }
 
   if ($opt_V) {
-    print_revision($PROGNAME,'$Revision: 73 $');
+    print_revision($PROGNAME,'$Revision: 74 $');
     exit $ERRORS{'OK'};
   }
 
