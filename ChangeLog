@@ -1,3 +1,35 @@
+Version 3.2 (untested)
+======================
+Finally I woke up again to this... thanks Alexandre Rigaud Colonna, I have been
+lazy and completely forgot about it.
+
+
+Version 3.1 (unofficial)
+========================
+Added ignore-states option. This is still about cpqFcaHostCntlrStates and as a
+result to an exchange with Mr. Winter about issues with un-connected FCA's.
+
+That also solves what was correctly suggested by Michael Friedhoff back in
+2016 (sorry man I didn't get back to you about this!!).
+
+
+Version 3.0 (unofficial)
+========================
+IPv6 support addded! My thanks for pointing out that this could be useful go
+to Kevin Gorman.
+
+Added support for component names only being passed to the warning switch as
+hinted to by Nicola Bressan.
+
+Fixed the broken parameter comparison for "cpqHeEventLogCondition" and sub-OID
+concatenation where there are no sub-OIDs. Thanks for pointing out the issue
+Joe Giles!
+
+Added missing cpqFcaHostCntlrStates - my thanks go to Wolfgang Winter.
+
+Added 'blade' formfactor to cpqFormFactors - thanks to Peter Vermeulen!
+
+
 Version 2.20
 ============
 Quick progress these days... as of Andrew Gray's inquiry I added support for
